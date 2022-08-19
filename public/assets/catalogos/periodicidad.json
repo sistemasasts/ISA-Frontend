@@ -1,0 +1,32 @@
+{
+    "data": [
+        {
+            "label": "Diaria",
+            "value": "DIARIA"
+        },
+        {
+            "label": "Semanal",
+            "value": "SEMANAL"
+        },
+        {
+            "label": "Mensual",
+            "value": "MENSUAL"
+        },
+        {
+            "label": "Trimestral",
+            "value": "TRIMESTRAL"
+        },
+        {
+            "label": "Semestral",
+            "value": "SEMESTRAL"
+        },
+        {
+            "label": "Anual",
+            "value": "ANUAL"
+        },
+        {
+            "label": "Cada 5 Años",
+            "value": "CADA_5_ANIOS"
+        }
+    ]
+}

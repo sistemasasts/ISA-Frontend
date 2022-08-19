@@ -1,0 +1,25 @@
+{
+    "data": [
+        {
+            "label": "Apto",
+            "value": "Apto"
+        },
+        {
+            "label": "A Sustituir",
+            "value": "A sustituir"
+        },
+        {
+            "label": "No Apto",
+            "value": "No apto"
+        },
+        {
+            "label": "Mejorable",
+            "value": "Mejorable"
+        },
+        {
+            "label": "Revalidación",
+            "value": "Revalidación"
+        }
+        
+    ]
+}

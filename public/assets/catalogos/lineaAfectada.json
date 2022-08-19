@@ -1,0 +1,29 @@
+{
+    "data": [
+        
+        {
+            "label": "Cortes",
+            "value": "Cortes"
+        },
+        {
+            "label": "Laminación",
+            "value": "Laminación"
+        },
+        {
+            "label": "Metales",
+            "value": "Metales"
+        },
+        {
+            "label": "Paneles",
+            "value": "Paneles"
+        },
+        {
+            "label": "Revestimientos Líquidos",
+            "value": "Revestimientos Líquidos"
+        },        
+        {
+            "label": "Viales",
+            "value": "Viales"
+        }
+    ]
+}

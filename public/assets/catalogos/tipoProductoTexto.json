@@ -1,0 +1,96 @@
+{
+    "data": [
+        {
+            "label": "Aditivos",
+            "value": "Aditivos"
+        },
+        {
+            "label": "Cargas Minerales",
+            "value": "Cargas Minerales"
+        },
+        {
+            "label": "Armaduras",
+            "value": "Armaduras"
+        },
+        {
+            "label": "Asfalto Modificado",
+            "value": "Asfalto Modificado"
+        },
+        {
+            "label": "Cintas, Stickers, Etiquetas",
+            "value": "Cintas, Stickers, Etiquetas"
+        },
+        {
+            "label": "Cortes de Bandas",
+            "value": "Cortes de Bandas"
+        },
+        {
+            "label": "Derivados del Petróleo",
+            "value": "Derivados del Petróleo"
+        },
+        {
+            "label": "Desinfectantes",
+            "value": "Desinfectantes"
+        },
+        {
+            "label": "Empaques",
+            "value": "Empaques"
+        },
+        {
+            "label": "Emulsiones Asfálticas",
+            "value": "Emulsiones Asfálticas"
+        },
+        {
+            "label": "Flejes Metálicos",
+            "value": "Flejes Metálicos"
+        },
+        {
+            "label": "Láminas Impermeabilizantes",
+            "value": "Láminas Impermeabilizantes"
+        },
+        {
+            "label": "Malla de Refuerzo",
+            "value": "Malla de Refuerzo"
+        },
+        {
+            "label": "Maquila",
+            "value": "Maquila"
+        },
+        {
+            "label": "Metales",
+            "value": "Metales"
+        },
+        {
+            "label": "Mezcla en Frío",
+            "value": "Mezcla en Frío"
+        },
+        {
+            "label": "Pallets",
+            "value": "Pallets"
+        },
+        {
+            "label": "Polietilenos",
+            "value": "Polietilenos"
+        },
+        {
+            "label": "Polímeros",
+            "value": "Polímeros"
+        },
+        {
+            "label": "Resinas",
+            "value": "Resinas"
+        },
+        {
+            "label": "Revestimientos Líquidos",
+            "value": "Revestimientos Líquidos"
+        },
+        {
+            "label": "Reactivos Laboratorio",
+            "value": "Reactivos Laboratorio"
+        },
+        {
+            "label": "Tubos",
+            "value": "Tubos"
+        }        
+    ]
+}

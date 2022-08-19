@@ -1,0 +1,68 @@
+body {
+    .p-component {
+        font-family: $fontFamily;
+        text-decoration: none;
+    }
+
+    .p-highlight {
+        background-color: $highlightBgColor;
+        color: $highlightTextColor;
+    }
+
+    .p-error {
+	    border: 1px solid $errorColor;
+    }
+
+    .p-disabled,
+    .p-component:disabled {
+        background-color: $disabledBgColor;
+        cursor: default !important;
+
+        * {
+            cursor: default !important;
+        }
+    }
+
+    .p-component-overlay {
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .p-shadow {
+        @include shadow(none);
+    }
+
+    .p-link {
+        background: transparent;
+        background-color: transparent;
+    }
+
+    a {
+        color: darken($primaryColor,10%);
+        text-decoration: none;
+
+        &:hover {
+            color: darken($primaryColor,5%);
+        }
+    }
+
+    .ajax-loader {
+        font-size: 28px;
+        color: $primaryColor;
+    }
+
+    /* Code Highlight */
+    .docs {
+        pre[class*="language-"] {
+            background-color: #fdfdfd;
+            padding: 0 !important;
+            border-left: none;
+            @include shadow(none);
+
+            > code {
+                border-left: 10px solid lighten($primaryColor, 15%);
+                box-shadow: none;
+                font-size: 14px;
+            }
+        }
+    }
+}

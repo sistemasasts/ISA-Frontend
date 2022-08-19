@@ -1,0 +1,13 @@
+{
+    "data": [
+        {
+            "label": "Producto Terminado",
+            "value": "PT"
+        },
+       
+        {
+            "label": "Producto en Proceso",
+            "value": "PP"
+        }
+    ]
+}

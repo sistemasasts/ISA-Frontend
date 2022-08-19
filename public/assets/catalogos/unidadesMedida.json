@@ -1,0 +1,100 @@
+{
+    "data": [
+        {
+            "label": "°C",
+            "value": "°C"
+        },
+        {
+            "label": "cps",
+            "value": "cps"
+        },
+        {
+            "label": "%",
+            "value": "%"
+        },
+        {
+            "label": "l",
+            "value": "l"
+        },
+        {
+            "label": "m",
+            "value": "m"
+        },
+        {
+            "label": "g",
+            "value": "g"
+        },
+        {
+            "label": "mm",
+            "value": "mm"
+        },
+        {
+            "label": "ml",
+            "value": "ml"
+        },
+        {
+            "label": "cm",
+            "value": "cm"
+        },
+        {
+            "label": "m",
+            "value": "m"
+        },
+        {
+            "label": "m2",
+            "value": "m2"
+        },
+        {
+            "label": "dmm",
+            "value": "dmm"
+        },
+        {
+            "label": "in",
+            "value": "in"
+        },
+        {
+            "label": "gal",
+            "value": "gal"
+        },
+        {
+            "label": "g/ml",
+            "value": "g/ml"
+        },
+        {
+            "label": "g/m2",
+            "value": "g/m2"
+        },
+        {
+            "label": "kg",
+            "value": "kg"
+        },
+        {
+            "label": "Kg/m2",
+            "value": "Kg/m2"
+        },
+        {
+            "label": "Kg/mm2",
+            "value": "Kg/mm2"
+        },
+        {
+            "label": "N/50mm",
+            "value": "N/50mm"
+        },
+        {
+            "label": "mm2/s",
+            "value": "mm2/s"
+        },
+        {
+            "label": "Rollo",
+            "value": "Rollo"
+        },
+        {
+            "label": "Unidad",
+            "value": "u"
+        },
+        {
+            "label": "Pa.s",
+            "value": "Pa.s"
+        }
+    ]
+}

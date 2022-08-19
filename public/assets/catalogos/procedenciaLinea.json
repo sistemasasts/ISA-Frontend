@@ -1,0 +1,16 @@
+{
+    "data": [
+        {
+            "label": "Producción",
+            "value": "Producción"
+        },
+        {
+            "label": "Bodega",
+            "value": "Bodega"
+        },
+        {
+            "label": "Devolución Cliente",
+            "value": "Devolución Cliente"
+        }
+    ]
+}
