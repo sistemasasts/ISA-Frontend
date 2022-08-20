@@ -260,6 +260,7 @@ class Complaint extends Component {
     }
     /* Metodo para visualizar los detalles */
     showDetails(data, action) {
+        console.log(data);
         if (data.listProblems.length !== 0) {
             data.listProblems.map(function (obj, index) {
                 obj.item = index + 1;
@@ -905,7 +906,7 @@ class Complaint extends Component {
                                         <strong style={{ marginRight: '2%' }}>Producto Afectado:</strong>{Object.keys(this.state.selectedComplaint2).length === 0 ? '' : this.state.selectedComplaint2.affectedProduct}
                                     </div>
                                     <div className="p-col-12 p-lg-3">
-                                        <strong style={{ marginRight: '2%' }}>Proveedor:</strong>{Object.keys(this.state.selectedComplaint2).length === 0 ? '' : this.state.selectedComplaint2.provider.nameProvider}
+                                        <strong style={{ marginRight: '2%' }}>Proveedor:</strong>{Object.keys(this.state.selectedComplaint2).length === 0 ? '' : this.state.selectedComplaint2.provider?this.state.selectedComplaint2.provider.nameProvider: this.state.selectedComplaint2.otherProvider}
                                     </div>
 
                                 </div>
