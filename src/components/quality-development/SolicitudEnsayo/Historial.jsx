@@ -4,6 +4,7 @@ import { Fieldset } from 'primereact/fieldset';
 import { DataView } from 'primereact/dataview';
 import { closeModal, openModal } from '../../../store/actions/modalWaitAction';
 import SolicitudHistorialService from '../../../service/SolicitudEnsayo/SolicitudHistorialService';
+import SolicitudPruebaProcesoHistorialService from '../../../service/SolicitudPruebaProceso/SolicitudPruebaProcesoHistorialService';
 import SolicitudDocumentoService from '../../../service/SolicitudEnsayo/SolicitudDocumentoService';
 import "../../site.css";
 
@@ -24,14 +25,18 @@ class Historial extends Component {
         if (this.props.tipo === 'SOLICITUD_ENSAYO')
             historialData = await SolicitudHistorialService.listarPorIdSolicitud(this.props.solicitud);
         if (this.props.tipo === 'SOLICITUD_PRUEBAS_PROCESO')
-            historialData = await SolicitudHistorialService.listarPorIdSolicitudPruebasProceso(this.props.solicitud);
+            historialData = await SolicitudPruebaProcesoHistorialService.listarPorIdSolicitud(this.props.solicitud);
         this.setState({ historial: historialData });
     }
 
     async descargarDocumentos(historial) {
         if (historial) {
             this.props.openModal();
-            var data = await SolicitudDocumentoService.descargarComprimido(historial.id);
+            var data;
+            if (this.props.tipo === 'SOLICITUD_ENSAYO')
+                data = await SolicitudDocumentoService.descargarComprimido(historial.id);
+            if (this.props.tipo === 'SOLICITUD_PRUEBAS_PROCESO')
+                data = await SolicitudPruebaProcesoHistorialService.descargarComprimido(historial.id);
             this.props.closeModal();
             const ap = window.URL.createObjectURL(data)
             const a = document.createElement('a');

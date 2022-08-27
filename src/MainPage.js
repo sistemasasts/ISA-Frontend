@@ -53,6 +53,7 @@ import VerResponderSPP from './components/quality-development/SolicitudPruebasEn
 import ConsultaPrincipal from './components/quality-development/SolicitudConsulta/ConsultaPrincipal';
 import VerSE from './components/quality-development/SolicitudConsulta/VerSE';
 import VerSPP from './components/quality-development/SolicitudConsulta/VerSPP';
+import ConfiguracionSPP from './components/quality-development/Solicitud-flujo/ConfiguracionSPP';
 
 
 
@@ -572,6 +573,7 @@ class MainPage extends Component {
 						<Route path="/quality-development_laboratory_norms" component={NormaLaboratorio} />
 						<Route path="/quality-development_config_entrymp" component={ConfigFormTestEntryMP} />
 						<Route path="/quality-development_config_solicitudse" component={ConfiguracionSF} />
+						<Route path="/quality-development_config_solicitudpp" component={ConfiguracionSPP} />
 						<Route path="/quality-development_solicitudse" component={PrincipalSE} />
 						<Route path="/quality-development_solicitudse_new" component={FormularioSE} />
 						<Route path="/quality-development_solicitudse_edit/:idSolicitud" component={FormularioSE} />

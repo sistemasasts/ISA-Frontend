@@ -8,6 +8,7 @@ import * as _ from "lodash";
 import SolicitudDocumentoService from '../../../service/SolicitudEnsayo/SolicitudDocumentoService';
 import { Button } from 'primereact/button';
 import "../../site.css";
+import SolicitudPruebaProcesoDocumentoService from '../../../service/SolicitudPruebaProceso/SolicitudPruebaProcesoDocumentoService';
 class Adjuntos extends Component {
 
     constructor() {
@@ -30,7 +31,7 @@ class Adjuntos extends Component {
         if (this.props.tipo === 'SOLICITUD_ENSAYO')
             await SolicitudDocumentoService.subirArchivo(this.crearSolicitudDocumento(event.files[0]));
         if (this.props.tipo === 'SOLICITUD_PRUEBAS_PROCESO')
-            await SolicitudDocumentoService.subirArchivoPruebasProceso(this.crearSolicitudDocumento(event.files[0]));
+            await SolicitudPruebaProcesoDocumentoService.subirArchivo(this.crearSolicitudDocumento(event.files[0]));
         this.refrescar();
         this.fileUploadRef.clear();
         this.props.closeModal();
@@ -43,7 +44,7 @@ class Adjuntos extends Component {
             if (this.props.tipo === 'SOLICITUD_ENSAYO')
                 archivosData = await SolicitudDocumentoService.listarArchivos(this.props.estado, this.props.orden, this.props.solicitud);
             if (this.props.tipo === 'SOLICITUD_PRUEBAS_PROCESO')
-                archivosData = await SolicitudDocumentoService.listarArchivosPruebasProceso(this.props.estado, this.props.orden, this.props.solicitud);
+                archivosData = await SolicitudPruebaProcesoDocumentoService.listarArchivos(this.props.estado, this.props.orden, this.props.solicitud);
             this.setState({ archivos: archivosData });
         }
     }
@@ -51,7 +52,10 @@ class Adjuntos extends Component {
     crearSolicitudDocumento(archivo) {
         let infoAdicional = {};
         let formadata = new FormData();
-        infoAdicional.orden = this.props.orden;
+        if (this.props.tipo === 'SOLICITUD_ENSAYO')
+            infoAdicional.orden = this.props.orden;
+        if (this.props.tipo === 'SOLICITUD_PRUEBAS_PROCESO')
+            infoAdicional.ordenPP = this.props.orden;
         infoAdicional.idSolicitud = this.props.solicitud;
         formadata.append('file', archivo);
         formadata.append('info', JSON.stringify(infoAdicional));
@@ -60,7 +64,11 @@ class Adjuntos extends Component {
 
     async eliminar(id) {
         this.props.openModal();
-        const a = await SolicitudDocumentoService.eliminar(id);
+        var a = false;
+        if (this.props.tipo === 'SOLICITUD_ENSAYO')
+            a = await SolicitudDocumentoService.eliminar(id);
+        if (this.props.tipo === 'SOLICITUD_PRUEBAS_PROCESO')
+            a = await SolicitudPruebaProcesoDocumentoService.eliminar(id);
         this.props.closeModal();
         if (a) {
             this.refrescar();

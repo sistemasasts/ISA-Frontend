@@ -14,8 +14,11 @@ import * as moment from 'moment';
 import history from '../../../history';
 import Adjuntos from '../SolicitudEnsayo/Adjuntos';
 import Historial from '../SolicitudEnsayo/Historial';
-import SolicitudPruebasProcesoService from '../../../service/SolicitudEnsayo/SolicitudPruebasProcesoService';
+import SolicitudPruebasProcesoService from '../../../service/SolicitudPruebaProceso/SolicitudPruebasProcesoService';
 import { InputText } from 'primereact/inputtext';
+import { Fieldset } from 'primereact/fieldset';
+import { FileUpload } from 'primereact/fileupload';
+import SolicitudPruebaProcesoDocumentoService from '../../../service/SolicitudPruebaProceso/SolicitudPruebaProcesoDocumentoService';
 
 const TIPO_SOLICITUD = "SOLICITUD_PRUEBAS_PROCESO";
 class FormularioSPP extends Component {
@@ -39,15 +42,26 @@ class FormularioSPP extends Component {
             mostrarControles: false,
             editar: true,
             observacionFlujo: null,
+            origen: null,
+            area: null,
+            requiereInforme: false,
+            imagen1Id: null,
+            catalogoOrigen: [],
+            catalogoArea: []
         };
         this.onObjectiveChange = this.onObjectiveChange.bind(this);
         this.onDescriptionMaterialLPChange = this.onDescriptionMaterialLPChange.bind(this);
         this.guardar = this.guardar.bind(this);
         this.enviarSolicitud = this.enviarSolicitud.bind(this);
+        this.myUploader = this.myUploader.bind(this);
+        this.leerImagen = this.leerImagen.bind(this);
     }
 
     async componentDidMount() {
+        const catalogAreas = await SolicitudPruebasProcesoService.listarAreas();
+        const catalogoOrigen = await SolicitudPruebasProcesoService.listarOrigen();
         this.refrescar(this.props.match.params.idSolicitud);
+        this.setState({ catalogoOrigen: catalogoOrigen, catalogoArea: catalogAreas });
     }
 
     async refrescar(idSolicitud) {
@@ -56,6 +70,8 @@ class FormularioSPP extends Component {
             if (solicitud) {
                 let objetivosValor = _.split(solicitud.motivo, ',');
                 let detalleMaterialValor = _.split(solicitud.materialLineaProceso, ',');
+                console.log(solicitud)
+                this.leerImagen(solicitud.imagen1Id);
                 this.setState({
                     id: solicitud.id,
                     codigo: solicitud.codigo,
@@ -70,6 +86,10 @@ class FormularioSPP extends Component {
                     motivoOtro: solicitud.motivoOtro,
                     observacion: solicitud.observacion,
                     estado: solicitud.estado,
+                    requiereInforme: solicitud.requiereInforme,
+                    area: solicitud.area,
+                    origen: solicitud.origen,
+                    imagen1Id: solicitud.imagen1Id,
                     mostrarControles: solicitud.estado === 'NUEVO',
                     editar: solicitud.estado === 'NUEVO'
                 });
@@ -77,6 +97,14 @@ class FormularioSPP extends Component {
         }
     }
 
+    async leerImagen(idDocumento) {
+        debugger
+        const respuesta = await SolicitudPruebaProcesoDocumentoService.verImagen(idDocumento);
+        if (respuesta) {
+            console.log(respuesta);
+            document.getElementById("ItemPreview").src = `data:${respuesta.documento.tipo};base64,` + respuesta.imagen;
+        }
+    }
 
     /* Metodo para los checkBoxs */
     onObjectiveChange(e) {
@@ -124,6 +152,9 @@ class FormularioSPP extends Component {
             descripcionProducto: this.state.descripcionProducto,
             variablesProceso: this.state.variablesProceso,
             verificacionAdicional: this.state.verificacionAdicional,
+            origen: this.state.origen,
+            area: this.state.area,
+            requiereInforme: this.state.requiereInforme,
             observacion: this.state.observacion,
             observacionFlujo: this.state.observacionFlujo
         }
@@ -147,6 +178,24 @@ class FormularioSPP extends Component {
         setTimeout(function () {
             history.push(`/quality-development_solicitudpp`);
         }, 2000);
+    }
+
+    async myUploader(event) {
+        this.props.openModal();
+        const respuesta = await SolicitudPruebaProcesoDocumentoService.subirArchivoImagen1(this.crearSolicitudDocumento(event.files[0]));
+        console.log(respuesta);
+        document.getElementById("ItemPreview").src = `data:${respuesta.documento.tipo};base64,` + respuesta.imagen;
+        this.fileUploadRef.clear();
+        this.props.closeModal();
+    }
+
+    crearSolicitudDocumento(archivo) {
+        let infoAdicional = {};
+        let formadata = new FormData();
+        infoAdicional.idSolicitud = this.state.id;
+        formadata.append('file', archivo);
+        formadata.append('info', JSON.stringify(infoAdicional));
+        return formadata;
     }
 
     render() {
@@ -177,6 +226,18 @@ class FormularioSPP extends Component {
                     <div className='p-col-12 p-lg-4'>
                         <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Línea</label>
                         <Dropdown disabled={!this.state.editar} options={LineDDP04} value={this.state.linea} autoWidth={false} onChange={(e) => this.setState({ linea: e.value })} placeholder="Selecione" />
+                    </div>
+                    <div className='p-col-12 p-lg-4'>
+                        <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Tipo Solicitud</label>
+                        <Dropdown disabled={!this.state.editar} options={this.state.catalogoOrigen} value={this.state.origen} autoWidth={false} onChange={(e) => this.setState({ origen: e.value })} placeholder="Selecione" />
+                    </div>
+                    <div className='p-col-12 p-lg-4'>
+                        <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Área</label>
+                        <Dropdown disabled={!this.state.editar} optionLabel='nameArea' options={this.state.catalogoArea} value={this.state.area} autoWidth={false} onChange={(e) => this.setState({ area: e.value })} placeholder="Selecione" />
+                    </div>
+                    <div className='p-col-12 p-lg-4' style={{ marginTop: '20px' }}>
+                        <Checkbox disabled={!this.state.editar} inputId="cbri" onChange={e => this.setState({ requiereInforme: e.checked })} checked={this.state.requiereInforme}></Checkbox>
+                        <label htmlFor="cb1" style={{ paddingLeft: '8px' }} className="p-checkbox-label">Requiere Informe</label>
                     </div>
                     <div className="p-col-12 p-lg-12" >
                         <div className='p-grid'>
@@ -277,14 +338,45 @@ class FormularioSPP extends Component {
                             </div>
                         </div>
                     </div>
+
                     <div className='p-col-12 p-lg-12'>
-                        <span style={{ color: '#CB3234' }}>*</span><label style={{ fontWeight: 'bold' }} htmlFor="float-input">Descripción del Producto que se quiere obtener</label>
-                        <InputTextarea readOnly={!this.state.editar} value={this.state.descripcionProducto} onChange={(e) => this.setState({ descripcionProducto: e.target.value })} rows={4} placeholder='Descripción' />
+                        <div className='p-grid'>
+                            <div className='p-col-12 p-lg-6'>
+                                <div className='p-grid'>
+                                    <div className='p-col-12 p-lg-12'>
+                                        <span style={{ color: '#CB3234' }}>*</span><label style={{ fontWeight: 'bold' }} htmlFor="float-input">Descripción del Producto que se quiere obtener</label>
+                                        <InputTextarea readOnly={!this.state.editar} value={this.state.descripcionProducto} onChange={(e) => this.setState({ descripcionProducto: e.target.value })} rows={8} placeholder='Descripción' />
+                                    </div>
+                                    <div className='p-col-12 p-lg-12'>
+                                        <span style={{ color: '#CB3234' }}>*</span><label style={{ fontWeight: 'bold' }} htmlFor="float-input">Información sobre Variables de Proceso que deben ser controladas</label>
+                                        <InputTextarea readOnly={!this.state.editar} value={this.state.variablesProceso} onChange={(e) => this.setState({ variablesProceso: e.target.value })} rows={8} placeholder='Descripción' />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className='p-col-12 p-lg-6'>
+                                <div className='p-grid'>
+                                    <div className='p-col-12 p-lg-12'>
+                                        <span style={{ color: '#CB3234' }}>*</span><label style={{ fontWeight: 'bold' }} htmlFor="float-input">Imagen especificaciones y variables</label>
+                                        <div style={{ height: '335px', bottom: '0px', top: '0px', display: 'flex',justifyContent: 'center', border:'1px solid #cccccc', borderRadius:'4px' }}>
+                                            {this.state.imagen1Id===null &&
+                                                <img style={{ width: 'auto', maxHeight: '100%', display: 'block', margin: 'auto' }} alt="Logo" src="assets/layout/images/icon-img.jpg" />
+                                            }
+                                            {this.state.imagen1Id > 0 &&
+
+                                                <img style={{ width: 'auto', maxHeight: '100%', display: 'block', margin: 'auto' }} id="ItemPreview" src="" />
+                                            }
+                                        </div>
+                                        {this.state.id > 0 &&
+                                            <FileUpload ref={(el) => this.fileUploadRef = el} mode="basic" name="demo" customUpload={true} uploadHandler={this.myUploader} accept="image/*" chooseLabel='Seleccione Imagen' uploadLabel='Subir Imagen' />
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div className='p-col-12 p-lg-12'>
-                        <span style={{ color: '#CB3234' }}>*</span><label style={{ fontWeight: 'bold' }} htmlFor="float-input">Información sobre Variables de Proceso que deben ser controladas</label>
-                        <InputTextarea readOnly={!this.state.editar} value={this.state.variablesProceso} onChange={(e) => this.setState({ variablesProceso: e.target.value })} rows={4} placeholder='Descripción' />
-                    </div>
+
+
+
                     <div className='p-col-12 p-lg-12'>
                         <label style={{ fontWeight: 'bold' }} htmlFor="float-input">Se requieren verificaciones adicionales u otras en especial</label>
                         <InputTextarea readOnly={!this.state.editar} value={this.state.verificacionAdicional} onChange={(e) => this.setState({ verificacionAdicional: e.target.value })} rows={4} placeholder='Descripción' />

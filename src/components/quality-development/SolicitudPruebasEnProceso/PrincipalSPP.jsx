@@ -6,11 +6,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import history from '../../../history';
 
-import SolicitudPruebasProcesoService from '../../../service/SolicitudEnsayo/SolicitudPruebasProcesoService';
 import { closeModal, openModal } from '../../../store/actions/modalWaitAction';
 import "../../site.css";
 import { determinarColor } from '../SolicitudEnsayo/ClasesUtilidades';
 import * as _ from "lodash";
+import SolicitudPruebasProcesoService from '../../../service/SolicitudPruebaProceso/SolicitudPruebasProcesoService';
 
 var that;
 class PrincipalSPP extends Component {
