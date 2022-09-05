@@ -54,6 +54,11 @@ import ConsultaPrincipal from './components/quality-development/SolicitudConsult
 import VerSE from './components/quality-development/SolicitudConsulta/VerSE';
 import VerSPP from './components/quality-development/SolicitudConsulta/VerSPP';
 import ConfiguracionSPP from './components/quality-development/Solicitud-flujo/ConfiguracionSPP';
+import AsignarResponsablePrincipalSPP from './components/quality-development/SolicitudPruebasEnProceso/SolicitudAsignarResponsable/AsignarResponsablePrincipalSPP';
+import VerAsignarResponsableSPP from './components/quality-development/SolicitudPruebasEnProceso/SolicitudAsignarResponsable/VerAsignarResponsableSPP';
+import PlantaPrincipal from './components/quality-development/SolicitudPruebasEnProceso/ResponderPlanta/PlantaPrincipal';
+import VerPlantaSPP from './components/quality-development/SolicitudPruebasEnProceso/ResponderPlanta/VerPlantaSPP';
+import AsignarResponsableMantenimiento from './components/quality-development/SolicitudPruebasEnProceso/CoordinacionMantenimiento/AsignarResponsableMantenimiento';
 
 
 
@@ -593,6 +598,11 @@ class MainPage extends Component {
 						<Route path="/quality-development_consulta_solicitud" component={ConsultaPrincipal} />
 						<Route path="/quality-development_consulta_solicitud_verse/:idSolicitud" component={VerSE} />
 						<Route path="/quality-development_consulta_solicitud_verspp/:idSolicitud" component={VerSPP} />
+						<Route path="/quality-development_solicitudpp_asignar" component={AsignarResponsablePrincipalSPP} />
+						<Route path="/quality-development_solicitudpp_asignar_responsable/:idSolicitud" component={VerAsignarResponsableSPP} />
+						<Route path="/quality-development_solicitudpp_planta_principal" component={PlantaPrincipal} />
+						<Route path="/quality-development_solicitudpp_planta_ver/:idSolicitud" component={VerPlantaSPP} />
+						<Route path="/quality-development_solicitudpp_mantenimiento_asignacion" component={AsignarResponsableMantenimiento} />
 
 						<Route path="/home" component={Home} />
 

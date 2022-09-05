@@ -16,7 +16,6 @@ import Adjuntos from '../SolicitudEnsayo/Adjuntos';
 import Historial from '../SolicitudEnsayo/Historial';
 import SolicitudPruebasProcesoService from '../../../service/SolicitudPruebaProceso/SolicitudPruebasProcesoService';
 import { InputText } from 'primereact/inputtext';
-import { Fieldset } from 'primereact/fieldset';
 import { FileUpload } from 'primereact/fileupload';
 import SolicitudPruebaProcesoDocumentoService from '../../../service/SolicitudPruebaProceso/SolicitudPruebaProcesoDocumentoService';
 

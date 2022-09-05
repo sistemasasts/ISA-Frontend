@@ -79,7 +79,11 @@ class Adjuntos extends Component {
 
     async descargar(id, nombre) {
         this.props.openModal();
-        var data = await SolicitudDocumentoService.ver(id);
+        var data;
+        if (this.props.tipo === 'SOLICITUD_ENSAYO')
+            data = await SolicitudDocumentoService.ver(id);
+        if (this.props.tipo === 'SOLICITUD_PRUEBAS_PROCESO')
+            data = await SolicitudPruebaProcesoDocumentoService.ver(id);        
         this.props.closeModal();
         const ap = window.URL.createObjectURL(data)
         const a = document.createElement('a');

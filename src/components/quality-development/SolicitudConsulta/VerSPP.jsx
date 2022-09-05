@@ -6,7 +6,7 @@ import Adjuntos from '../SolicitudEnsayo/Adjuntos';
 import Historial from '../SolicitudEnsayo/Historial';
 import { closeModal, openModal } from '../../../store/actions/modalWaitAction';
 import FormularioSPPLectura from '../SolicitudPruebasEnProceso/FormularioSPPLectura';
-import SolicitudPruebasProcesoService from '../../../service/SolicitudEnsayo/SolicitudPruebasProcesoService';
+import SolicitudPruebasProcesoService from '../../../service/SolicitudPruebaProceso/SolicitudPruebasProcesoService';
 
 const TIPO_SOLICITUD = 'SOLICITUD_PRUEBAS_PROCESO';
 let ESTADO = '';

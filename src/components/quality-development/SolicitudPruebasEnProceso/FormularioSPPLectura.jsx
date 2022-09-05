@@ -10,8 +10,9 @@ import * as _ from "lodash";
 import * as moment from 'moment';
 import { closeModal, openModal } from '../../../store/actions/modalWaitAction';
 import { connect } from 'react-redux';
-import SolicitudPruebasProcesoService from '../../../service/SolicitudEnsayo/SolicitudPruebasProcesoService';
 import { InputText } from 'primereact/inputtext';
+import SolicitudPruebasProcesoService from '../../../service/SolicitudPruebaProceso/SolicitudPruebasProcesoService';
+import SolicitudPruebaProcesoDocumentoService from '../../../service/SolicitudPruebaProceso/SolicitudPruebaProcesoDocumentoService';
 
 class FormularioSPPLectura extends Component {
 
@@ -31,7 +32,12 @@ class FormularioSPPLectura extends Component {
             verificacionAdicional: null,
             observacion: null,
             estado: null,
+            origen: null,
+            area: null,
+            requiereInforme: false,
+            imagen1Id: null,
         };
+        this.leerImagen = this.leerImagen.bind(this);
     }
 
     async componentDidMount() {
@@ -41,6 +47,7 @@ class FormularioSPPLectura extends Component {
     async refrescar(idSolicitud) {
         if (idSolicitud) {
             const solicitud = await SolicitudPruebasProcesoService.listarPorId(idSolicitud);
+            this.leerImagen(solicitud.imagen1Id);
             if (solicitud) {
                 let objetivosValor = _.split(solicitud.motivo, ',');
                 let detalleMaterialValor = _.split(solicitud.materialLineaProceso, ',');
@@ -58,8 +65,20 @@ class FormularioSPPLectura extends Component {
                     motivoOtro: solicitud.motivoOtro,
                     observacion: solicitud.observacion,
                     estado: solicitud.estado,
+                    area: solicitud.area.nameArea,
+                    origen: solicitud.origen,
+                    requiereInforme: solicitud.requiereInforme,
+                    imagen1Id: solicitud.imagen1Id
                 });
             }
+        }
+    }
+
+    async leerImagen(idDocumento) {
+        const respuesta = await SolicitudPruebaProcesoDocumentoService.verImagen(idDocumento);
+        if (respuesta) {
+            console.log(respuesta);
+            document.getElementById("ItemPreview1").src = `data:${respuesta.documento.tipo};base64,` + respuesta.imagen;
         }
     }
 
@@ -90,6 +109,18 @@ class FormularioSPPLectura extends Component {
                     <div className='p-col-12 p-lg-4'>
                         <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Línea</label>
                         <Dropdown disabled options={LineDDP04} value={this.state.linea} autoWidth={false} onChange={(e) => this.setState({ linea: e.value })} placeholder="Selecione" />
+                    </div>
+                    <div className='p-col-12 p-lg-4'>
+                        <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Tipo Solicitud</label>
+                        <InputText readOnly value={this.state.origen} />
+                    </div>
+                    <div className='p-col-12 p-lg-4'>
+                        <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Área</label>
+                        <InputText readOnly value={this.state.area} />
+                    </div>
+                    <div className='p-col-12 p-lg-4' style={{ marginTop: '20px' }}>
+                        <Checkbox inputId="cbri" checked={this.state.requiereInforme}></Checkbox>
+                        <label htmlFor="cb1" style={{ paddingLeft: '8px' }} className="p-checkbox-label">Requiere Informe</label>
                     </div>
                     <div className="p-col-12 p-lg-12" >
                         <div className='p-grid'>
@@ -190,14 +221,37 @@ class FormularioSPPLectura extends Component {
                             </div>
                         </div>
                     </div>
+
                     <div className='p-col-12 p-lg-12'>
-                        <span style={{ color: '#CB3234' }}>*</span><label style={{ fontWeight: 'bold' }} htmlFor="float-input">Descripción del Producto que se quiere obtener</label>
-                        <InputTextarea readOnly value={this.state.descripcionProducto} onChange={(e) => this.setState({ descripcionProducto: e.target.value })} rows={4} placeholder='Descripción' />
+                        <div className='p-grid'>
+                            <div className='p-col-12 p-lg-6'>
+                                <div className='p-grid'>
+                                    <div className='p-col-12 p-lg-12'>
+                                        <span style={{ color: '#CB3234' }}>*</span><label style={{ fontWeight: 'bold' }} htmlFor="float-input">Descripción del Producto que se quiere obtener</label>
+                                        <InputTextarea readOnly value={this.state.descripcionProducto} onChange={(e) => this.setState({ descripcionProducto: e.target.value })} rows={8} placeholder='Descripción' />
+                                    </div>
+                                    <div className='p-col-12 p-lg-12'>
+                                        <span style={{ color: '#CB3234' }}>*</span><label style={{ fontWeight: 'bold' }} htmlFor="float-input">Información sobre Variables de Proceso que deben ser controladas</label>
+                                        <InputTextarea readOnly value={this.state.variablesProceso} onChange={(e) => this.setState({ variablesProceso: e.target.value })} rows={8} placeholder='Descripción' />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className='p-col-12 p-lg-6'>
+                                <div className='p-grid'>
+                                    <div className='p-col-12 p-lg-12'>
+                                        <span style={{ color: '#CB3234' }}>*</span><label style={{ fontWeight: 'bold' }} htmlFor="float-input">Imagen especificaciones y variables</label>
+                                        <div style={{ height: '365px', bottom: '0px', top: '0px', display: 'flex',justifyContent: 'center', border:'1px solid #cccccc', borderRadius:'4px' }}>
+                                            {this.state.imagen1Id > 0 &&
+                                                <img style={{ width: 'auto', maxHeight: '100%', display: 'block', margin: 'auto' }} id="ItemPreview1" src="" />
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div className='p-col-12 p-lg-12'>
-                        <span style={{ color: '#CB3234' }}>*</span><label style={{ fontWeight: 'bold' }} htmlFor="float-input">Información sobre Variables de Proceso que deben ser controladas</label>
-                        <InputTextarea readOnly value={this.state.variablesProceso} onChange={(e) => this.setState({ variablesProceso: e.target.value })} rows={4} placeholder='Descripción' />
-                    </div>
+
+
                     <div className='p-col-12 p-lg-12'>
                         <label style={{ fontWeight: 'bold' }} htmlFor="float-input">Se requieren verificaciones adicionales u otras en especial</label>
                         <InputTextarea readOnly value={this.state.verificacionAdicional} onChange={(e) => this.setState({ verificacionAdicional: e.target.value })} rows={4} placeholder='Descripción' />

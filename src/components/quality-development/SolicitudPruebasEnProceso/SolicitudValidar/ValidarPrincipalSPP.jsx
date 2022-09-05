@@ -5,10 +5,11 @@ import { Growl } from 'primereact/growl';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import history from '../../../../history';
-import SolicitudPruebasProcesoService from '../../../../service/SolicitudEnsayo/SolicitudPruebasProcesoService';
 import { closeModal, openModal } from '../../../../store/actions/modalWaitAction';
 import { determinarColor } from '../../SolicitudEnsayo/ClasesUtilidades';
 import * as _ from "lodash";
+import SolicitudPruebasProcesoService from '../../../../service/SolicitudPruebaProceso/SolicitudPruebasProcesoService';
+import * as moment from 'moment';
 
 class ValidarPrincipalSPP extends Component {
 
@@ -54,7 +55,7 @@ class ValidarPrincipalSPP extends Component {
                     onRowSelect={this.onCarSelect}>
                     <Column body={this.actionTemplate} style={{ textAlign: 'center', width: '4em' }} />
                     <Column field="codigo" header="Código" sortable={true} style={{ textAlign: 'center', width: '10em' }}/>
-                    <Column field="fechaCreacion" header="Fecha Solicitud" sortable={true} />
+                    <Column field="fechaSolicitud" header="Fecha Solicitud" sortable={true} />
                     <Column field="lineaAplicacion" header="Aplicación" sortable={true} style={{ textAlign: 'center', width: '15em' }} />
                     <Column field="fechaEntrega" header="Fecha Entrega" sortable={true} />
                     <Column field="motivo" header="Motivo" sortable={true} />

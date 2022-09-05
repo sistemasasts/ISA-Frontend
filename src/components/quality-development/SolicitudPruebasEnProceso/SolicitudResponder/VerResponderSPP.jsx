@@ -6,10 +6,10 @@ import { connect } from 'react-redux';
 import history from '../../../../history';
 import { closeModal, openModal } from '../../../../store/actions/modalWaitAction';
 import "../../../site.css";
-import SolicitudPruebasProcesoService from '../../../../service/SolicitudEnsayo/SolicitudPruebasProcesoService';
 import FormularioSPPLectura from '../FormularioSPPLectura';
 import Adjuntos from '../../SolicitudEnsayo/Adjuntos';
 import Historial from '../../SolicitudEnsayo/Historial';
+import SolicitudPruebasProcesoService from '../../../../service/SolicitudPruebaProceso/SolicitudPruebasProcesoService';
 
 const ESTADO = 'EN_PROCESO';
 const TIPO_SOLICITUD = 'SOLICITUD_PRUEBAS_PROCESO';
