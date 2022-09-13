@@ -20,7 +20,7 @@ export class Email extends Component {
             waitModalView: false,
             visibleModalEmail: false,
             pathFile: null,
-            sendTo: ['anunez@imptek.com'],
+            sendTo: ['dgarrido@imptekcorp.com'],
             sendSubject: '',
             sendMessage: '',
             messageEmail: ''
