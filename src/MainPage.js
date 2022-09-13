@@ -48,8 +48,8 @@ import PrincipalSPP from './components/quality-development/SolicitudPruebasEnPro
 import FormularioSPP from './components/quality-development/SolicitudPruebasEnProceso/FormularioSPP';
 import ValidarPrincipalSPP from './components/quality-development/SolicitudPruebasEnProceso/SolicitudValidar/ValidarPrincipalSPP';
 import VerValidarSPP from './components/quality-development/SolicitudPruebasEnProceso/SolicitudValidar/VerValidarSPP';
-import ResponderPrincipalSPP from './components/quality-development/SolicitudPruebasEnProceso/SolicitudResponder/ResponderPrincipalSPP';
-import VerResponderSPP from './components/quality-development/SolicitudPruebasEnProceso/SolicitudResponder/VerResponderSPP';
+import ResponderPrincipalSPP from './components/quality-development/SolicitudPruebasEnProceso/ResponderCalidad/ResponderPrincipalSPP';
+import VerResponderSPP from './components/quality-development/SolicitudPruebasEnProceso/ResponderCalidad/VerResponderSPP';
 import ConsultaPrincipal from './components/quality-development/SolicitudConsulta/ConsultaPrincipal';
 import VerSE from './components/quality-development/SolicitudConsulta/VerSE';
 import VerSPP from './components/quality-development/SolicitudConsulta/VerSPP';
@@ -59,6 +59,9 @@ import VerAsignarResponsableSPP from './components/quality-development/Solicitud
 import PlantaPrincipal from './components/quality-development/SolicitudPruebasEnProceso/ResponderPlanta/PlantaPrincipal';
 import VerPlantaSPP from './components/quality-development/SolicitudPruebasEnProceso/ResponderPlanta/VerPlantaSPP';
 import AsignarResponsableMantenimiento from './components/quality-development/SolicitudPruebasEnProceso/CoordinacionMantenimiento/AsignarResponsableMantenimiento';
+import AsignarResponsableCalidad from './components/quality-development/SolicitudPruebasEnProceso/CoordinacionCalidad/AsignarResponsableCalidad';
+import ResponderMantePrincipalSPP from './components/quality-development/SolicitudPruebasEnProceso/ResponderMantenimiento/ResponderMantePrincipalSPP';
+import VerResponderManteSPP from './components/quality-development/SolicitudPruebasEnProceso/ResponderMantenimiento/VerResponderManteSPP';
 
 
 
@@ -603,6 +606,9 @@ class MainPage extends Component {
 						<Route path="/quality-development_solicitudpp_planta_principal" component={PlantaPrincipal} />
 						<Route path="/quality-development_solicitudpp_planta_ver/:idSolicitud" component={VerPlantaSPP} />
 						<Route path="/quality-development_solicitudpp_mantenimiento_asignacion" component={AsignarResponsableMantenimiento} />
+						<Route path="/quality-development_solicitudpp_mantenimiento_principal" component={ResponderMantePrincipalSPP} />
+						<Route path="/quality-development_solicitudpp_mantenimiento_ver/:idSolicitud" component={VerResponderManteSPP} />
+						<Route path="/quality-development_solicitudpp_calidad_asignacion" component={AsignarResponsableCalidad} />
 
 						<Route path="/home" component={Home} />
 

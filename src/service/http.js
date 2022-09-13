@@ -47,9 +47,9 @@ http.interceptors.response.use(undefined, (error) => {
     }
 
     // eslint-disable-next-line no-prototype-builtins
-    if (status === 400 && config.method === 'get' && data.errors.hasOwnProperty('id')) {
+    /* if (status === 400 && config.method === 'get' && data.errors.hasOwnProperty('id')) {
         //history.push('/notFound')
-    }
+    } */
 
     if (status === 500) {
 

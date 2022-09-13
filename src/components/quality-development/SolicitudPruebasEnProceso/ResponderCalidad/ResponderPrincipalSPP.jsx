@@ -9,9 +9,8 @@ import { closeModal, openModal } from '../../../../store/actions/modalWaitAction
 import { determinarColor } from '../../SolicitudEnsayo/ClasesUtilidades';
 import * as _ from "lodash";
 import SolicitudPruebasProcesoService from '../../../../service/SolicitudPruebaProceso/SolicitudPruebasProcesoService';
-import * as moment from 'moment';
 
-class AsignarResponsablePrincipalSPP extends Component {
+class ResponderPrincipalSPP extends Component {
 
     constructor() {
         super();
@@ -24,12 +23,12 @@ class AsignarResponsablePrincipalSPP extends Component {
     }
 
     async componentDidMount() {
-        const solicitudes_data = await SolicitudPruebasProcesoService.listarPorAsignarResponsableCM('PRODUCCION');
+        const solicitudes_data = await SolicitudPruebasProcesoService.listarAsignadas('CALIDAD');
         this.setState({ solicitudes: solicitudes_data });
     }
 
     redirigirSolicitudEdicion(idSolcicitud) {
-        history.push(`/quality-development_solicitudpp_asignar_responsable/${idSolcicitud}`);
+        history.push(`/quality-development_solicitudpp_procesar_solicitud/${idSolcicitud}`);
     }
 
     actionTemplate(rowData, column) {
@@ -48,19 +47,18 @@ class AsignarResponsablePrincipalSPP extends Component {
         return (
             <div className="card card-w-title">
                 <Growl ref={(el) => this.growl = el} style={{ marginTop: '75px' }} />
-                <h3><strong>SOLICITUD DE PRUEBAS EN PROCESO ASIGNACIÓN RESPONSABLE</strong></h3>
+                <h3><strong>SOLICITUD DE PRUEBAS EN PROCESO ASIGNADAS CALIDAD</strong></h3>
 
-                <DataTable value={this.state.solicitudes} paginator={true} rows={15} responsive={true}
+                <DataTable value={this.state.solicitudes} paginator={true} rows={15} responsive
                     selectionMode="single" selection={this.state.selectedConfiguracion} onSelectionChange={e => this.setState({ selectedConfiguracion: e.value })}
                     onRowSelect={this.onCarSelect}>
                     <Column body={this.actionTemplate} style={{ textAlign: 'center', width: '4em' }} />
                     <Column field="codigo" header="Código" sortable={true} style={{ textAlign: 'center', width: '10em' }}/>
-                    <Column field="fechaSolicitud" header="Fecha Solicitud" sortable={true} />
-                    <Column field="lineaAplicacion" header="Aplicación" sortable={true} style={{ textAlign: 'center', width: '15em' }} />
-                    <Column field="fechaEntrega" header="Fecha Entrega" sortable={true} />
-                    <Column field="motivo" header="Motivo" sortable={true} />
-                    <Column field="nombreSolicitante" header="Solicitante" sortable={true} />
-                    <Column field='estado' body={this.bodyTemplateEstado} header="Estado" sortable style={{ textAlign: 'center', width: '12em' }} />
+                    <Column field="fechaCreacion" header="Fecha Solicitud" sortable={true} />
+                    <Column field="fechaEntrega" header="Fecha Entrega" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
+                    <Column field="motivo" header="Motivo" />
+                    <Column field="nombreSolicitante" header="Solicitante" sortable={true} style={{ textAlign: 'center', width: '10em' }}  />
+                    <Column field='estado' body={this.bodyTemplateEstado} header="Estado" sortable style={{ textAlign: 'center', width: '12em' }}/>
                 </DataTable>
             </div>
         )
@@ -81,4 +79,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AsignarResponsablePrincipalSPP);
+export default connect(mapStateToProps, mapDispatchToProps)(ResponderPrincipalSPP);

@@ -1,24 +1,21 @@
 import { Button } from 'primereact/button';
 import { Growl } from 'primereact/growl';
 import { InputTextarea } from 'primereact/inputtextarea';
-import { Dialog } from 'primereact/dialog';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import history from '../../../../history';
 import { closeModal, openModal } from '../../../../store/actions/modalWaitAction';
 import "../../../site.css";
-import * as _ from "lodash";
-import * as moment from 'moment';
 import FormularioSPPLectura from '../FormularioSPPLectura';
 import Adjuntos from '../../SolicitudEnsayo/Adjuntos';
 import Historial from '../../SolicitudEnsayo/Historial';
 import SolicitudPruebasProcesoService from '../../../../service/SolicitudPruebaProceso/SolicitudPruebasProcesoService';
 
-const ESTADO = 'EN_PROCESO';
+const ORDEN = 'MANTENIMIENTO'
+const ESTADO = 'EN_PROCESO_MANTENIMIENTO';
 const TIPO_SOLICITUD = 'SOLICITUD_PRUEBAS_PROCESO';
-const ORDEN = 'PRODUCCION';
 
-class VerPlantaSPP extends Component {
+class VerResponderManteSPP extends Component {
 
     constructor() {
         super();
@@ -26,12 +23,9 @@ class VerPlantaSPP extends Component {
             id: 0,
             observacion: null,
             estado: null,
-            mostrarControles: false,
-            displayPruebaNoEjecutada: false,
+            mostrarControles: false
         };
-        this.procesarSolicitud = this.procesarSolicitud.bind(this);
-        this.marcarComoNoRealizada = this.marcarComoNoRealizada.bind(this);
-
+        this.responderSolicitud = this.responderSolicitud.bind(this);
     }
 
     async componentDidMount() {
@@ -51,46 +45,26 @@ class VerPlantaSPP extends Component {
         }
     }
 
-    async procesarSolicitud() {
+    async responderSolicitud() {
         this.props.openModal();
         await SolicitudPruebasProcesoService.procesar(this.crearObjSolicitud());
+        this.growl.show({ severity: 'success', detail: 'Informe Enviado!' });
         this.props.closeModal();
-        this.growl.show({ severity: 'success', detail: 'Solicitud Aprobada!' });
         setTimeout(function () {
-            history.push(`/quality-development_solicitudpp_planta_principal`);
+            history.push(`/quality-development_solicitudpp_mantenimiento_principal`);
         }, 2000);
     }
 
-
-    async marcarComoNoRealizada() {
-        if (_.isEmpty(this.state.observacion)) {
-            this.growl.show({ severity: 'error', detail: 'Favor ingresa una Observación para marcar como prueba no ejecutada.' });
-            return false;
-        }
-        this.props.openModal();
-        await SolicitudPruebasProcesoService.marcarPruebaNoRealizada(this.crearObjSolicitud());
-        this.props.closeModal();
-        this.growl.show({ severity: 'success', detail: 'Solicitud marcada como no ejecutadad!' });
-        setTimeout(function () {
-            history.push(`/quality-development_solicitudpp_planta_principal`);
-        }, 2000);
-    }
 
     crearObjSolicitud() {
         return {
             id: this.state.id,
-            observacionFlujo: this.state.observacion,
+            observiacionFlujo: this.state.observacion,
             orden: ORDEN
         }
     }
 
     render() {
-        const dialogFooter = (
-            <div>
-                <Button icon="pi pi-check" onClick={this.marcarComoNoRealizada} label="Si" />
-                <Button icon="pi pi-times" onClick={() => this.setState({ displayPruebaNoEjecutada: false })} label="No" className="p-button-danger" />
-            </div>
-        );
         return (
 
             <div className="card card-w-title">
@@ -113,15 +87,11 @@ class VerPlantaSPP extends Component {
                 <div className='p-col-12 p-lg-12 boton-opcion' >
                     {this.state.id > 0 && this.state.estado === ESTADO &&
                         < div >
-                            <Button className="p-button-primary" label="RESPONDER" onClick={this.procesarSolicitud} />
-                            <Button className='p-button-success' label="NOTIFICAR PRUEBA REALIZADA" onClick={this.marcarComoNoRealizada} />
-                            <Button className='p-button-secondary' label="PRUEBA NO REALIZADA" onClick={() => this.setState({ displayPruebaNoEjecutada: true })} />
+                            <Button className="p-button-danger" label="ENVIAR INFORME" onClick={this.responderSolicitud} />
+                            <Button className='p-button-secondary' label="CANCELAR" />
                         </div>
                     }
                 </div>
-                <Dialog header="Confirmación" visible={this.state.displayPruebaNoEjecutada} style={{ width: '25vw' }} onHide={() => this.setState({ displayPruebaNoEjecutada: false })} blockScroll footer={dialogFooter} >
-                    <p>¿Está seguro de no realizar la prueba solicitada?</p>
-                </Dialog>
 
             </div >
         )
@@ -143,4 +113,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(VerPlantaSPP);
+export default connect(mapStateToProps, mapDispatchToProps)(VerResponderManteSPP);

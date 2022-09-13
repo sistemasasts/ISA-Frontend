@@ -16,8 +16,9 @@ import { Dropdown } from 'primereact/dropdown';
 import { Calendar } from 'primereact/calendar';
 import UsuarioService from '../../../../service/UsuarioService';
 
-const ESTADO = 'EN_PLANIFICACION';
+const ESTADO = 'EN_PROCESO';
 const TIPO_SOLICITUD = 'SOLICITUD_PRUEBAS_PROCESO';
+const ORDEN = 'PRODUCCION';
 
 class VerAsignarResponsableSPP extends Component {
 
@@ -64,9 +65,9 @@ class VerAsignarResponsableSPP extends Component {
         this.props.openModal();
         await SolicitudPruebasProcesoService.asignarResponsable(this.crearObjSolicitud());
         this.props.closeModal();
-        this.growl.show({ severity: 'success', detail: 'Solicitud Aprobada!' });
+        this.growl.show({ severity: 'success', detail: 'Solicitud asignada!' });
         setTimeout(function () {
-            history.push(`/quality-development_solicitudpp_validar`);
+            history.push(`/quality-development_solicitudpp_asignar`);
         }, 2000);
     }
 
@@ -80,7 +81,7 @@ class VerAsignarResponsableSPP extends Component {
         this.props.closeModal();
         this.growl.show({ severity: 'success', detail: 'Solicitud Rechazada!' });
         setTimeout(function () {
-            history.push(`/quality-development_solicitudpp_validar`);
+            history.push(`/quality-development_solicitudpp_asignar`);
         }, 2000);
     }
 
@@ -89,7 +90,7 @@ class VerAsignarResponsableSPP extends Component {
             id: this.state.id,
             observacion: this.state.observacion,
             usuarioAsignado: this.state.responsable.idUser,
-            orden: 'ASIGNAR_RESPONSABLE',
+            orden: ORDEN,
             fechaPrueba: this.state.fechaPrueba
 
         }
@@ -113,7 +114,7 @@ class VerAsignarResponsableSPP extends Component {
                     <div className='p-grid p-grid-responsive p-fluid'>
                         <div className='p-col-12 p-lg-12 caja'>INFORMACIÓN ADICIONAL</div>
                         <div className='p-col-12 p-lg-12'>
-                            <Adjuntos solicitud={this.props.match.params.idSolicitud} orden={"ASIGNAR_RESPONSABLE"} controles={this.state.mostrarControles} estado={ESTADO} tipo={TIPO_SOLICITUD} />
+                            <Adjuntos solicitud={this.props.match.params.idSolicitud} orden={ORDEN} controles={this.state.mostrarControles} estado={ESTADO} tipo={TIPO_SOLICITUD} />
                             <Historial solicitud={this.props.match.params.idSolicitud} tipo={TIPO_SOLICITUD} />
                         </div>
                         <div className='p-col-12 p-lg-12 caja'>ASIGNACIÓN RESPONSABLE</div>

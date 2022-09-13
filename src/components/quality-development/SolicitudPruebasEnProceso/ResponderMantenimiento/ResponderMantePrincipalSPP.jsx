@@ -10,7 +10,7 @@ import { determinarColor } from '../../SolicitudEnsayo/ClasesUtilidades';
 import * as _ from "lodash";
 import SolicitudPruebasProcesoService from '../../../../service/SolicitudPruebaProceso/SolicitudPruebasProcesoService';
 
-class ResponderPrincipalSPP extends Component {
+class ResponderMantePrincipalSPP extends Component {
 
     constructor() {
         super();
@@ -23,12 +23,12 @@ class ResponderPrincipalSPP extends Component {
     }
 
     async componentDidMount() {
-        const solicitudes_data = await SolicitudPruebasProcesoService.listarTodosPorResponder();
+        const solicitudes_data = await SolicitudPruebasProcesoService.listarAsignadas('MANTENIMIENTO');
         this.setState({ solicitudes: solicitudes_data });
     }
 
     redirigirSolicitudEdicion(idSolcicitud) {
-        history.push(`/quality-development_solicitudpp_procesar_solicitud/${idSolcicitud}`);
+        history.push(`/quality-development_solicitudpp_mantenimiento_ver/${idSolcicitud}`);
     }
 
     actionTemplate(rowData, column) {
@@ -47,7 +47,7 @@ class ResponderPrincipalSPP extends Component {
         return (
             <div className="card card-w-title">
                 <Growl ref={(el) => this.growl = el} style={{ marginTop: '75px' }} />
-                <h3><strong>SOLICITUD DE PRUEBAS EN PROCESO PROCESAR</strong></h3>
+                <h3><strong>SOLICITUD DE PRUEBAS EN PROCESO ASIGNADAS MANTENIMIENTO</strong></h3>
 
                 <DataTable value={this.state.solicitudes} paginator={true} rows={15} responsive
                     selectionMode="single" selection={this.state.selectedConfiguracion} onSelectionChange={e => this.setState({ selectedConfiguracion: e.value })}
@@ -79,4 +79,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ResponderPrincipalSPP);
+export default connect(mapStateToProps, mapDispatchToProps)(ResponderMantePrincipalSPP);
