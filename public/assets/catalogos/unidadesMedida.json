@@ -9,8 +9,8 @@
             "value": "cps"
         },
         {
-            "label": "%",
-            "value": "%"
+            "label": "%^%",
+            "value": "%^%"
         },
         {
             "label": "l",
@@ -77,9 +77,14 @@
             "value": "Kg/mm2"
         },
         {
-            "label": "N/50mm",
+            "label": "N",
+            "value": "N"
+        },
+       
+        {   "label": "N/50mm",
             "value": "N/50mm"
         },
+
         {
             "label": "mm2/s",
             "value": "mm2/s"
