@@ -12,7 +12,7 @@ import Historial from '../../SolicitudEnsayo/Historial';
 import SolicitudPruebasProcesoService from '../../../../service/SolicitudPruebaProceso/SolicitudPruebasProcesoService';
 
 const ORDEN = 'MANTENIMIENTO'
-const ESTADO = 'EN_PROCESO_MANTENIMIENTO';
+const ESTADO = 'EN_PROCESO';
 const TIPO_SOLICITUD = 'SOLICITUD_PRUEBAS_PROCESO';
 
 class VerResponderManteSPP extends Component {
@@ -26,6 +26,7 @@ class VerResponderManteSPP extends Component {
             mostrarControles: false
         };
         this.responderSolicitud = this.responderSolicitud.bind(this);
+        this.redirigirInicio = this.redirigirInicio.bind(this);
     }
 
     async componentDidMount() {
@@ -55,6 +56,9 @@ class VerResponderManteSPP extends Component {
         }, 2000);
     }
 
+    redirigirInicio(){
+        history.push(`/quality-development_solicitudpp_mantenimiento_principal`);
+    }
 
     crearObjSolicitud() {
         return {
@@ -87,8 +91,8 @@ class VerResponderManteSPP extends Component {
                 <div className='p-col-12 p-lg-12 boton-opcion' >
                     {this.state.id > 0 && this.state.estado === ESTADO &&
                         < div >
-                            <Button className="p-button-danger" label="ENVIAR INFORME" onClick={this.responderSolicitud} />
-                            <Button className='p-button-secondary' label="CANCELAR" />
+                            <Button className="p-button-primary" label="ENVIAR INFORME" onClick={this.responderSolicitud} />
+                            <Button className='p-button-secondary' label="ATRÁS" onClick={this.redirigirInicio} />
                         </div>
                     }
                 </div>

@@ -11,10 +11,11 @@ import Adjuntos from '../../SolicitudEnsayo/Adjuntos';
 import Historial from '../../SolicitudEnsayo/Historial';
 import SolicitudPruebasProcesoService from '../../../../service/SolicitudPruebaProceso/SolicitudPruebasProcesoService';
 
+const ORDEN = 'MANTENIMIENTO'
 const ESTADO = 'EN_PROCESO';
 const TIPO_SOLICITUD = 'SOLICITUD_PRUEBAS_PROCESO';
-const ORDEN = 'CALIDAD';
-class VerResponderSPP extends Component {
+
+class VerAprobarManteSPP extends Component {
 
     constructor() {
         super();
@@ -45,27 +46,30 @@ class VerResponderSPP extends Component {
         }
     }
 
-    async responderSolicitud() {
+    async responderSolicitud(aprobado) {
         this.props.openModal();
-        await SolicitudPruebasProcesoService.procesar(this.crearObjSolicitud());
-        this.growl.show({ severity: 'success', detail: 'Informe Enviado!' });
+        await SolicitudPruebasProcesoService.procesarAprobacion(this.crearObjSolicitud(aprobado));
+        if (aprobado)
+            this.growl.show({ severity: 'success', detail: 'Solicitud Aprobado!' });
+        else
+            this.growl.show({ severity: 'success', detail: 'Solicitud Rechazada!' });
         this.props.closeModal();
         setTimeout(function () {
-            history.push(`/quality-development_solicitudpp_procesar`);
+            history.push(`/quality-development_solicitudpp_mantenimiento_aprobar_principal`);
         }, 2000);
     }
 
-
-    crearObjSolicitud() {
-        return {
-            id: this.state.id,
-            observacion: this.state.observacion,
-            orden: ORDEN
-        }
+    redirigirInicio() {
+        history.push(`/quality-development_solicitudpp_mantenimiento_aprobar_principal`);
     }
 
-    redirigirInicio(){
-        history.push(`/quality-development_solicitudpp_procesar`);
+    crearObjSolicitud(aprobado) {
+        return {
+            solicitudId: this.state.id,
+            observiacionFlujo: this.state.observacion,
+            orden: ORDEN,
+            aprobar: aprobado
+        }
     }
 
     render() {
@@ -91,7 +95,8 @@ class VerResponderSPP extends Component {
                 <div className='p-col-12 p-lg-12 boton-opcion' >
                     {this.state.id > 0 && this.state.estado === ESTADO &&
                         < div >
-                            <Button className="p-button-primary" label="ENVIAR INFORME" onClick={this.responderSolicitud} />
+                            <Button className="p-button-primary" label="APROBAR" onClick={() => this.responderSolicitud(true)} />
+                            <Button className="p-button-danger" label="RECHAZAR" onClick={() => this.responderSolicitud(false)} />
                             <Button className='p-button-secondary' label="ATRÁS" onClick={this.redirigirInicio} />
                         </div>
                     }
@@ -117,4 +122,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(VerResponderSPP);
+export default connect(mapStateToProps, mapDispatchToProps)(VerAprobarManteSPP);

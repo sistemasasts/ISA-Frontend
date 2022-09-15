@@ -28,9 +28,12 @@ class VerPlantaSPP extends Component {
             estado: null,
             mostrarControles: false,
             displayPruebaNoEjecutada: false,
+            pruebaRealizada: false,
+            fechaNotificacionPruebaRealizada: null
         };
         this.procesarSolicitud = this.procesarSolicitud.bind(this);
         this.marcarComoNoRealizada = this.marcarComoNoRealizada.bind(this);
+        this.marcarComoRealizada = this.marcarComoRealizada.bind(this);
 
     }
 
@@ -45,7 +48,9 @@ class VerPlantaSPP extends Component {
                 this.setState({
                     id: solicitud.id,
                     estado: solicitud.estado,
-                    mostrarControles: solicitud.estado === ESTADO
+                    mostrarControles: solicitud.estado === ESTADO,
+                    pruebaRealizada: solicitud.pruebaRealizada,
+                    fechaNotificacionPruebaRealizada: solicitud.fechaNotificacionPruebaRealizada
                 });
             }
         }
@@ -74,6 +79,14 @@ class VerPlantaSPP extends Component {
         setTimeout(function () {
             history.push(`/quality-development_solicitudpp_planta_principal`);
         }, 2000);
+    }
+
+    async marcarComoRealizada() {
+        this.props.openModal();
+        await SolicitudPruebasProcesoService.marcarPruebaRealizada(this.crearObjSolicitud());
+        this.props.closeModal();
+        this.growl.show({ severity: 'success', detail: 'Prueba ejecutada notificada!' });
+        this.setState({ pruebaRealizada: true, fechaNotificacionPruebaRealizada: moment.now() })
     }
 
     crearObjSolicitud() {
@@ -112,10 +125,16 @@ class VerPlantaSPP extends Component {
 
                 <div className='p-col-12 p-lg-12 boton-opcion' >
                     {this.state.id > 0 && this.state.estado === ESTADO &&
-                        < div >
-                            <Button className="p-button-primary" label="RESPONDER" onClick={this.procesarSolicitud} />
-                            <Button className='p-button-success' label="NOTIFICAR PRUEBA REALIZADA" onClick={this.marcarComoNoRealizada} />
-                            <Button className='p-button-secondary' label="PRUEBA NO REALIZADA" onClick={() => this.setState({ displayPruebaNoEjecutada: true })} />
+                        <div>
+                            {this.state.pruebaRealizada &&
+                                <Button className="p-button-primary" label="RESPONDER" onClick={this.procesarSolicitud} />
+                            }
+                            {!this.state.fechaNotificacionPruebaRealizada &&
+                                <Button className='p-button-success' label="NOTIFICAR PRUEBA REALIZADA" onClick={this.marcarComoRealizada} />
+                            }
+                            {!this.state.fechaNotificacionPruebaRealizada &&
+                                <Button className='p-button-secondary' label="PRUEBA NO REALIZADA" onClick={() => this.setState({ displayPruebaNoEjecutada: true })} />
+                            }
                         </div>
                     }
                 </div>
