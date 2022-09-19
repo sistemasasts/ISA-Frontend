@@ -66,7 +66,7 @@ class VerAprobarCalidadSPP extends Component {
     crearObjSolicitud(aprobado) {
         return {
             solicitudId: this.state.id,
-            observiacionFlujo: this.state.observacion,
+            observacion: this.state.observacion,
             orden: ORDEN,
             aprobar: aprobado
         }

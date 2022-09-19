@@ -6,16 +6,18 @@ import { connect } from 'react-redux';
 import history from '../../../../history';
 import { closeModal, openModal } from '../../../../store/actions/modalWaitAction';
 import "../../../site.css";
+import * as _ from "lodash";
+import * as moment from 'moment';
 import FormularioSPPLectura from '../FormularioSPPLectura';
 import Adjuntos from '../../SolicitudEnsayo/Adjuntos';
 import Historial from '../../SolicitudEnsayo/Historial';
 import SolicitudPruebasProcesoService from '../../../../service/SolicitudPruebaProceso/SolicitudPruebasProcesoService';
+import { Dropdown } from 'primereact/dropdown';
 
-const ORDEN = 'MANTENIMIENTO'
-const ESTADO = 'EN_PROCESO';
+const ESTADO = 'PENDIENTE_APROBACION';
 const TIPO_SOLICITUD = 'SOLICITUD_PRUEBAS_PROCESO';
-
-class VerAprobarManteSPP extends Component {
+const ORDEN = "APROBAR_SOLICITUD";
+class VerAprobacionSPP extends Component {
 
     constructor() {
         super();
@@ -23,14 +25,23 @@ class VerAprobarManteSPP extends Component {
             id: 0,
             observacion: null,
             estado: null,
-            mostrarControles: false
+            mostrarControles: false,
+            tiposAprobacion: [],
+            aprobacion: null
         };
-        this.responderSolicitud = this.responderSolicitud.bind(this);
-        this.redirigirInicio = this.redirigirInicio.bind(this);
+        this.aprobarSolicitud = this.aprobarSolicitud.bind(this);
+        this.rechazarSolicitud = this.rechazarSolicitud.bind(this);
+
     }
 
     async componentDidMount() {
         this.refrescar(this.props.match.params.idSolicitud);
+        this.cargarCatalogos();
+    }
+
+    async cargarCatalogos() {
+        const aprobaciones = await SolicitudPruebasProcesoService.listarTipoAprobacion();
+        this.setState({ tiposAprobacion: aprobaciones });
     }
 
     async refrescar(idSolicitud) {
@@ -46,29 +57,53 @@ class VerAprobarManteSPP extends Component {
         }
     }
 
-    async responderSolicitud(aprobado) {
+    async aprobarSolicitud() {
+        if (_.isEmpty(this.state.aprobacion)) {
+            this.growl.show({ severity: 'error', detail: 'Favor seleccione un Tipo de Aprobación.' });
+            return false;
+        }
+        if (this.validarRequiereObservacion()) {
+            if (_.isEmpty(this.state.observacion)) {
+                this.growl.show({ severity: 'error', detail: 'Favor ingresa una observación.' });
+                return false;
+            }
+        }
         this.props.openModal();
-        await SolicitudPruebasProcesoService.procesarAprobacion(this.crearObjSolicitud(aprobado));
-        if (aprobado)
-            this.growl.show({ severity: 'success', detail: 'Solicitud Aprobado!' });
-        else
-            this.growl.show({ severity: 'success', detail: 'Solicitud Rechazada!' });
+        await SolicitudPruebasProcesoService.procesarAprobacion(this.crearObjSolicitud());
         this.props.closeModal();
+        this.growl.show({ severity: 'success', detail: 'Solicitud Aprobada!' });
         setTimeout(function () {
-            history.push(`/quality-development_solicitudpp_mantenimiento_aprobar_principal`);
+            history.push(`/quality-development_solicitudpp_aprobar_principal`);
         }, 2000);
     }
 
-    redirigirInicio() {
-        history.push(`/quality-development_solicitudpp_mantenimiento_aprobar_principal`);
+    validarRequiereObservacion() {
+        if (_.isEqual(this.state.aprobacion, 'REPETIR_PRUEBA') || _.isEqual(this.state.aprobacion, 'MATERIAL_NO_VALIDO')
+            || _.isEqual(this.state.aprobacion, 'AJUSTE_MAQUINARIA'))
+            return true;
+        return false;
     }
 
-    crearObjSolicitud(aprobado) {
+    async rechazarSolicitud() {
+        if (_.isEmpty(this.state.observacion)) {
+            this.growl.show({ severity: 'error', detail: 'Favor ingresa una Observación para rechazar la solicitud.' });
+            return false;
+        }
+        this.props.openModal();
+        await SolicitudPruebasProcesoService.rechazarSolicitud(this.crearObjSolicitud());
+        this.props.closeModal();
+        this.growl.show({ severity: 'success', detail: 'Solicitud Rechazada!' });
+        setTimeout(function () {
+            history.push(`/quality-development_solicitudpp_aprobar_principal`);
+        }, 2000);
+    }
+
+    crearObjSolicitud() {
         return {
             solicitudId: this.state.id,
             observacion: this.state.observacion,
             orden: ORDEN,
-            aprobar: aprobado
+            tipoAprobacion: this.state.aprobacion
         }
     }
 
@@ -89,15 +124,18 @@ class VerAprobarManteSPP extends Component {
                             <label htmlFor="float-input">OBSERVACIÓN</label>
                             <InputTextarea value={this.state.observacion} onChange={(e) => this.setState({ observacion: e.target.value })} rows={3} />
                         </div>
+                        <div className='p-col-12 p-lg-6'>
+                            <label htmlFor="float-input">TIPO APROBACIÓN</label>
+                            <Dropdown options={this.state.tiposAprobacion} value={this.state.aprobacion} autoWidth={false} onChange={(event => this.setState({ aprobacion: event.value }))} placeholder="SELECCIONE" />
+                        </div>
                     </div>
                 }
 
                 <div className='p-col-12 p-lg-12 boton-opcion' >
                     {this.state.id > 0 && this.state.estado === ESTADO &&
                         < div >
-                            <Button className="p-button-primary" label="APROBAR" onClick={() => this.responderSolicitud(true)} />
-                            <Button className="p-button-danger" label="RECHAZAR" onClick={() => this.responderSolicitud(false)} />
-                            <Button className='p-button-secondary' label="ATRÁS" onClick={this.redirigirInicio} />
+                            <Button className="p-button-danger" label="APROBAR" onClick={this.aprobarSolicitud} />
+                            <Button className='p-button-secondary' label="RECHAZAR" onClick={this.rechazarSolicitud} />
                         </div>
                     }
                 </div>
@@ -122,4 +160,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(VerAprobarManteSPP);
+export default connect(mapStateToProps, mapDispatchToProps)(VerAprobacionSPP);

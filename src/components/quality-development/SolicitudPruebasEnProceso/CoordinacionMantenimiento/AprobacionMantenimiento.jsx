@@ -4,7 +4,7 @@ import { Growl } from 'primereact/growl';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { closeModal, openModal } from '../../../../store/actions/modalWaitAction';
-import { determinarColor } from '../../SolicitudEnsayo/ClasesUtilidades';
+import { determinarColor, determinarColorVigencia } from '../../SolicitudEnsayo/ClasesUtilidades';
 import * as _ from "lodash";
 import SolicitudPruebasProcesoService from '../../../../service/SolicitudPruebaProceso/SolicitudPruebasProcesoService';
 import { Button } from 'primereact/button';
@@ -19,6 +19,7 @@ class AprobacionMantenimiento extends Component {
             seleccionSolicitud: []
         };
         this.bodyTemplateEstado = this.bodyTemplateEstado.bind(this);
+        this.bodyTemplateVigencia = this.bodyTemplateVigencia.bind(this);
         this.refrescar = this.refrescar.bind(this);
         this.actionTemplate = this.actionTemplate.bind(this);
         this.redirigirSolicitudEdicion = this.redirigirSolicitudEdicion.bind(this);
@@ -48,20 +49,26 @@ class AprobacionMantenimiento extends Component {
         return <span className={determinarColor(rowData.estado)}>{estado}</span>;
     }
 
+    bodyTemplateVigencia(rowData) {
+        return <span className={determinarColorVigencia(rowData.vigencia)}>{rowData.vigencia}Día(s)</span>;
+    }
+
     render() {
         return (
             <div className="card card-w-title">
                 <Growl ref={(el) => this.growl = el} style={{ marginTop: '75px' }} />
                 <h3><strong>APROBACIÓN SOLICITUD MANTENIMIENTO</strong></h3>
-                <DataTable style={{ marginTop: '5px' }} value={this.state.solicitudes} paginator={true} rows={15} responsive={true}
+                <DataTable style={{ marginTop: '5px' }} value={this.state.solicitudes} paginator={true} rows={15} responsive={true} scrollable={true}
                     selection={this.state.seleccionSolicitud} onSelectionChange={e => this.setState({ seleccionSolicitud: e.value })}>
                     <Column body={this.actionTemplate} style={{ textAlign: 'center', width: '4em' }} />
                     <Column field="codigo" header="Código" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
-                    <Column field="fechaSolicitud" header="Fecha Solicitud" sortable={true} />
-                    <Column field="lineaAplicacion" header="Aplicación" sortable={true} style={{ textAlign: 'center', width: '15em' }} />
-                    <Column field="fechaEntrega" header="Fecha Entrega" sortable={true} />
-                    <Column field="motivo" header="Motivo" sortable={true} />
-                    <Column field="nombreSolicitante" header="Solicitante" sortable={true} />
+                    <Column field="fechaSolicitud" header="Fecha Solicitud" sortable={true} style={{ textAlign: 'center', width: '12em' }} />
+                    <Column field="fechaEntregaInforme" header="Entrega Informe" sortable={true} style={{ textAlign: 'center', width: '12em', color: 'red' }} />
+                    <Column field="vigencia" body={this.bodyTemplateVigencia} header="Vigencia" sortable={true} style={{ textAlign: 'center', width: '8em' }} />
+                    <Column field="lineaAplicacion" header="Aplicación" sortable={true} style={{ textAlign: 'center', width: '12em' }} />
+                    <Column field="fechaEntrega" header="Fecha Entrega" sortable={true} style={{ textAlign: 'center', width: '11em' }} />
+                    <Column field="motivo" header="Motivo" sortable={true} style={{ width: '15em' }} />
+                    <Column field="nombreSolicitante" header="Solicitante" sortable={true} style={{ textAlign: 'center', width: '12em' }} />                    
                     <Column field='estado' body={this.bodyTemplateEstado} header="Estado" sortable style={{ textAlign: 'center', width: '12em' }} />
                 </DataTable>
             </div>

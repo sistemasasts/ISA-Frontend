@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import history from '../../../../history';
 import { closeModal, openModal } from '../../../../store/actions/modalWaitAction';
-import { determinarColor } from '../../SolicitudEnsayo/ClasesUtilidades';
+import { determinarColor, determinarColorVigencia } from '../../SolicitudEnsayo/ClasesUtilidades';
 import * as _ from "lodash";
 import SolicitudPruebasProcesoService from '../../../../service/SolicitudPruebaProceso/SolicitudPruebasProcesoService';
 
@@ -19,6 +19,7 @@ class ResponderMantePrincipalSPP extends Component {
         };
         this.actionTemplate = this.actionTemplate.bind(this);
         this.bodyTemplateEstado = this.bodyTemplateEstado.bind(this);
+        this.bodyTemplateVigencia = this.bodyTemplateVigencia.bind(this);
         this.redirigirSolicitudEdicion = this.redirigirSolicitudEdicion.bind(this);
     }
 
@@ -42,6 +43,10 @@ class ResponderMantePrincipalSPP extends Component {
         return <span className={determinarColor(rowData.estado)}>{estado}</span>;
     }
 
+    bodyTemplateVigencia(rowData) {
+        return <span className={determinarColorVigencia(rowData.vigencia)}>{rowData.vigencia}Día(s)</span>;
+    }
+
     render() {
 
         return (
@@ -49,16 +54,19 @@ class ResponderMantePrincipalSPP extends Component {
                 <Growl ref={(el) => this.growl = el} style={{ marginTop: '75px' }} />
                 <h3><strong>SOLICITUD DE PRUEBAS EN PROCESO ASIGNADAS MANTENIMIENTO</strong></h3>
 
-                <DataTable value={this.state.solicitudes} paginator={true} rows={15} responsive
+                <DataTable value={this.state.solicitudes} paginator={true} rows={15} responsive={true} scrollable={true}
                     selectionMode="single" selection={this.state.selectedConfiguracion} onSelectionChange={e => this.setState({ selectedConfiguracion: e.value })}
                     onRowSelect={this.onCarSelect}>
                     <Column body={this.actionTemplate} style={{ textAlign: 'center', width: '4em' }} />
-                    <Column field="codigo" header="Código" sortable={true} style={{ textAlign: 'center', width: '10em' }}/>
-                    <Column field="fechaCreacion" header="Fecha Solicitud" sortable={true} />
-                    <Column field="fechaEntrega" header="Fecha Entrega" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
-                    <Column field="motivo" header="Motivo" />
-                    <Column field="nombreSolicitante" header="Solicitante" sortable={true} style={{ textAlign: 'center', width: '10em' }}  />
-                    <Column field='estado' body={this.bodyTemplateEstado} header="Estado" sortable style={{ textAlign: 'center', width: '12em' }}/>
+                    <Column field="codigo" header="Código" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
+                    <Column field="fechaSolicitud" header="Fecha Solicitud" sortable={true} style={{ textAlign: 'center', width: '12em' }} />
+                    <Column field="fechaEntregaInforme" header="Entrega Informe" sortable={true} style={{ textAlign: 'center', width: '12em', color: 'red' }} />
+                    <Column field="vigencia" body={this.bodyTemplateVigencia} header="Vigencia" sortable={true} style={{ textAlign: 'center', width: '8em' }} />
+                    <Column field="lineaAplicacion" header="Aplicación" sortable={true} style={{ textAlign: 'center', width: '12em' }} />
+                    <Column field="fechaEntrega" header="Fecha Entrega" sortable={true} style={{ textAlign: 'center', width: '11em' }} />
+                    <Column field="motivo" header="Motivo" sortable={true} style={{ width: '15em' }} />
+                    <Column field="nombreSolicitante" header="Solicitante" sortable={true} style={{ textAlign: 'center', width: '12em' }} />
+                    <Column field='estado' body={this.bodyTemplateEstado} header="Estado" sortable style={{ textAlign: 'center', width: '12em' }} />
                 </DataTable>
             </div>
         )

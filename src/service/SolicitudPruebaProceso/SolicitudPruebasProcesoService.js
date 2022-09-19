@@ -22,6 +22,7 @@ const SolicitudPruebasProcesoService = {
     listarPorAprobar: (orden) => http.request.get(`${apiEndpoint}/solicitudesPorAprobar/${orden}`),
     /*regresarSolicitud: (solicitud) => http.request.post(`${apiEndpoint}/regresarInformeSolicitud/`, solicitud), */
     anularSolicitud: (solicitud) => http.request.post(`${apiEndpoint}/anularSolicitud/`, solicitud),
+    listarTipoAprobacion: () => http.request.get(`${apiEndpoint}/tiposAprobacion`),
     //rechazarSolicitud: (solicitud) => http.request.post(`${apiEndpoint}/rechazarSolicitud/`, solicitud),
 
 }

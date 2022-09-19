@@ -182,7 +182,7 @@ class FormularioSPP extends Component {
     async myUploader(event) {
         this.props.openModal();
         const respuesta = await SolicitudPruebaProcesoDocumentoService.subirArchivoImagen1(this.crearSolicitudDocumento(event.files[0]));
-        console.log(respuesta);
+        this.setState({ imagen1Id: respuesta.documento.id })
         document.getElementById("ItemPreview").src = `data:${respuesta.documento.tipo};base64,` + respuesta.imagen;
         this.fileUploadRef.clear();
         this.props.closeModal();
@@ -356,8 +356,8 @@ class FormularioSPP extends Component {
                                 <div className='p-grid'>
                                     <div className='p-col-12 p-lg-12'>
                                         <span style={{ color: '#CB3234' }}>*</span><label style={{ fontWeight: 'bold' }} htmlFor="float-input">Imagen especificaciones y variables</label>
-                                        <div style={{ height: '335px', bottom: '0px', top: '0px', display: 'flex',justifyContent: 'center', border:'1px solid #cccccc', borderRadius:'4px' }}>
-                                            {this.state.imagen1Id===null &&
+                                        <div style={{ height: '335px', bottom: '0px', top: '0px', display: 'flex', justifyContent: 'center', border: '1px solid #cccccc', borderRadius: '4px' }}>
+                                            {this.state.imagen1Id === null &&
                                                 <img style={{ width: 'auto', maxHeight: '100%', display: 'block', margin: 'auto' }} alt="Logo" src="assets/layout/images/icon-img.jpg" />
                                             }
                                             {this.state.imagen1Id > 0 &&
@@ -365,7 +365,7 @@ class FormularioSPP extends Component {
                                                 <img style={{ width: 'auto', maxHeight: '100%', display: 'block', margin: 'auto' }} id="ItemPreview" src="" />
                                             }
                                         </div>
-                                        {this.state.id > 0 &&
+                                        {this.state.id > 0 && this.state.estado === 'NUEVO' &&
                                             <FileUpload ref={(el) => this.fileUploadRef = el} mode="basic" name="demo" customUpload={true} uploadHandler={this.myUploader} accept="image/*" chooseLabel='Seleccione Imagen' uploadLabel='Subir Imagen' />
                                         }
                                     </div>

@@ -68,6 +68,8 @@ import AprobacionCalidad from './components/quality-development/SolicitudPruebas
 import VerAprobarCalidadSPP from './components/quality-development/SolicitudPruebasEnProceso/CoordinacionCalidad/VerAprobarCalidadSPP';
 import AprobacionPlanta from './components/quality-development/SolicitudPruebasEnProceso/CoordinacionPlanta/AprobacionPlanta';
 import VerAprobarPlantaSPP from './components/quality-development/SolicitudPruebasEnProceso/CoordinacionPlanta/VerAprobarPlantaSPP';
+import AprobacionPrincipalSPP from './components/quality-development/SolicitudPruebasEnProceso/AprobacionSolicitud/AprobacionPrincipalSPP';
+import VerAprobacionSPP from './components/quality-development/SolicitudPruebasEnProceso/AprobacionSolicitud/VerAprobacionSPP';
 
 
 
@@ -621,6 +623,8 @@ class MainPage extends Component {
 						<Route path="/quality-development_solicitudpp_calidad_aprobar_ver/:idSolicitud" component={VerAprobarCalidadSPP} />
 						<Route path="/quality-development_solicitudpp_planta_aprobar_principal" component={AprobacionPlanta} />
 						<Route path="/quality-development_solicitudpp_planta_aprobar_ver/:idSolicitud" component={VerAprobarPlantaSPP} />
+						<Route path="/quality-development_solicitudpp_aprobar_principal" component={AprobacionPrincipalSPP} />
+						<Route path="/quality-development_solicitudpp_aprobar_solicitud/:idSolicitud" component={VerAprobacionSPP} />
 
 						<Route path="/home" component={Home} />
 

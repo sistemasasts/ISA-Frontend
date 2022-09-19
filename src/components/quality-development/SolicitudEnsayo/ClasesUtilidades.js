@@ -29,7 +29,7 @@ export function determinarColorTipoAprobacion(tipoAprobacion) {
 }
 
 export function determinarColorVigencia(vigencia) {
-    if (vigencia === 0)
+    if (vigencia <= 0)
         return 'customer-badge-danger';
 
     if (vigencia > 1)

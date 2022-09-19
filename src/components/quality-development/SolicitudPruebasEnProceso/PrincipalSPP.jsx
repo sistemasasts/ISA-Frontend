@@ -28,6 +28,7 @@ class PrincipalSPP extends Component {
 
     async componentDidMount() {
         const solicitudes_data = await SolicitudPruebasProcesoService.listarTodos();
+        console.log(solicitudes_data);
         this.setState({ solicitudes: solicitudes_data });
     }
 
@@ -54,18 +55,20 @@ class PrincipalSPP extends Component {
         return (
             <div className="card card-w-title">
                 <Growl ref={(el) => this.growl = el} style={{ marginTop: '75px' }} />
-                <h3><strong>INGRESO SOLICITUD PRUEBAS EN PROCESO</strong></h3>
+                <h3><strong>INGRESO SOLICITUD DE PRUEBAS EN PROCESO</strong></h3>
 
-                <DataTable value={this.state.solicitudes} paginator={true} rows={15} header={header} responsive={true}
+                <DataTable value={this.state.solicitudes} paginator={true} rows={15} header={header} responsive={true} scrollable={true}
                     selectionMode="single" selection={this.state.selectedConfiguracion} onSelectionChange={e => this.setState({ selectedConfiguracion: e.value })}
-                    onRowSelect={this.onCarSelect}>
-                    <Column body={this.actionTemplate} style={{ textAlign: 'center', width: '4em' }} />
-                    <Column field="codigo" header="Código" sortable={true} style={{ textAlign: 'center', width: '10em' }}/>
-                    <Column field="fechaCreacion" header="Fecha Solicitud" sortable={true} style={{ textAlign: 'center', width: '15em' }} />
-                    <Column field="lineaAplicacion" header="Aplicación" sortable={true} style={{ textAlign: 'center', width: '15em' }} />
-                    <Column field="fechaEntrega" header="Fecha Entrega" sortable={true} style={{ textAlign: 'center', width: '15em' }} />
-                    <Column field="motivo" header="Motivo" />
+                    onRowSelect={this.onCarSelect} >
+                    <Column body={this.actionTemplate} style={{ textAlign: 'center', width: '4em' }}/>
+                    <Column field="codigo" header="Código" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
+                    <Column field="fechaSolicitud" header="Fecha Solicitud" sortable={true} style={{ textAlign: 'center', width: '12em' }} />
+                    <Column field="lineaAplicacion" header="Aplicación" sortable={true} style={{ textAlign: 'center', width: '12em' }} />
+                    <Column field="fechaEntrega" header="Fecha Entrega" sortable={true} style={{ textAlign: 'center', width: '11em' }} />
+                    <Column field="motivo" header="Motivo" style={{ width: '20em' }} />
                     <Column field='estado' body={this.bodyTemplateEstado} header="Estado" sortable style={{ textAlign: 'center', width: '12em' }} />
+                    <Column field="aprobadoTexto" header="Aprobado" sortable style={{ width: '6em', textAlign: 'center' }} />
+                    <Column field="tipoAprobacionTexto" header="Tipo Aprobación" sortable style={{ textAlign: 'center', width: '15em' }} />
                 </DataTable>
             </div>
         )
