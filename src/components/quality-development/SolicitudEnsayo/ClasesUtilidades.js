@@ -8,6 +8,8 @@ export function determinarColor(estado) {
         case 'REGRESADO_NOVEDAD_INFORME':
         case 'RECHAZADO':
         case 'ANULADO':
+        case 'PRUEBA_NO_EJECUTADA':
+        case 'PRUEBA_NO_REALIZADA':            
             return 'customer-badge-danger';
         case 'FINALIZADO': return 'customer-badge-success';
         default: return 'customer-badge-default'

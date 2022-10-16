@@ -39,8 +39,8 @@ class AsignarResponsablePrincipalSPP extends Component {
     }
 
     bodyTemplateEstado(rowData) {
-        const estado = _.startCase(rowData.estado);
-        return <span className={determinarColor(rowData.estado)}>{estado}</span>;
+        const estado = _.startCase(rowData.estadoInterno);
+        return <span className={determinarColor(rowData.estadoInterno)}>{estado}</span>;
     }
 
     render() {
@@ -60,7 +60,7 @@ class AsignarResponsablePrincipalSPP extends Component {
                     <Column field="fechaEntrega" header="Fecha Entrega" sortable={true} style={{ textAlign: 'center', width: '11em' }} />
                     <Column field="motivo" header="Motivo" sortable={true} style={{width: '20em' }} />
                     <Column field="nombreSolicitante" header="Solicitante" sortable={true} style={{ textAlign: 'center', width: '15em' }} />
-                    <Column field='estado' body={this.bodyTemplateEstado} header="Estado" sortable style={{ textAlign: 'center', width: '12em' }} />
+                    <Column field='estadoInterno' body={this.bodyTemplateEstado} header="Estado" sortable style={{ textAlign: 'center', width: '12em' }} />
                 </DataTable>
             </div>
         )

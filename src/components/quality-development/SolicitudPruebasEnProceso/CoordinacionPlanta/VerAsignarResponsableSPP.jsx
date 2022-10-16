@@ -15,6 +15,7 @@ import SolicitudPruebasProcesoService from '../../../../service/SolicitudPruebaP
 import { Dropdown } from 'primereact/dropdown';
 import { Calendar } from 'primereact/calendar';
 import UsuarioService from '../../../../service/UsuarioService';
+import { Dialog } from 'primereact/dialog';
 
 const ESTADO = 'EN_PROCESO';
 const TIPO_SOLICITUD = 'SOLICITUD_PRUEBAS_PROCESO';
@@ -35,6 +36,7 @@ class VerAsignarResponsableSPP extends Component {
         };
         this.asignarResponsable = this.asignarResponsable.bind(this);
         this.rechazarSolicitud = this.rechazarSolicitud.bind(this);
+        this.marcarComoNoRealizadaDefinitiva = this.marcarComoNoRealizadaDefinitiva.bind(this);
 
     }
 
@@ -58,17 +60,17 @@ class VerAsignarResponsableSPP extends Component {
     }
 
     async asignarResponsable() {
-        if(this.state.responsable === null || this.state.fechaPrueba === null){
+        if (this.state.responsable === null || this.state.fechaPrueba === null) {
             this.growl.show({ severity: 'error', detail: 'Favor ingrese el responsable y fecha de la prueba a ejecutarse.' });
             return false;
         }
         this.props.openModal();
         await SolicitudPruebasProcesoService.asignarResponsable(this.crearObjSolicitud());
-        this.props.closeModal();
         this.growl.show({ severity: 'success', detail: 'Solicitud asignada!' });
         setTimeout(function () {
             history.push(`/quality-development_solicitudpp_asignar`);
-        }, 2000);
+        }, 1000);
+        this.props.closeModal();
     }
 
     async rechazarSolicitud() {
@@ -82,17 +84,31 @@ class VerAsignarResponsableSPP extends Component {
         this.growl.show({ severity: 'success', detail: 'Solicitud Rechazada!' });
         setTimeout(function () {
             history.push(`/quality-development_solicitudpp_asignar`);
-        }, 2000);
+        }, 1000);
+    }
+
+    async marcarComoNoRealizadaDefinitiva() {
+        if (_.isEmpty(this.state.observacion)) {
+            this.growl.show({ severity: 'error', detail: 'Favor ingresa una Observación para marcar como prueba no ejecutada.' });
+            return false;
+        }
+        this.props.openModal();
+        await SolicitudPruebasProcesoService.marcarPruebaNoRealizadaDefinitiva(this.crearObjSolicitud());
+        this.props.closeModal();
+        this.setState({ displayPruebaNoEjecutada: false });
+        this.growl.show({ severity: 'success', detail: 'Solicitud marcada como no ejecutadad!' });
+        setTimeout(function () {
+            history.push(`/quality-development_solicitudpp_planta_principal`);
+        }, 1000);
     }
 
     crearObjSolicitud() {
         return {
             id: this.state.id,
-            observacion: this.state.observacion,
-            usuarioAsignado: this.state.responsable.idUser,
+            observacionFlujo: this.state.observacion,
+            usuarioAsignado: _.isEmpty(this.state.responsable) ? null : this.state.responsable.idUser,
             orden: ORDEN,
             fechaPrueba: this.state.fechaPrueba
-
         }
     }
 
@@ -105,6 +121,12 @@ class VerAsignarResponsableSPP extends Component {
             monthNames: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
             monthNamesShort: ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"]
         };
+        const dialogFooter = (
+            <div>
+                <Button icon="pi pi-check" onClick={this.marcarComoNoRealizadaDefinitiva} label="Si" />
+                <Button icon="pi pi-times" onClick={() => this.setState({ displayPruebaNoEjecutada: false })} label="No" className="p-button-danger" />
+            </div>
+        );
         return (
 
             <div className="card card-w-title">
@@ -123,7 +145,7 @@ class VerAsignarResponsableSPP extends Component {
                             <Dropdown value={this.state.responsable} optionLabel='nickName' options={this.state.usuarios} onChange={(e) => this.setState({ responsable: e.value })} placeholder="Seleccione" />
                         </div>
                         <div className='p-col-12 p-lg-6'>
-                            <label htmlFor="float-input">FECHA REALIZACIÓN PPRUEBA</label>
+                            <label htmlFor="float-input">FECHA REALIZACIÓN PRUEBA</label>
                             <Calendar dateFormat="yy/mm/dd" value={this.state.fechaPrueba} locale={es} onChange={(e) => this.setState({ fechaPrueba: e.value })} showIcon={true} />
                         </div>
                         <div className='p-col-12 p-lg-12'>
@@ -136,11 +158,15 @@ class VerAsignarResponsableSPP extends Component {
                 <div className='p-col-12 p-lg-12 boton-opcion' >
                     {this.state.id > 0 && this.state.estado === ESTADO &&
                         < div >
-                            <Button className="p-button-danger" label="ASIGNAR RESPONSABLE" onClick={this.asignarResponsable} />
-                            <Button className='p-button-secondary' label="RECHAZAR" onClick={this.rechazarSolicitud} />
+                            <Button className="p-button-primary" label="ASIGNAR RESPONSABLE" onClick={this.asignarResponsable} />
+                            {/* <Button className='p-button-secondary' label="RECHAZAR" onClick={this.rechazarSolicitud} /> */}
+                            <Button className='p-button-danger' label="PRUEBA NO REALIZADA DEFINITIVA" onClick={() => this.setState({ displayPruebaNoEjecutada: true })} />
                         </div>
                     }
                 </div>
+                <Dialog header="Confirmación" visible={this.state.displayPruebaNoEjecutada} style={{ width: '25vw' }} onHide={() => this.setState({ displayPruebaNoEjecutada: false })} blockScroll footer={dialogFooter} >
+                    <p>¿Está seguro de finalizar la solicitud y marcar definitivamente PRUEBA NO REALIZADA?</p>
+                </Dialog>
 
             </div >
         )

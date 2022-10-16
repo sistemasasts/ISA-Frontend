@@ -74,7 +74,7 @@ class VerAprobacionSPP extends Component {
         this.growl.show({ severity: 'success', detail: 'Solicitud Aprobada!' });
         setTimeout(function () {
             history.push(`/quality-development_solicitudpp_aprobar_principal`);
-        }, 2000);
+        }, 1000);
     }
 
     validarRequiereObservacion() {
@@ -95,7 +95,7 @@ class VerAprobacionSPP extends Component {
         this.growl.show({ severity: 'success', detail: 'Solicitud Rechazada!' });
         setTimeout(function () {
             history.push(`/quality-development_solicitudpp_aprobar_principal`);
-        }, 2000);
+        }, 1000);
     }
 
     crearObjSolicitud() {

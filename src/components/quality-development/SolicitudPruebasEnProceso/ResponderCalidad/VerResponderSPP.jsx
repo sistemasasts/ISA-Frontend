@@ -52,7 +52,7 @@ class VerResponderSPP extends Component {
         this.props.closeModal();
         setTimeout(function () {
             history.push(`/quality-development_solicitudpp_procesar`);
-        }, 2000);
+        }, 1000);
     }
 
 

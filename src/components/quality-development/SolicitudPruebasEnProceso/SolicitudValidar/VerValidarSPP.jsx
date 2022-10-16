@@ -55,7 +55,7 @@ class VerValidar extends Component {
         this.growl.show({ severity: 'success', detail: 'Solicitud Aprobada!' });
         setTimeout(function () {
             history.push(`/quality-development_solicitudpp_validar`);
-        }, 2000);
+        }, 1000);
     }
 
     async rechazarSolicitud() {
@@ -69,13 +69,13 @@ class VerValidar extends Component {
         this.growl.show({ severity: 'success', detail: 'Solicitud Rechazada!' });
         setTimeout(function () {
             history.push(`/quality-development_solicitudpp_validar`);
-        }, 2000);
+        }, 1000);
     }
 
     crearObjSolicitud() {
         return {
             id: this.state.id,
-            observacion: this.state.observacion
+            observacionFlujo: this.state.observacion
         }
     }
 

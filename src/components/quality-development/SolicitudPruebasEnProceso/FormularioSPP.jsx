@@ -18,6 +18,7 @@ import SolicitudPruebasProcesoService from '../../../service/SolicitudPruebaProc
 import { InputText } from 'primereact/inputtext';
 import { FileUpload } from 'primereact/fileupload';
 import SolicitudPruebaProcesoDocumentoService from '../../../service/SolicitudPruebaProceso/SolicitudPruebaProcesoDocumentoService';
+import { Dialog } from 'primereact/dialog';
 
 const TIPO_SOLICITUD = "SOLICITUD_PRUEBAS_PROCESO";
 class FormularioSPP extends Component {
@@ -46,7 +47,10 @@ class FormularioSPP extends Component {
             requiereInforme: false,
             imagen1Id: null,
             catalogoOrigen: [],
-            catalogoArea: []
+            catalogoArea: [],
+            puedeRepetirPrueba: false,
+            displayRepetirPrueba: false,
+            displayAnular: false,
         };
         this.onObjectiveChange = this.onObjectiveChange.bind(this);
         this.onDescriptionMaterialLPChange = this.onDescriptionMaterialLPChange.bind(this);
@@ -54,6 +58,9 @@ class FormularioSPP extends Component {
         this.enviarSolicitud = this.enviarSolicitud.bind(this);
         this.myUploader = this.myUploader.bind(this);
         this.leerImagen = this.leerImagen.bind(this);
+        this.repetirPrueba = this.repetirPrueba.bind(this);
+        this.confirmarAnular = this.confirmarAnular.bind(this);
+        this.anular = this.anular.bind(this);
     }
 
     async componentDidMount() {
@@ -90,7 +97,8 @@ class FormularioSPP extends Component {
                     origen: solicitud.origen,
                     imagen1Id: solicitud.imagen1Id,
                     mostrarControles: solicitud.estado === 'NUEVO',
-                    editar: solicitud.estado === 'NUEVO'
+                    editar: solicitud.estado === 'NUEVO',
+                    puedeRepetirPrueba: solicitud.puedeRepetirPrueba
                 });
             }
         }
@@ -176,7 +184,7 @@ class FormularioSPP extends Component {
         this.growl.show({ severity: 'success', detail: 'Solicitud Enviada!' });
         setTimeout(function () {
             history.push(`/quality-development_solicitudpp`);
-        }, 2000);
+        }, 1000);
     }
 
     async myUploader(event) {
@@ -197,6 +205,37 @@ class FormularioSPP extends Component {
         return formadata;
     }
 
+    async repetirPrueba() {
+        this.props.openModal();
+        const solicitudNueva = await SolicitudPruebasProcesoService.repetirPrueba(this.state.id);
+        this.setState({ displayRepetirPrueba: false });
+        this.growl.show({ severity: 'success', detail: 'Solicitud Creada!' });
+        setTimeout(function () {
+            history.push(`/quality-development_solicitudpp_edit/${solicitudNueva.id}`);
+            window.location.reload();
+        }, 1000);
+        this.props.closeModal();
+    }
+
+    confirmarAnular() {
+        if (_.isEmpty(this.state.observacionFlujo)) {
+            this.growl.show({ severity: 'error', detail: 'La observación es obligatoria' });
+            return false;
+        }
+        this.setState({ displayAnular: true });
+    }
+
+    async anular() {
+        this.props.openModal();
+        await SolicitudPruebasProcesoService.anularSolicitud({ id: this.state.id, observacionFlujo: this.state.observacionFlujo });
+        this.setState({ displayAnular: false });
+        this.growl.show({ severity: 'success', detail: 'Solicitud Anulada!' });
+        setTimeout(function () {
+            history.push(`/quality-development_solicitudpp`);
+        }, 1000);
+        this.props.closeModal();
+    }
+
     render() {
         let es = {
             firstDayOfWeek: 1,
@@ -206,6 +245,18 @@ class FormularioSPP extends Component {
             monthNames: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
             monthNamesShort: ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"]
         };
+        const dialogFooter = (
+            <div>
+                <Button icon="pi pi-check" onClick={this.repetirPrueba} label="Si" />
+                <Button icon="pi pi-times" onClick={() => this.setState({ displayRepetirPrueba: false })} label="No" className="p-button-danger" />
+            </div>
+        );
+        const dialogFooterAnular = (
+            <div>
+                <Button icon="pi pi-check" onClick={this.anular} label="Si" />
+                <Button icon="pi pi-times" onClick={() => this.setState({ displayAnular: false })} label="No" className="p-button-danger" />
+            </div>
+        );
 
         return (
             <div className="card card-w-title">
@@ -410,11 +461,21 @@ class FormularioSPP extends Component {
                     {this.state.id > 0 && this.state.estado === 'NUEVO' &&
                         < div >
                             <Button className="p-button-danger" label="ENVIAR" onClick={this.enviarSolicitud} />
-                            <Button className='p-button-secondary' label="ANULAR" />
+                            <Button className='p-button-secondary' label="ANULAR" onClick={this.confirmarAnular} />
+                        </div>
+                    }
+                    {this.state.id > 0 && this.state.puedeRepetirPrueba &&
+                        < div >
+                            <Button className="p-button-danger" label="REPETIR PRUEBA" onClick={() => this.setState({ displayRepetirPrueba: true })} />
                         </div>
                     }
                 </div>
-
+                <Dialog header="Confirmación" visible={this.state.displayRepetirPrueba} style={{ width: '25vw' }} onHide={() => this.setState({ displayRepetirPrueba: false })} blockScroll footer={dialogFooter} >
+                    <p>¿Está seguro de repetir la prueba en donde se creará una nueva solicitud.?</p>
+                </Dialog>
+                <Dialog header="Confirmación" visible={this.state.displayAnular} style={{ width: '25vw' }} onHide={() => this.setState({ displayAnular: false })} blockScroll footer={dialogFooterAnular} >
+                    <p>¿Está seguro de ANULAR la solicitud?</p>
+                </Dialog>
             </div >
         )
     }

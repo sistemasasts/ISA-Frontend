@@ -13,6 +13,7 @@ import { connect } from 'react-redux';
 import { InputText } from 'primereact/inputtext';
 import SolicitudPruebasProcesoService from '../../../service/SolicitudPruebaProceso/SolicitudPruebasProcesoService';
 import SolicitudPruebaProcesoDocumentoService from '../../../service/SolicitudPruebaProceso/SolicitudPruebaProcesoDocumentoService';
+import { Button } from 'primereact/button';
 
 class FormularioSPPLectura extends Component {
 
@@ -38,6 +39,7 @@ class FormularioSPPLectura extends Component {
             imagen1Id: null,
         };
         this.leerImagen = this.leerImagen.bind(this);
+        this.descargarReporte = this.descargarReporte.bind(this);
     }
 
     async componentDidMount() {
@@ -77,9 +79,20 @@ class FormularioSPPLectura extends Component {
     async leerImagen(idDocumento) {
         const respuesta = await SolicitudPruebaProcesoDocumentoService.verImagen(idDocumento);
         if (respuesta) {
-            console.log(respuesta);
             document.getElementById("ItemPreview1").src = `data:${respuesta.documento.tipo};base64,` + respuesta.imagen;
         }
+    }
+
+    async descargarReporte() {
+        this.props.openModal();
+        var data = await SolicitudPruebasProcesoService.generarReporte(this.state.id);
+        this.props.closeModal();
+        const ap = window.URL.createObjectURL(data)
+        const a = document.createElement('a');
+        document.body.appendChild(a);
+        a.href = ap;
+        a.download = `Reporte_${this.state.codigo}.pdf`;
+        a.click();
     }
 
     render() {
@@ -95,7 +108,11 @@ class FormularioSPPLectura extends Component {
 
             <div>
                 <h3 className='text-titulo'><strong>SOLICITUD DE PRUEBAS EN PROCESO</strong></h3>
-                <div className='p-col-12 p-lg-12 caja' >INFORMACIÓN DE LA SOLICITUD</div>
+                <div className='p-col-12 p-lg-12 caja' >INFORMACIÓN DE LA SOLICITUD
+                    <div style={{ float: 'right', padding: '0', marginTop: '-4px' }}>
+                        <Button style={{fontSize:'13px', fontWeight:'bold'}} className=" p-button-rounded p-button-success" label="Descargar Reporte" onClick={() => this.descargarReporte()} />
+                    </div>
+                </div>
 
                 <div className="p-grid p-grid-responsive p-fluid">
                     <div className='p-col-12 p-lg-4'>
@@ -240,7 +257,7 @@ class FormularioSPPLectura extends Component {
                                 <div className='p-grid'>
                                     <div className='p-col-12 p-lg-12'>
                                         <span style={{ color: '#CB3234' }}>*</span><label style={{ fontWeight: 'bold' }} htmlFor="float-input">Imagen especificaciones y variables</label>
-                                        <div style={{ height: '365px', bottom: '0px', top: '0px', display: 'flex',justifyContent: 'center', border:'1px solid #cccccc', borderRadius:'4px' }}>
+                                        <div style={{ height: '365px', bottom: '0px', top: '0px', display: 'flex', justifyContent: 'center', border: '1px solid #cccccc', borderRadius: '4px' }}>
                                             {this.state.imagen1Id > 0 &&
                                                 <img style={{ width: 'auto', maxHeight: '100%', display: 'block', margin: 'auto' }} id="ItemPreview1" src="" />
                                             }

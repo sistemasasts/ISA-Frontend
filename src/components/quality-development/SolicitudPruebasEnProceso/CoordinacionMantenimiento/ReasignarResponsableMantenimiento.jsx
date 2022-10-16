@@ -9,7 +9,7 @@ import * as _ from "lodash";
 import SolicitudPruebasProcesoService from '../../../../service/SolicitudPruebaProceso/SolicitudPruebasProcesoService';
 import { SeleccionUsuario } from '../../../compartido/seleccion-usuario';
 
-class AsignarResponsableCalidad extends Component {
+class ReasignarResponsableMantenimiento extends Component {
 
     constructor() {
         super();
@@ -28,7 +28,7 @@ class AsignarResponsableCalidad extends Component {
     }
 
     async refrescar() {
-        const solicitudes_data = await SolicitudPruebasProcesoService.listarPorAsignarResponsableCM('CALIDAD');
+        const solicitudes_data = await SolicitudPruebasProcesoService.listarPorReasignarResponsable('MANTENIMIENTO');
         this.setState({ solicitudes: solicitudes_data });
     }
 
@@ -41,7 +41,7 @@ class AsignarResponsableCalidad extends Component {
     }
 
     async enviarSolicitudes(idSolicitud, idUser) {
-        await SolicitudPruebasProcesoService.asignarResponsable(this.crearObjSolicitud(idSolicitud, idUser));
+        await SolicitudPruebasProcesoService.reasignarResponsable(this.crearObjSolicitud(idSolicitud, idUser));
         this.refrescar();
     }
 
@@ -50,7 +50,7 @@ class AsignarResponsableCalidad extends Component {
         return {
             id: idSolicitud,
             usuarioAsignado: idUser,
-            orden: 'CALIDAD',
+            orden: 'MANTENIMIENTO',
         }
     }
 
@@ -68,12 +68,13 @@ class AsignarResponsableCalidad extends Component {
         return (
             <div className="card card-w-title">
                 <Growl ref={(el) => this.growl = el} style={{ marginTop: '75px' }} />
-                <h3><strong>ASIGNACIÓN SOLICITUD CALIDAD</strong></h3>
+                <h3><strong>REASIGNACIÓN SOLICITUD MANTENIMIENTO</strong></h3>
                 <SeleccionUsuario origen={this}></SeleccionUsuario>
                 <DataTable style={{ marginTop: '5px' }} value={this.state.solicitudes} paginator={true} rows={15} responsive={true} scrollable={true}
                     selection={this.state.seleccionSolicitud} onSelectionChange={e => this.setState({ seleccionSolicitud: e.value })}>
                     <Column selectionMode="multiple" style={{ width: '3em' }} />
                     <Column field="codigo" header="Código" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
+                    <Column field='usuarioGestionMantenimiento' header="Usuario Responsable" sortable style={{ textAlign: 'center', width: '12em' }} />
                     <Column field="fechaSolicitud" header="Fecha Solicitud" sortable={true} style={{ textAlign: 'center', width: '12em' }} />
                     <Column field="fechaEntregaInforme" header="Entrega Informe" sortable={true} style={{ textAlign: 'center', width: '12em', color: 'red' }} />
                     <Column field="vigencia" body={this.bodyTemplateVigencia} header="Vigencia" sortable={true} style={{ textAlign: 'center', width: '8em' }} />
@@ -102,4 +103,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AsignarResponsableCalidad);
+export default connect(mapStateToProps, mapDispatchToProps)(ReasignarResponsableMantenimiento);

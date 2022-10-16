@@ -6,7 +6,11 @@ import { closeModal, openModal } from '../../../store/actions/modalWaitAction';
 import SolicitudHistorialService from '../../../service/SolicitudEnsayo/SolicitudHistorialService';
 import SolicitudPruebaProcesoHistorialService from '../../../service/SolicitudPruebaProceso/SolicitudPruebaProcesoHistorialService';
 import SolicitudDocumentoService from '../../../service/SolicitudEnsayo/SolicitudDocumentoService';
+import * as moment from 'moment';
 import "../../site.css";
+import SolicitudPruebaProcesoDocumentoService from '../../../service/SolicitudPruebaProceso/SolicitudPruebaProcesoDocumentoService';
+import { TabPanel, TabView } from 'primereact/tabview';
+import { Accordion, AccordionTab } from 'primereact/accordion';
 
 class Historial extends Component {
 
@@ -14,7 +18,8 @@ class Historial extends Component {
         super();
         this.state = {
             panelCollapsed: true,
-            historial: []
+            historial: [],
+            historialCompleto: [],
         };
         this.itemTemplate = this.itemTemplate.bind(this);
         this.descargarDocumentos = this.descargarDocumentos.bind(this);
@@ -22,11 +27,17 @@ class Historial extends Component {
 
     async componentDidMount() {
         let historialData;
-        if (this.props.tipo === 'SOLICITUD_ENSAYO')
+        let historialComletoData;
+        if (this.props.tipo === 'SOLICITUD_ENSAYO'){
             historialData = await SolicitudHistorialService.listarPorIdSolicitud(this.props.solicitud);
-        if (this.props.tipo === 'SOLICITUD_PRUEBAS_PROCESO')
+            historialComletoData = [];
+        }            
+        if (this.props.tipo === 'SOLICITUD_PRUEBAS_PROCESO') {
             historialData = await SolicitudPruebaProcesoHistorialService.listarPorIdSolicitud(this.props.solicitud);
-        this.setState({ historial: historialData });
+            historialComletoData = await SolicitudPruebaProcesoHistorialService.listarCompletoPorIdSolicitud(this.props.solicitud);
+            console.log(historialComletoData);
+        }
+        this.setState({ historial: historialData, historialCompleto: historialComletoData });
     }
 
     async descargarDocumentos(historial) {
@@ -36,7 +47,7 @@ class Historial extends Component {
             if (this.props.tipo === 'SOLICITUD_ENSAYO')
                 data = await SolicitudDocumentoService.descargarComprimido(historial.id);
             if (this.props.tipo === 'SOLICITUD_PRUEBAS_PROCESO')
-                data = await SolicitudPruebaProcesoHistorialService.descargarComprimido(historial.id);
+                data = await SolicitudPruebaProcesoDocumentoService.descargarComprimido(historial.id);
             this.props.closeModal();
             const ap = window.URL.createObjectURL(data)
             const a = document.createElement('a');
@@ -48,10 +59,12 @@ class Historial extends Component {
     }
 
     itemTemplate(historial) {
+        var fechaFormat = moment(historial.fechaRegistro, 'YYYY-MM-DD hh:mm:ss');
+        const fechaRegistro = moment(fechaFormat).format('YYYY-MM-DD hh:mm:ss');
         return (
             <div className="p-col-12 p-md-3">
                 <div style={{ float: 'right' }}>
-                    <p className='fecha'>{historial.fechaRegistro}</p>
+                    <p className='fecha'>{fechaRegistro}</p>
                     {historial.tieneAdjuntos &&
                         <div style={{ textAlign: 'center' }}><span className='boton-historial pi pi-download' onClick={() => this.descargarDocumentos(historial)}></span></div>
                     }
@@ -71,7 +84,20 @@ class Historial extends Component {
             <div>
                 <br />
                 <Fieldset legend="Historial de solicitud" toggleable={true} collapsed={this.state.panelCollapsed} onToggle={(e) => this.setState({ panelCollapsed: e.value })}>
-                    <DataView emptyMessage="" value={this.state.historial} itemTemplate={this.itemTemplate}></DataView>
+                    <TabView style={{ marginTop: '10px' }} >
+                        <TabPanel header="Actual" leftIcon="pi pi-star" >
+                            <DataView emptyMessage="" value={this.state.historial} itemTemplate={this.itemTemplate}></DataView>
+                        </TabPanel>
+                        <TabPanel header="Completo" leftIcon="pi pi-list" >
+                            <Accordion multiple={true}>
+                                {this.state.historialCompleto.map(item => <AccordionTab header={item.codigo}>
+                                    <DataView emptyMessage="" value={item.historial} itemTemplate={this.itemTemplate}></DataView>
+                                </AccordionTab>
+                                )}
+                            </Accordion>
+                        </TabPanel>
+
+                    </TabView>
                 </Fieldset>
             </div>
         )

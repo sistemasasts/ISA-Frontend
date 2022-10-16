@@ -53,7 +53,7 @@ class VerResponderManteSPP extends Component {
         this.props.closeModal();
         setTimeout(function () {
             history.push(`/quality-development_solicitudpp_mantenimiento_principal`);
-        }, 2000);
+        }, 1000);
     }
 
     redirigirInicio(){
