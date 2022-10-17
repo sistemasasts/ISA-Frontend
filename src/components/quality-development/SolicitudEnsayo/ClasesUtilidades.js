@@ -9,7 +9,7 @@ export function determinarColor(estado) {
         case 'RECHAZADO':
         case 'ANULADO':
         case 'PRUEBA_NO_EJECUTADA':
-        case 'PRUEBA_NO_REALIZADA':            
+        case 'PRUEBA_NO_REALIZADA':
             return 'customer-badge-danger';
         case 'FINALIZADO': return 'customer-badge-success';
         default: return 'customer-badge-default'
@@ -21,8 +21,13 @@ export function determinarColorTipoAprobacion(tipoAprobacion) {
         case 'LIBRE_USO':
         case 'LABORATORIO':
         case 'PLANTA':
+        case 'SOLICITUD SOLUCIONES TÉCNICAS':
+        case 'CREACIÓN DE MATERIAS PRIMAS':
+        case 'GESTIONAR E IMPLEMENTAR CAMBIOS':
             return 'customer-badge-default';
-
+        case 'REPETIR PRUEBA':
+        case 'MATERIAL NO VALIDADO':
+        case 'AJUSTE MAQUINARIA':
         case 'NO_APROBADO':
             return 'customer-badge-danger';
 

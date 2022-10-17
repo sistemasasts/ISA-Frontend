@@ -30,6 +30,9 @@ const SolicitudPruebasProcesoService = {
     //rechazarSolicitud: (solicitud) => http.request.post(`${apiEndpoint}/rechazarSolicitud/`, solicitud),
     generarReporte: (id) => httpFiles.request.get(`${apiEndpoint}/reporte/${id}`),
     repetirPrueba: (solicitudId) => http.request.get(`${apiEndpoint}/repetirPrueba/${solicitudId}`),
+    consultar: (page, size, consulta) => http.request.post(`${apiEndpoint}/consulta/?page=${page}&size=${size}`, consulta),
+    listarEstados: () => http.request.get(`${apiEndpoint}/estados`),
+    listarTiposAprobacion: () => http.request.get(`${apiEndpoint}/tiposAprobacion`),
 
 }
 

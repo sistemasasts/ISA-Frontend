@@ -1,3 +1,4 @@
+import React, { Component } from 'react';
 import { Button } from 'primereact/button';
 import { Calendar } from 'primereact/calendar';
 import { Column } from 'primereact/column';
@@ -5,11 +6,9 @@ import { DataTable } from 'primereact/datatable';
 import { Dropdown } from 'primereact/dropdown';
 import { Growl } from 'primereact/growl';
 import { InputText } from 'primereact/inputtext';
-import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import {MultiSelect} from 'primereact/multiselect';
 import history from '../../../history';
-import ConfigSolicitudSEServices from '../../../service/ConfigSolicitudSEServices';
-import SolicitudEnsayoService from '../../../service/SolicitudEnsayo/SolicitudEnsayoService';
 import UsuarioService from '../../../service/UsuarioService';
 import { closeModal, openModal } from '../../../store/actions/modalWaitAction';
 import "../../site.css";
@@ -17,9 +16,10 @@ import { determinarColor, determinarColorTipoAprobacion } from '../SolicitudEnsa
 import * as moment from 'moment';
 import { Paginator } from 'primereact/paginator';
 import * as _ from "lodash";
+import SolicitudPruebasProcesoService from '../../../service/SolicitudPruebaProceso/SolicitudPruebasProcesoService';
 
 var that;
-class ConsultaPrincipal extends Component {
+class ConsultaPrincipalPP extends Component {
 
     constructor() {
         super();
@@ -27,10 +27,9 @@ class ConsultaPrincipal extends Component {
             solicitudes: [],
             usuarios: [],
             estados: [],
-            tiposSolicitud: [],
             tiposAprobacion: [],
             codigo: null,
-            estado: null,
+            estado: [],
             fechaInicio: null,
             fechaFin: null,
             usuarioSolicitante: null,
@@ -55,22 +54,17 @@ class ConsultaPrincipal extends Component {
 
     async componentDidMount() {
         const usuarios_data = await await UsuarioService.list();
-        const tiposAprobacion_data = await SolicitudEnsayoService.listarTiposAprobacion();
-        const catalogo_tipoSolicitud = await ConfigSolicitudSEServices.listarTipoSolicitud();
-        const catalogo_estados = await SolicitudEnsayoService.listarEstados();
+        const tiposAprobacion_data = await SolicitudPruebasProcesoService.listarTiposAprobacion();
+        const catalogo_estados = await SolicitudPruebasProcesoService.listarEstados();
 
         this.setState({
             usuarios: usuarios_data,
-            tiposSolicitud: catalogo_tipoSolicitud,
             tiposAprobacion: tiposAprobacion_data,
             estados: catalogo_estados
         });
     }
 
     redirigirSolicitudEdicion(solicitud) {
-        if (solicitud.tipoSolicitud === 'SOLICITUD_ENSAYOS')
-            window.open(`${window.location.origin}/#quality-development_consulta_solicitud_verse/${solicitud.id}`)
-        else
             window.open(`${window.location.origin}/#quality-development_consulta_solicitud_verspp/${solicitud.id}`)
     }
 
@@ -86,7 +80,7 @@ class ConsultaPrincipal extends Component {
     }
 
     bodyTemplateTipoAprobacion(rowData) {
-        return <span className={determinarColorTipoAprobacion(rowData.tipoAprobacion)}>{rowData.tipoAprobacion}</span>;
+        return <span className={determinarColorTipoAprobacion(rowData.tipoAprobacionTexto)}>{rowData.tipoAprobacionTexto}</span>;
     }
 
     consultar() {
@@ -95,7 +89,7 @@ class ConsultaPrincipal extends Component {
 
     async obenerDatosConsulta(page, size) {
         this.props.openModal();
-        const solicitudesData = await SolicitudEnsayoService.consultar(page, size, this.crearObj());
+        const solicitudesData = await SolicitudPruebasProcesoService.consultar(page, size, this.crearObj());
         this.props.closeModal();
         const currentReportAUX = `( pág. ${solicitudesData.number + 1} de ${solicitudesData.totalPages} )  Total ítems  ${solicitudesData.totalElements}`;
         this.setState({ solicitudes: solicitudesData.content, totalRecords: solicitudesData.totalElements, currenPage: currentReportAUX });
@@ -103,14 +97,13 @@ class ConsultaPrincipal extends Component {
 
     crearObj() {
         return {
-            tipoSolicitud: this.state.tipoSolicitud,
             codigo: this.state.codigo,
             fechaInicio: this.state.fechaInicio && moment(this.state.fechaInicio).format("YYYY-MM-DD hh:mm:ss.SSS"),
             fechaFin: this.state.fechaFin && moment(this.state.fechaFin).format("YYYY-MM-DD hh:mm:ss.SSS"),
             tipoAprobacion: this.state.tipoAprobacion,
             nombreSolicitante: this.state.usuarioSolicitante && this.state.usuarioSolicitante.idUser,
             usuarioAprobador: this.state.usuarioAprobador && this.state.usuarioAprobador.idUser,
-            estado: this.state.estado
+            estados: this.state.estado
         }
     }
 
@@ -123,7 +116,7 @@ class ConsultaPrincipal extends Component {
             tipoAprobacion: null,
             nombreSolicitante: null,
             usuarioAprobador: null,
-            estado: null,
+            estado: [],
             solicitudes: []
         });
     }
@@ -149,25 +142,17 @@ class ConsultaPrincipal extends Component {
         return (
             <div className="card card-w-title">
                 <Growl ref={(el) => this.growl = el} style={{ marginTop: '75px' }} />
-                <h1><strong>CONSULTA DE SOLICITUDES</strong></h1>
+                <h1><strong>CONSULTA DE SOLICITUDES PRUEBAS EN PROCESO</strong></h1>
                 <h2>Parámetros de consulta</h2>
                 <div className="p-grid p-grid-responsive p-fluid">
                     <div className='p-col-12 p-lg-3'>
                         <label htmlFor="float-input">Código</label>
                         <InputText value={this.state.codigo} onChange={(e) => this.setState({ codigo: e.target.value })} />
                     </div>
-                    {/* <div className='p-col-12 p-lg-3'>
-                        <label htmlFor="float-input">Tipo Solicitud</label>
-                        <Dropdown showClear options={this.state.tiposSolicitud} value={this.state.tipo} autoWidth={false} onChange={(event => this.setState({ tipo: event.value }))} />
-                    </div> */}
                     <div className='p-col-12 p-lg-3'>
                         <label htmlFor="float-input">Tipo Aprobación</label>
                         <Dropdown showClear options={this.state.tiposAprobacion} value={this.state.tipoAprobacion} autoWidth={false} onChange={(event => this.setState({ tipoAprobacion: event.value }))} />
-                    </div>
-                    <div className='p-col-12 p-lg-3'>
-                        <label htmlFor="float-input">Estado</label>
-                        <Dropdown showClear options={this.state.estados} value={this.state.estado} autoWidth={false} onChange={(event => this.setState({ estado: event.value }))} placeholder="Selecione" />
-                    </div>
+                    </div>                    
                     <div className='p-col-12 p-lg-3'>
                         <label htmlFor="float-input">Fecha Inicio</label>
                         <Calendar dateFormat="yy/mm/dd" value={this.state.fechaInicio} locale={es} onChange={(e) => this.setState({ fechaInicio: e.value })} showIcon={true} />
@@ -175,6 +160,11 @@ class ConsultaPrincipal extends Component {
                     <div className='p-col-12 p-lg-3'>
                         <label htmlFor="float-input">Fecha Fin</label>
                         <Calendar dateFormat="yy/mm/dd" value={this.state.fechaFin} locale={es} onChange={(e) => this.setState({ fechaFin: e.value })} showIcon={true} />
+                    </div>
+                    <div className='p-col-12 p-lg-12'>
+                        <label htmlFor="float-input">Estado Solicitud</label>
+                        <MultiSelect value={this.state.estado} options={this.state.estados} onChange={(e) => this.setState({estado: e.value})} />
+
                     </div>
                     <div className='p-col-12 p-lg-3'>
                         <label htmlFor="float-input">Usuario Solicitante</label>
@@ -196,12 +186,20 @@ class ConsultaPrincipal extends Component {
                 >
                     <Column body={this.actionTemplate} style={{ textAlign: 'center', width: '4em' }} />
                     <Column field="codigo" header="Código" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
-                    <Column field="fechaCreacion" header="Fecha Solicitud" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
-                    <Column field="proveedorNombre" header="Proveedor" sortable={true} style={{ width: '15em' }} />
-                    <Column field="fechaEntrega" header="Fecha Entrega" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
-                    {/* <Column field="tipoSolicitud" header="Tipo" sortable style={{ textAlign: 'center', width: '10em' }} /> */}
-                    <Column field="tipoAprobacion" body={this.bodyTemplateTipoAprobacion} header="Aprobación" sortable={true} style={{ textAlign: 'center', width: '12em' }} />
+                    <Column field="fechaCreacion2" header="Fecha Solicitud" sortable={true} style={{ textAlign: 'center', width: '10em'}} />
                     <Column field='estado' body={this.bodyTemplateEstado} header="Estado" sortable style={{ textAlign: 'center', width: '12em' }} />
+                    <Column field="aprobadoTexto" header="Aprobado" sortable={true} style={{ textAlign: 'center', width: '10em'}}/>
+                    <Column field="tipoAprobacionTexto" body={this.bodyTemplateTipoAprobacion} header="Aprobación" sortable={true} style={{ textAlign: 'center', width: '12em' }} />
+                    <Column field="nombreArea" header="Área" sortable={true} style={{ textAlign: 'center', width: '15em'}}  />
+                    <Column field="origenTexto" header="Tipo" sortable={true} style={{ textAlign: 'center', width: '15em'}}  />
+                    <Column field="lineaAplicacion" header="Línea" sortable={true} style={{ textAlign: 'center', width: '15em'}}  />
+                    <Column field="fechaEntrega" header="Fecha Entrega" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
+                    <Column field="requiereInformeTexto" header="Informe" sortable={true} style={{ textAlign: 'center', width: '10em'}} />
+                    <Column field="fechaPrueba" header="Fecha Prueba" sortable={true} style={{ textAlign: 'center', width: '10em'}} />
+                    <Column field="usuarioGestionPlanta" header="Usuario Gestión Planta" sortable={true} style={{ textAlign: 'center', width: '15em'}} />
+                    <Column field="usuarioGestionCalidad" header="Usuario Gestión Calidad" sortable={true} style={{ textAlign: 'center', width: '15em'}} />
+                    <Column field="usuarioGestionMantenimiento" header="Usuario Gestión MYP" sortable={true} style={{ textAlign: 'center', width: '15em'}} />
+                    
                 </DataTable>
                 <Paginator first={this.state.first} rows={this.state.size} totalRecords={this.state.totalRecords} onPageChange={this.onPageChange}
                     template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport" currentPageReportTemplate={this.state.currenPage}></Paginator>
@@ -225,4 +223,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ConsultaPrincipal);
+export default connect(mapStateToProps, mapDispatchToProps)(ConsultaPrincipalPP);
