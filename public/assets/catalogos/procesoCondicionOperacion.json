@@ -1,0 +1,16 @@
+{
+    "data": [
+        {
+            "label": "Polimerización",
+            "value": "Polimerización"
+        },
+        {
+            "label": "Mezcla",
+            "value": "Mezcla"
+        },
+        {
+            "label": "Laminación",
+            "value": "Laminación"
+        }
+    ]
+}

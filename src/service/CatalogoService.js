@@ -42,4 +42,24 @@ export class CatalogoService {
             .then(res => res.data.data)
     }
 
+    getLineaFabricacion() {
+        return axios.get('assets/catalogos/lineaFabricacion.json')
+            .then(res => res.data.data)
+    }
+
+    getProcesoCondicionOperacion() {
+        return axios.get('assets/catalogos/procesoCondicionOperacion.json')
+            .then(res => res.data.data)
+    }
+
+    getProcesoCondicion() {
+        return axios.get('assets/catalogos/procesoCondicion.json')
+            .then(res => res.data.data)
+    }
+
+    getProcesoCondicionMaquinaria() {
+        return axios.get('assets/catalogos/procesoCondicionMaquinaria.json')
+            .then(res => res.data.data)
+    }
+
 }

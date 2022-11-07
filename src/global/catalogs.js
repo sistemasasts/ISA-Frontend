@@ -181,3 +181,16 @@ export var finaltSource=[
     { label: 'Corte de Teja o bandas', value: 'Corte de Teja o bandas' },
     { label: 'Solicitud de Concesión', value: 'Solicitud de Concesión' },
 ]
+
+/* Variable para linea fabricacion DDP05 */
+export var LineaFabricacion =[
+    { label: 'Asfalto Modificado', value: 'Asfalto Modificado', unidad:'kg' },
+    { label: 'Línea 1', value: 'Línea 1', unidad:'m2' },
+    { label: 'Línea 2', value: 'Línea 2', unidad:'m2' },
+    { label: 'Cortes', value: 'Línea 1', unidad:'UN' },
+    { label: 'Revestimientos Líquidos Acrílicos', value: 'Revestimientos Líquidos Acrílicos', unidad:'UN' },
+    { label: 'Emulsiones', value: 'Emulsiones', unidad:'kg' },
+    { label: 'Mezcla en Frío', value: 'Mezcla en Frío', unidad:'kg' },
+    { label: 'Metales', value: 'Metales', unidad:'UN' },
+    
+]

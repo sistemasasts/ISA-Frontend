@@ -12,8 +12,13 @@ import { closeModal, openModal } from '../../../store/actions/modalWaitAction';
 import { connect } from 'react-redux';
 import { InputText } from 'primereact/inputtext';
 import SolicitudPruebasProcesoService from '../../../service/SolicitudPruebaProceso/SolicitudPruebasProcesoService';
+import InformeSPPService from '../../../service/SolicitudPruebaProceso/InformeSPPService';
 import SolicitudPruebaProcesoDocumentoService from '../../../service/SolicitudPruebaProceso/SolicitudPruebaProcesoDocumentoService';
 import { Button } from 'primereact/button';
+import { ColumnGroup } from 'primereact/columngroup';
+import { Row } from 'primereact/row';
+import { Column } from 'primereact/column';
+import { DataTable } from 'primereact/datatable';
 
 class FormularioSPPLectura extends Component {
 
@@ -37,9 +42,15 @@ class FormularioSPPLectura extends Component {
             area: null,
             requiereInforme: false,
             imagen1Id: null,
+            materialesFormula: [],
+            cantidadRequeridaProducir: null,
+            unidadRequeridaProducir: null,
         };
         this.leerImagen = this.leerImagen.bind(this);
         this.descargarReporte = this.descargarReporte.bind(this);
+        this.descargarReporteDPP05 = this.descargarReporteDPP05.bind(this);
+        this.habilitarDDP05 = this.habilitarDDP05.bind(this);
+        this.habilitarDDP04 = this.habilitarDDP04.bind(this);
     }
 
     async componentDidMount() {
@@ -70,7 +81,10 @@ class FormularioSPPLectura extends Component {
                     area: solicitud.area.nameArea,
                     origen: solicitud.origen,
                     requiereInforme: solicitud.requiereInforme,
-                    imagen1Id: solicitud.imagen1Id
+                    imagen1Id: solicitud.imagen1Id,
+                    cantidadRequeridaProducir: solicitud.cantidadRequeridaProducir,
+                    unidadRequeridaProducir: solicitud.unidadRequeridaProducir,
+                    materialesFormula: solicitud.materialesFormula
                 });
             }
         }
@@ -91,8 +105,26 @@ class FormularioSPPLectura extends Component {
         const a = document.createElement('a');
         document.body.appendChild(a);
         a.href = ap;
-        a.download = `Reporte_${this.state.codigo}.pdf`;
+        a.download = `ReporteDPP04_${this.state.codigo}.pdf`;
         a.click();
+    }
+
+    async descargarReporteDPP05() {
+        var data = await InformeSPPService.generarReporte(this.state.id);
+        const ap = window.URL.createObjectURL(data)
+        const a = document.createElement('a');
+        document.body.appendChild(a);
+        a.href = ap;
+        a.download = `ReporteDDP05_${this.state.codigo}.pdf`;
+        a.click();
+    }
+
+    habilitarDDP05() {
+        return _.includes(['PENDIENTE_APROBACION', 'FINALIZADO', 'PENDIENTE_AJUSTE_MAQUINARIA'], this.state.estado);
+    }
+
+    habilitarDDP04() {
+        return _.includes(['PENDIENTE_APROBACION', 'FINALIZADO', 'PENDIENTE_AJUSTE_MAQUINARIA', 'ENVIADO_REVISION', 'EN_PROCESO', 'PRUEBA_NO_EJECUTADA'], this.state.estado);
     }
 
     render() {
@@ -104,13 +136,26 @@ class FormularioSPPLectura extends Component {
             monthNames: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
             monthNamesShort: ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"]
         };
+        let footerGroup = <ColumnGroup>
+            <Row>
+                <Column style={{ backgroundColor: '#A5D6A7', fontWeight: 'bold' }} footer="FORMULA TOTAL" />
+                <Column style={{ backgroundColor: '#A5D6A7', fontWeight: 'bold' }} footer={_.sumBy(this.state.materialesFormula, (o) => { return o.porcentaje })} />
+                <Column style={{ backgroundColor: '#A5D6A7', fontWeight: 'bold' }} footer={_.sumBy(this.state.materialesFormula, (o) => { return o.cantidad })} />
+                <Column style={{ backgroundColor: '#A5D6A7', fontWeight: 'bold' }} footer={_.isEmpty(this.state.materialesFormula) ? '' : this.state.materialesFormula[0].unidad} />
+            </Row>
+        </ColumnGroup>;
         return (
 
             <div>
                 <h3 className='text-titulo'><strong>SOLICITUD DE PRUEBAS EN PROCESO</strong></h3>
                 <div className='p-col-12 p-lg-12 caja' >INFORMACIÓN DE LA SOLICITUD
                     <div style={{ float: 'right', padding: '0', marginTop: '-4px' }}>
-                        <Button style={{fontSize:'13px', fontWeight:'bold'}} className=" p-button-rounded p-button-success" label="Descargar Reporte" onClick={() => this.descargarReporte()} />
+                        {this.habilitarDDP04() &&
+                            <Button style={{ fontSize: '13px', fontWeight: 'bold', backgroundColor: '#A5D6A7', color: 'black' }} className=" p-button-rounded p-button-success" icon="pi pi-download" label="DDP04" tooltip="Descargar" tooltipOptions={{ position: 'bottom' }} onClick={() => this.descargarReporte()} />
+                        }
+                        {this.habilitarDDP05() &&
+                            <Button style={{ fontSize: '13px', fontWeight: 'bold', backgroundColor: '#A5D6A7', color: 'black' }} className=" p-button-rounded p-button-success" icon="pi pi-download" label="DDP05" tooltip="Descargar" tooltipOptions={{ position: 'bottom' }} onClick={() => this.descargarReporteDPP05()} />
+                        }
                     </div>
                 </div>
 
@@ -185,7 +230,7 @@ class FormularioSPPLectura extends Component {
                         </div>
 
                     </div>
-                    <div className="p-col-12 p-lg-12" >
+                    {/* <div className="p-col-12 p-lg-12" >
                         <div className='p-grid'>
                             <label className="p-col-12 p-lg-12" style={{ fontWeight: 'bold' }} htmlFor="float-input"> <span style={{ color: '#CB3234' }}>*</span>Descripción del Material y Línea de Proceso de Prueba (Marque según corresponda)</label>
                             <div className="p-col-12 p-lg-3">
@@ -237,7 +282,7 @@ class FormularioSPPLectura extends Component {
                                 <InputTextarea readOnly value={this.state.detalleMaterialOtro} onChange={(e) => this.setState({ detalleMaterialOtro: e.target.value })} rows={2} placeholder='Descripción' />
                             </div>
                         </div>
-                    </div>
+                    </div> */}
 
                     <div className='p-col-12 p-lg-12'>
                         <div className='p-grid'>
@@ -264,6 +309,29 @@ class FormularioSPPLectura extends Component {
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="p-col-12 p-lg-12" >
+                        <div className='p-grid'>
+                            <label className="p-col-12 p-lg-12" style={{ fontWeight: 'bold' }} htmlFor="float-input"><span style={{ color: '#CB3234' }}>*</span>Material Detalle Formulación</label>
+                            <div className='p-col-12 p-lg-4'>
+                                <label style={{ fontWeight: 'bold' }} htmlFor="float-input">Cantidad Requerida Para Producir</label>
+                                <InputText keyfilter="num" value={this.state.cantidadRequeridaProducir} onChange={(e) => this.setState({ cantidadRequeridaProducir: e.target.value })} />
+                            </div>
+                            <div className='p-col-12 p-lg-3'>
+                                <label style={{ fontWeight: 'bold' }} htmlFor="float-input">Unidad</label>
+                                <InputText value={this.state.unidadRequeridaProducir} />
+                            </div>
+                            <div className='p-col-12 p-lg-12'>
+                                <DataTable value={this.state.materialesFormula} rows={15} footerColumnGroup={footerGroup}
+                                    selectionMode="single" selection={this.state.selectedConfiguracion} onSelectionChange={e => this.setState({ selectedMaterialFormula: e.value })}
+                                    onRowSelect={this.onCarSelect}>
+                                    <Column field="nombre" header="Material" sortable={true} />
+                                    <Column field="porcentaje" header="Porcentaje(%)" sortable={true} style={{ textAlign: 'center' }} />
+                                    <Column field="cantidad" header="Cantidad" sortable={true} style={{ textAlign: 'center' }} />
+                                    <Column field="unidad" header="Unidad" style={{ textAlign: 'center' }} />
+                                </DataTable>
                             </div>
                         </div>
                     </div>

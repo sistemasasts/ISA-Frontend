@@ -33,6 +33,10 @@ const SolicitudPruebasProcesoService = {
     consultar: (page, size, consulta) => http.request.post(`${apiEndpoint}/consulta/?page=${page}&size=${size}`, consulta),
     listarEstados: () => http.request.get(`${apiEndpoint}/estados`),
     listarTiposAprobacion: () => http.request.get(`${apiEndpoint}/tiposAprobacion`),
+    //Crud material formula
+    agregarMaterialFomula: (solicitudId, material) => http.request.post(`${apiEndpoint}/agregarMaterialFormula/${solicitudId}`, material),
+    editarMaterialFomula: (solicitudId, material) => http.request.post(`${apiEndpoint}/editarMaterialFormula/${solicitudId}`, material),
+    eliminarMaterialFomula: (solicitudId, materialId) => http.request.get(`${apiEndpoint}/eliminarMaterialFormula/${solicitudId}/${materialId}`),
 
 }
 

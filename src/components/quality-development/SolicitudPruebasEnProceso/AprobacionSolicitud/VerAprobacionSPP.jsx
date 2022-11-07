@@ -31,6 +31,8 @@ class VerAprobacionSPP extends Component {
         };
         this.aprobarSolicitud = this.aprobarSolicitud.bind(this);
         this.rechazarSolicitud = this.rechazarSolicitud.bind(this);
+        this.redirigirInicio = this.redirigirInicio.bind(this);
+        this.abrirInformeDatos = this.abrirInformeDatos.bind(this);
 
     }
 
@@ -107,6 +109,14 @@ class VerAprobacionSPP extends Component {
         }
     }
 
+    abrirInformeDatos() {
+        window.open(`${window.location.origin}/#quality-development_solicitudpp_informe_final/${this.state.id}/APROBADOR_FINAL`)
+    }
+
+    redirigirInicio() {
+        history.push(`/quality-development_solicitudpp_procesar`);
+    }
+
     render() {
         return (
 
@@ -136,6 +146,8 @@ class VerAprobacionSPP extends Component {
                         < div >
                             <Button className="p-button-danger" label="APROBAR" onClick={this.aprobarSolicitud} />
                             <Button className='p-button-secondary' label="RECHAZAR" onClick={this.rechazarSolicitud} />
+                            <Button className='p-button-success' label="VER DATOS DDP05" onClick={() => this.abrirInformeDatos()} />
+                            <Button className='p-button-secondary' label="ATRÁS" onClick={this.redirigirInicio} />
                         </div>
                     }
                 </div>

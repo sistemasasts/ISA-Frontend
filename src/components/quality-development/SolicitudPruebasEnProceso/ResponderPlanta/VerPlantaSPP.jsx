@@ -34,6 +34,8 @@ class VerPlantaSPP extends Component {
         this.procesarSolicitud = this.procesarSolicitud.bind(this);
         this.marcarComoNoRealizada = this.marcarComoNoRealizada.bind(this);
         this.marcarComoRealizada = this.marcarComoRealizada.bind(this);
+        this.abrirInformeDatos = this.abrirInformeDatos.bind(this);
+        this.redirigirInicio = this.redirigirInicio.bind(this);
 
     }
 
@@ -59,7 +61,7 @@ class VerPlantaSPP extends Component {
     async procesarSolicitud() {
         this.props.openModal();
         await SolicitudPruebasProcesoService.procesar(this.crearObjSolicitud());
-        this.setState({displayPruebaNoEjecutada: false})
+        this.setState({ displayPruebaNoEjecutada: false })
         this.props.closeModal();
         this.growl.show({ severity: 'success', detail: 'Solicitud Aprobada!' });
         setTimeout(function () {
@@ -98,6 +100,14 @@ class VerPlantaSPP extends Component {
         }
     }
 
+    redirigirInicio() {
+        history.push(`/quality-development_solicitudpp_planta_principal`);
+    }
+
+    abrirInformeDatos() {
+        history.push(`/quality-development_solicitudpp_informe/${this.state.id}/PRODUCCION/EDITAR`);
+    }
+
     render() {
         const dialogFooter = (
             <div>
@@ -128,13 +138,15 @@ class VerPlantaSPP extends Component {
                     {this.state.id > 0 && this.state.estado === ESTADO &&
                         <div>
                             {this.state.pruebaRealizada &&
-                                <Button className="p-button-primary" label="RESPONDER" onClick={this.procesarSolicitud} />
+                                <Button className="p-button-primary" label="FINALIZAR" onClick={this.procesarSolicitud} />
                             }
                             {/* {!this.state.fechaNotificacionPruebaRealizada &&
                                 <Button className='p-button-success' label="NOTIFICAR PRUEBA REALIZADA" onClick={this.marcarComoRealizada} />
                             } */}
 
                             <Button className='p-button-secondary' label="PRUEBA NO REALIZADA" onClick={() => this.setState({ displayPruebaNoEjecutada: true })} />
+                            <Button className='p-button-success' label="INGRESAR DATOS DDP05" onClick={() => this.abrirInformeDatos()} />
+                            <Button className='p-button-secondary' label="ATRÁS" onClick={this.redirigirInicio} />
 
                         </div>
                     }

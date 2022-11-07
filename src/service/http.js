@@ -23,6 +23,7 @@ const http = Axios.create({
 // To add token to the header with bearer schema
 http.interceptors.request.use(
     (config) => {
+        document.body.classList.add('loading-indicator');
         const token = getJwt()
         if (token) config.headers.Authorization = `Bearer ${token}`
         return config
@@ -32,6 +33,7 @@ http.interceptors.request.use(
 
 http.interceptors.response.use(undefined, (error) => {
     console.log(error)
+    document.body.classList.remove('loading-indicator');
     if (error.message === 'Network Error' && !error.response) {
         console.log('Network error - make sure the API server is running')
     }
@@ -70,12 +72,11 @@ http.interceptors.response.use(undefined, (error) => {
 
 
 const responseBody = response => response.data;
-
 const request = {
-    get: url => http.get(url).then(responseBody),
-    post: (url, body) => http.post(url, body).then(responseBody),
-    put: (url, body) => http.put(url, body).then(responseBody),
-    delete: (url) => http.delete(url).then(responseBody)
+    get: url => http.get(url).then(responseBody).finally(()=>{document.body.classList.remove('loading-indicator')}),
+    post: (url, body) => http.post(url, body).then(responseBody).finally(()=>{document.body.classList.remove('loading-indicator')}),
+    put: (url, body) => http.put(url, body).then(responseBody).finally(()=>{document.body.classList.remove('loading-indicator')}),
+    delete: (url) => http.delete(url).then(responseBody).finally(()=>{document.body.classList.remove('loading-indicator')})
 }
 
 export default {

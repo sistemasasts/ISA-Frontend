@@ -27,6 +27,7 @@ class VerResponderManteSPP extends Component {
         };
         this.responderSolicitud = this.responderSolicitud.bind(this);
         this.redirigirInicio = this.redirigirInicio.bind(this);
+        this.abrirInformeDatos = this.abrirInformeDatos.bind(this);
     }
 
     async componentDidMount() {
@@ -56,7 +57,7 @@ class VerResponderManteSPP extends Component {
         }, 1000);
     }
 
-    redirigirInicio(){
+    redirigirInicio() {
         history.push(`/quality-development_solicitudpp_mantenimiento_principal`);
     }
 
@@ -66,6 +67,10 @@ class VerResponderManteSPP extends Component {
             observiacionFlujo: this.state.observacion,
             orden: ORDEN
         }
+    }
+
+    abrirInformeDatos() {
+        history.push(`/quality-development_solicitudpp_informe/${this.state.id}/MANTENIMIENTO/EDITAR`);
     }
 
     render() {
@@ -91,7 +96,8 @@ class VerResponderManteSPP extends Component {
                 <div className='p-col-12 p-lg-12 boton-opcion' >
                     {this.state.id > 0 && this.state.estado === ESTADO &&
                         < div >
-                            <Button className="p-button-primary" label="ENVIAR INFORME" onClick={this.responderSolicitud} />
+                            <Button className="p-button-primary" label="FINALIZAR" onClick={this.responderSolicitud} />
+                            <Button className='p-button-success' label="INGRESAR DATOS DDP05" onClick={() => this.abrirInformeDatos()} />
                             <Button className='p-button-secondary' label="ATRÁS" onClick={this.redirigirInicio} />
                         </div>
                     }

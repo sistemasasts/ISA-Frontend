@@ -1,0 +1,20 @@
+{
+    "data": [
+        {
+            "label": "Bomba",
+            "value": "Bomba"
+        },
+        {
+            "label": "Molino",
+            "value": "Molino"
+        },
+        {
+            "label": "Tanque",
+            "value": "Tanque"
+        },
+        {
+            "label": "Laminadora",
+            "value": "Laminadora"
+        }
+    ]
+}

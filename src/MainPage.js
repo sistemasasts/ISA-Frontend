@@ -76,6 +76,8 @@ import ReasignarResponsableCalidad from './components/quality-development/Solici
 import ReasignarResponsableMantenimiento from './components/quality-development/SolicitudPruebasEnProceso/CoordinacionMantenimiento/ReasignarResponsableMantenimiento';
 import ReasignarResponsablePlanta from './components/quality-development/SolicitudPruebasEnProceso/CoordinacionPlanta/ReasignarResponsablePlanta';
 import ConsultaPrincipalPP from './components/quality-development/SolicitudConsulta/ConsultaPrincipalPP';
+import InformeSPP from './components/quality-development/SolicitudPruebasEnProceso/ValoresInforme/InformeSPP';
+import InformeSPPLectura from './components/quality-development/SolicitudPruebasEnProceso/ValoresInforme/InformeSPPLectura';
 
 
 
@@ -637,6 +639,8 @@ class MainPage extends Component {
 						<Route path="/quality-development_solicitudpp_aprobar_solicitud/:idSolicitud" component={VerAprobacionSPP} />
 						<Route path="/quality-development_solicitudpp_ajuste_maquinaria_principal" component={AjusteMaquinariaPrincipal} />
 						<Route path="/quality-development_solicitudpp_ajuste_maquinaria_ver/:idSolicitud" component={VerAjusteMaquinaria} />
+						<Route path="/quality-development_solicitudpp_informe/:idSolicitud/:tipo/:accion" component={InformeSPP} />
+                        <Route path="/quality-development_solicitudpp_informe_final/:idSolicitud/:tipo" component={InformeSPPLectura} />
 
 						<Route path="/home" component={Home} />
 

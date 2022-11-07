@@ -19,6 +19,12 @@ import { InputText } from 'primereact/inputtext';
 import { FileUpload } from 'primereact/fileupload';
 import SolicitudPruebaProcesoDocumentoService from '../../../service/SolicitudPruebaProceso/SolicitudPruebaProcesoDocumentoService';
 import { Dialog } from 'primereact/dialog';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import { CatalogoService } from '../../../service/CatalogoService';
+import ProductoService from '../../../service/productoService';
+import { ColumnGroup } from 'primereact/columngroup';
+import { Row } from 'primereact/row';
 
 const TIPO_SOLICITUD = "SOLICITUD_PRUEBAS_PROCESO";
 class FormularioSPP extends Component {
@@ -51,7 +57,14 @@ class FormularioSPP extends Component {
             puedeRepetirPrueba: false,
             displayRepetirPrueba: false,
             displayAnular: false,
+            catalogoProductos: [],
+            materialesFormula: [],
+            cantidadRequeridaProducir: null,
+            unidadRequeridaProducir: null,
+            unidadesCatalogo: [],
+            materialFormula: null
         };
+        this.catalogoService = new CatalogoService();
         this.onObjectiveChange = this.onObjectiveChange.bind(this);
         this.onDescriptionMaterialLPChange = this.onDescriptionMaterialLPChange.bind(this);
         this.guardar = this.guardar.bind(this);
@@ -61,13 +74,20 @@ class FormularioSPP extends Component {
         this.repetirPrueba = this.repetirPrueba.bind(this);
         this.confirmarAnular = this.confirmarAnular.bind(this);
         this.anular = this.anular.bind(this);
+        this.addNew = this.addNew.bind(this);
+        this.onSave = this.onSave.bind(this);
+        this.onDelete = this.onDelete.bind(this);
+        this.onCarSelect = this.onCarSelect.bind(this);
     }
 
     async componentDidMount() {
         const catalogAreas = await SolicitudPruebasProcesoService.listarAreas();
         const catalogoOrigen = await SolicitudPruebasProcesoService.listarOrigen();
+        this.catalogoService.getUnidadesMedida().then(data => this.setState({ unidadesCatalogo: data }));
+        let catalogoMateriales = await ProductoService.list();
+        const productos = _.map(_.uniqBy(catalogoMateriales, 'nameProduct'), (o) => { return { label: o.nameProduct, value: o.nameProduct } });
         this.refrescar(this.props.match.params.idSolicitud);
-        this.setState({ catalogoOrigen: catalogoOrigen, catalogoArea: catalogAreas });
+        this.setState({ catalogoOrigen: catalogoOrigen, catalogoArea: catalogAreas, catalogoProductos: productos });
     }
 
     async refrescar(idSolicitud) {
@@ -77,7 +97,8 @@ class FormularioSPP extends Component {
                 let objetivosValor = _.split(solicitud.motivo, ',');
                 let detalleMaterialValor = _.split(solicitud.materialLineaProceso, ',');
                 console.log(solicitud)
-                this.leerImagen(solicitud.imagen1Id);
+                if (solicitud.imagen1Id)
+                    this.leerImagen(solicitud.imagen1Id);
                 this.setState({
                     id: solicitud.id,
                     codigo: solicitud.codigo,
@@ -98,7 +119,10 @@ class FormularioSPP extends Component {
                     imagen1Id: solicitud.imagen1Id,
                     mostrarControles: solicitud.estado === 'NUEVO',
                     editar: solicitud.estado === 'NUEVO',
-                    puedeRepetirPrueba: solicitud.puedeRepetirPrueba
+                    puedeRepetirPrueba: solicitud.puedeRepetirPrueba,
+                    cantidadRequeridaProducir: solicitud.cantidadRequeridaProducir,
+                    unidadRequeridaProducir: solicitud.unidadRequeridaProducir,
+                    materialesFormula: solicitud.materialesFormula
                 });
             }
         }
@@ -163,7 +187,9 @@ class FormularioSPP extends Component {
             area: this.state.area,
             requiereInforme: this.state.requiereInforme,
             observacion: this.state.observacion,
-            observacionFlujo: this.state.observacionFlujo
+            observacionFlujo: this.state.observacionFlujo,
+            cantidadRequeridaProducir: this.state.cantidadRequeridaProducir,
+            unidadRequeridaProducir: this.state.unidadRequeridaProducir
         }
     }
 
@@ -171,7 +197,10 @@ class FormularioSPP extends Component {
         if (_.isEmpty(moment(this.state.fechaEntrega).format("YYYY-MM-DD"))
             || _.isEmpty(this.state.objectivos)
             || _.isEmpty(this.state.linea)
-            || _.isEmpty(this.state.detalleMaterial))
+            || _.isEmpty(this.state.origen)
+            || _.isEmpty(this.state.area)
+            || _.isEmpty(this.state.cantidadRequeridaProducir)
+            || _.isEmpty(this.state.unidadRequeridaProducir))
             return false;
 
         return true;
@@ -236,6 +265,64 @@ class FormularioSPP extends Component {
         this.props.closeModal();
     }
 
+    async onSave() {
+        if (this.state.materialFormula !== null) {
+            let solicitudActualizada;
+            if (this.state.materialFormula.id > 0) {
+                solicitudActualizada = await SolicitudPruebasProcesoService.editarMaterialFomula(this.state.id, this.state.materialFormula);
+                let msg = { severity: 'success', summary: 'Material', detail: 'Modificado con éxito' };
+                this.growl.show(msg);
+            } else {
+                solicitudActualizada = await SolicitudPruebasProcesoService.agregarMaterialFomula(this.state.id, this.state.materialFormula);
+                let msg = { severity: 'success', summary: 'Material', detail: 'Agregado con éxito' };
+                this.growl.show(msg);
+            }
+            this.setState({ materialesFormula: solicitudActualizada.materialesFormula, selectedMaterialFormula: null, materialFormula: null, displayDialog: false });
+
+        } else {
+            this.messages.show({ severity: 'error', summary: 'Error', detail: 'Debe seleccionar el grupo y una propiedad.' });
+        }
+
+    }
+
+    async onDelete() {
+        const solicitudRecargada = await SolicitudPruebasProcesoService.eliminarMaterialFomula(this.state.id, this.state.materialFormula.id);
+        this.growl.show({ severity: 'success', summary: 'Material', detail: 'Eliminado' });
+        this.setState({
+            materialesFormula: solicitudRecargada.materialesFormula,
+            materialFormula: null,
+            displayDialog: false
+        });
+    }
+
+    findSelectedCarIndex() {
+        return this.state.materialesFormula.indexOf(this.state.selectedMaterialFormula);
+    }
+
+    updateProperty(property, value) {
+        debugger
+        let car = this.state.materialFormula;
+        car[property] = value;
+        this.setState({ materialFormula: car });
+    }
+
+    onCarSelect(e) {
+        this.newCar = false;
+        this.setState({
+            displayDialog: true,
+            materialFormula: Object.assign({}, e.data)
+        });
+    }
+
+
+    addNew() {
+        this.newCar = true;
+        this.setState({
+            materialFormula: { id: 0, nombre: '', porcentaje: '' },
+            displayDialog: true
+        });
+    }
+
     render() {
         let es = {
             firstDayOfWeek: 1,
@@ -257,6 +344,27 @@ class FormularioSPP extends Component {
                 <Button icon="pi pi-times" onClick={() => this.setState({ displayAnular: false })} label="No" className="p-button-danger" />
             </div>
         );
+
+        let header = <div className="p-clearfix" style={{ width: '10%' }}>
+            <Button style={{ float: 'left' }} label="Agregar" icon="pi pi-plus" onClick={this.addNew} />
+        </div>;
+
+        let dialogFooterFormula = <div className="ui-dialog-buttonpane p-clearfix">
+            {!this.newCar &&
+                <Button label="Eliminar" icon="pi pi-times" className="p-button-danger" onClick={this.onDelete} />
+            }
+            <Button label="Guardar" icon="pi pi-check" onClick={this.onSave} />
+            <Button label="Cancelar" icon="pi pi-check" className="p-button-secondary" onClick={() => this.setState({ displayDialog: false })} />
+        </div>;
+
+        let footerGroup = <ColumnGroup>
+            <Row>
+                <Column style={{backgroundColor: '#A5D6A7', fontWeight:'bold'}} footer="FORMULA TOTAL" />
+                <Column style={{backgroundColor: '#A5D6A7', fontWeight:'bold'}} footer={_.sumBy(this.state.materialesFormula, (o) => { return o.porcentaje })} />
+                <Column style={{backgroundColor: '#A5D6A7', fontWeight:'bold'}} footer={_.sumBy(this.state.materialesFormula, (o) => { return o.cantidad })} />
+                <Column style={{backgroundColor: '#A5D6A7', fontWeight:'bold'}} footer={_.isEmpty(this.state.materialesFormula) ? '' : this.state.materialesFormula[0].unidad} />
+            </Row>
+        </ColumnGroup>;
 
         return (
             <div className="card card-w-title">
@@ -335,7 +443,7 @@ class FormularioSPP extends Component {
                         </div>
 
                     </div>
-                    <div className="p-col-12 p-lg-12" >
+                    {/* <div className="p-col-12 p-lg-12" >
                         <div className='p-grid'>
                             <label className="p-col-12 p-lg-12" style={{ fontWeight: 'bold' }} htmlFor="float-input"> <span style={{ color: '#CB3234' }}>*</span>Descripción del Material y Línea de Proceso de Prueba (Marque según corresponda)</label>
                             <div className="p-col-12 p-lg-3">
@@ -387,7 +495,7 @@ class FormularioSPP extends Component {
                                 <InputTextarea readOnly={!this.state.editar} value={this.state.detalleMaterialOtro} onChange={(e) => this.setState({ detalleMaterialOtro: e.target.value })} rows={2} placeholder='Descripción' />
                             </div>
                         </div>
-                    </div>
+                    </div> */}
 
                     <div className='p-col-12 p-lg-12'>
                         <div className='p-grid'>
@@ -424,7 +532,32 @@ class FormularioSPP extends Component {
                             </div>
                         </div>
                     </div>
+                    <div className="p-col-12 p-lg-12" >
+                        <div className='p-grid'>
+                            <label className="p-col-12 p-lg-12" style={{ fontWeight: 'bold' }} htmlFor="float-input"><span style={{ color: '#CB3234' }}>*</span>Material Detalle Formulación</label>
+                            <div className='p-col-12 p-lg-4'>
+                                <label style={{ fontWeight: 'bold' }} htmlFor="float-input">Cantidad Requerida Para Producir</label>
+                                <InputText keyfilter="num" value={this.state.cantidadRequeridaProducir} onChange={(e) => this.setState({ cantidadRequeridaProducir: e.target.value })} />
+                            </div>
+                            <div className='p-col-12 p-lg-3'>
+                                <label style={{ fontWeight: 'bold' }} htmlFor="float-input">Unidad</label>
+                                <Dropdown disabled={!this.state.editar} options={this.state.unidadesCatalogo} value={this.state.unidadRequeridaProducir} autoWidth={false} onChange={(e) => this.setState({ unidadRequeridaProducir: e.value })} placeholder="Selecione" />
+                            </div>
 
+                            {this.state.id > 0 && this.state.estado === 'NUEVO' &&
+                                <div className='p-col-12 p-lg-12'>
+                                    <DataTable value={this.state.materialesFormula} rows={15} header={header} footerColumnGroup={footerGroup}
+                                        selectionMode="single" selection={this.state.selectedConfiguracion} onSelectionChange={e => this.setState({ selectedMaterialFormula: e.value })}
+                                        onRowSelect={this.onCarSelect}>
+                                        <Column field="nombre" header="Material" sortable={true} />
+                                        <Column field="porcentaje" header="Porcentaje(%)" sortable={true} style={{ textAlign: 'center' }} />
+                                        <Column field="cantidad" header="Cantidad" sortable={true} style={{ textAlign: 'center' }} />
+                                        <Column field="unidad" header="Unidad" style={{ textAlign: 'center' }} />
+                                    </DataTable>
+                                </div>
+                            }
+                        </div>
+                    </div>
 
 
                     <div className='p-col-12 p-lg-12'>
@@ -475,6 +608,25 @@ class FormularioSPP extends Component {
                 </Dialog>
                 <Dialog header="Confirmación" visible={this.state.displayAnular} style={{ width: '25vw' }} onHide={() => this.setState({ displayAnular: false })} blockScroll footer={dialogFooterAnular} >
                     <p>¿Está seguro de ANULAR la solicitud?</p>
+                </Dialog>
+                <Dialog visible={this.state.displayDialog} style={{ width: '500px' }} header="Agregar Editar" modal={true} footer={dialogFooterFormula} onHide={() => this.setState({ displayDialog: false })}
+                    blockScroll={false}>
+                    {
+                        this.state.materialFormula &&
+
+                        <div className="p-grid p-fluid">
+                            <div className="p-col-4" style={{ padding: '.75em' }}><label htmlFor="vin">Material</label></div>
+                            <div className="p-col-8" style={{ padding: '.5em' }}>
+                                <Dropdown appendTo={document.body} value={this.state.materialFormula.nombre} editable={true} options={this.state.catalogoProductos} filter={true}
+                                    onChange={(e) => { this.updateProperty('nombre', e.value) }} />
+                            </div>
+
+                            <div className="p-col-4" style={{ padding: '.75em' }}><label htmlFor="brand">Valor(%)</label></div>
+                            <div className="p-col-8" style={{ padding: '.5em' }}>
+                                <InputText keyfilter="num" value={this.state.materialFormula.porcentaje} onChange={(e) => this.updateProperty('porcentaje', e.target.value)} />
+                            </div>
+                        </div>
+                    }
                 </Dialog>
             </div >
         )

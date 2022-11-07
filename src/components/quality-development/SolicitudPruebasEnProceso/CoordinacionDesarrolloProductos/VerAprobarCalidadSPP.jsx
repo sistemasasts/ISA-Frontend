@@ -27,6 +27,7 @@ class VerAprobarCalidadSPP extends Component {
         };
         this.responderSolicitud = this.responderSolicitud.bind(this);
         this.redirigirInicio = this.redirigirInicio.bind(this);
+        this.abrirInformeDatos = this.abrirInformeDatos.bind(this);
     }
 
     async componentDidMount() {
@@ -72,6 +73,11 @@ class VerAprobarCalidadSPP extends Component {
         }
     }
 
+    abrirInformeDatos() {
+        //history.push(`/quality-development_solicitudpp_informe/${this.state.id}/MANTENIMIENTO`);
+        window.open(`${window.location.origin}/#quality-development_solicitudpp_informe_final/${this.state.id}/CALIDAD`)
+    }
+
     render() {
         return (
 
@@ -97,6 +103,7 @@ class VerAprobarCalidadSPP extends Component {
                         < div >
                             <Button className="p-button-primary" label="APROBAR" onClick={() => this.responderSolicitud(true)} />
                             <Button className="p-button-danger" label="RECHAZAR" onClick={() => this.responderSolicitud(false)} />
+                            <Button className='p-button-success' label="VER DATOS DDP05" onClick={() => this.abrirInformeDatos()} />
                             <Button className='p-button-secondary' label="ATRÁS" onClick={this.redirigirInicio} />
                         </div>
                     }
