@@ -53,6 +53,7 @@ import VerResponderSPP from './components/quality-development/SolicitudPruebasEn
 import ConsultaPrincipal from './components/quality-development/SolicitudConsulta/ConsultaPrincipal';
 import VerSE from './components/quality-development/SolicitudConsulta/VerSE';
 import VerSPP from './components/quality-development/SolicitudConsulta/VerSPP';
+import ConsultaTest from './components/quality-development/Test-type/ConsultaTest';
 
 
 
@@ -591,6 +592,7 @@ class MainPage extends Component {
 						<Route path="/quality-development_consulta_solicitud" component={ConsultaPrincipal} />
 						<Route path="/quality-development_consulta_solicitud_verse/:idSolicitud" component={VerSE} />
 						<Route path="/quality-development_consulta_solicitud_verspp/:idSolicitud" component={VerSPP} />
+                        <Route path="/quality-development_consulta_tests" component={ConsultaTest} />
 
 						<Route path="/home" component={Home} />
 
