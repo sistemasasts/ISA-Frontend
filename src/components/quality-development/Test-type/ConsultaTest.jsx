@@ -7,6 +7,7 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Calendar } from 'primereact/calendar';
 import { Dropdown } from 'primereact/dropdown';
+import {Toolbar} from 'primereact/toolbar';
 import TestService from '../../../service/TestService';
 import ProductoService from '../../../service/productoService';
 import PropiedadService from '../../../service/PropiedadService';
@@ -33,6 +34,7 @@ class ConsultaTest extends Component {
         this.consultar = this.consultar.bind(this);
         this.limpiar = this.limpiar.bind(this);
         this.onPageChange = this.onPageChange.bind(this);
+        this.generarReporte = this.generarReporte.bind(this);
     }
 
     async componentDidMount() {
@@ -94,6 +96,19 @@ class ConsultaTest extends Component {
         this.setState({ datos: solicitudesData.content, totalRecords: solicitudesData.totalElements, currenPage: currentReportAUX });
     }
 
+    async generarReporte() {
+        //this.props.openModal();
+        var data = await TestService.generarReporte(JSON.stringify(this.crearObj()));
+        //this.props.closeModal();
+        const ap = window.URL.createObjectURL(data)
+        const a = document.createElement('a');
+        document.body.appendChild(a);
+        a.href = ap;
+        a.download = `Reporte_Ensayos_${moment().format('YYYY-MM-DD')}.xlsx`;
+        a.click();
+        //this.showMessage('Reporte generado', 'success');
+    }
+
     render() {
         let es = {
             firstDayOfWeek: 1,
@@ -103,7 +118,7 @@ class ConsultaTest extends Component {
             monthNames: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
             monthNamesShort: ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"]
         };
-        const header = <div className="p-clearfix" style={{ textAlign: 'left' }}>Resultados</div>;
+
         return (
             <div className="card card-w-title">
                 <Growl ref={(el) => this.growl = el} style={{ marginTop: '75px' }} />
@@ -132,7 +147,16 @@ class ConsultaTest extends Component {
                     <Button className='p-button-secondary' label="LIMPIAR" onClick={this.limpiar} />
                 </div>
 
-                <DataTable value={this.state.datos} rows={30} responsive={true} header={header} scrollable={true}
+                <Toolbar>
+                    <div className="p-toolbar-group-left" style={{marginTop:'5px'}}>
+                        {/* <i className="pi pi-bars p-toolbar-separator" style={{ marginRight: '.25em' }} />  */}
+                        <span>Resultados</span>
+                    </div>
+                    <div className="p-toolbar-group-right">
+                        <Button icon="pi pi-download" style={{ marginRight: '.25em' }} label='Descargar Reporte' onClick={() => this.generarReporte()} />
+                    </div>
+                </Toolbar>
+                <DataTable value={this.state.datos} rows={30} responsive={true} scrollable={true}
                 >
                     <Column field="fecha" header="Fecha" sortable={true} style={{ textAlign: 'center', width: '12em' }} />
                     <Column field="lote" header="Lote" sortable={true} style={{ textAlign: 'center', width: '16em' }} />

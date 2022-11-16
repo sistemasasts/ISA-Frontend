@@ -9,8 +9,8 @@ import history from "../history";
 const httpFiles = Axios.create({
     baseURL: 'http://localhost:8440',
 
-    headers: {  
-        'Content-Type' : 'application/octet-stream',       
+    headers: {
+        'Content-Type' : 'application/octet-stream',
     },
     responseType: 'blob'
     /*     timeout: 4000,
@@ -20,6 +20,7 @@ const httpFiles = Axios.create({
 // To add token to the header with bearer schema
 httpFiles.interceptors.request.use(
     (config) => {
+        document.body.classList.add('loading-indicator');
         const token = getJwt()
         if (token) config.headers.Authorization = `Bearer ${token}`
         return config
@@ -28,6 +29,7 @@ httpFiles.interceptors.request.use(
 )
 
 httpFiles.interceptors.response.use(undefined, (error) => {
+    document.body.classList.remove('loading-indicator');
     if (error.message === 'Network Error' && !error.response) {
         console.log('Network error - make sure the API server is running')
     }
@@ -40,7 +42,7 @@ httpFiles.interceptors.response.use(undefined, (error) => {
             position: toast.POSITION.TOP_RIGHT
         })
          history.push('/')
-    } 
+    }
 
     // eslint-disable-next-line no-prototype-builtins
     if (status === 400 && config.method === 'get' && data.errors.hasOwnProperty('id')) {
@@ -48,7 +50,7 @@ httpFiles.interceptors.response.use(undefined, (error) => {
     }
 
     if (status === 500) {
-        
+
         //dispatch.dispatch({type: 'CLOSE_MODAL'})
         toast.error('Server error - Contactese con el administrador del sistema !', {
             position: toast.POSITION.TOP_RIGHT
@@ -62,10 +64,10 @@ httpFiles.interceptors.response.use(undefined, (error) => {
 const responseBody = response => response.data;
 
 const request = {
-    get: url => httpFiles.get(url).then(responseBody),
-    post: (url, body) => httpFiles.post(url, body).then(responseBody),
-    put: (url, body) => httpFiles.put(url, body).then(responseBody),
-    delete: (url) => httpFiles.delete(url).then(responseBody)
+    get: url => httpFiles.get(url).then(responseBody).finally(()=>{document.body.classList.remove('loading-indicator')}),
+    post: (url, body) => httpFiles.post(url, body).then(responseBody).finally(()=>{document.body.classList.remove('loading-indicator')}),
+    put: (url, body) => httpFiles.put(url, body).then(responseBody).finally(()=>{document.body.classList.remove('loading-indicator')}),
+    delete: (url) => httpFiles.delete(url).then(responseBody).finally(()=>{document.body.classList.remove('loading-indicator')})
 }
 
 export default {
