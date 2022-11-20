@@ -68,7 +68,7 @@ class HCC extends Component {
             selectedHCC: undefined,
             dialogCertificate: false,
             cliente: undefined,
-            email: 'svillacis@imptek.com',
+            email: 'svillacis@imptekcorp.com',
             order: undefined,
             hccType: undefined,
             clientList: [],
@@ -80,7 +80,7 @@ class HCC extends Component {
             visibleModalEmail: false,
             visibleModalEmail2: false,
             pathFile: null,
-            sendTo: ['anunez@imptek.com'],
+            sendTo: ['jlucio@imptekcorp.com'],
             sendSubject: 'HCC MP ',
             sendMessage: 'Estimados. \nAdjunto el documento ',
             waitModalView: false,
@@ -507,7 +507,7 @@ class HCC extends Component {
                             btnGuardarHCC: 'none',
                             productName: '',
                             lote: '', observation: '', analysis: '', hccPT: '', hccOF: '', referralGuide: '', reloadTextInput: false, hCC: {}, productionDate: undefined, dateOrder: undefined,
-                            visibleModalEmail: false, sendTo: ['anunez@imptek.com'], sendMessage: 'Estimados. \nAdjunto el documento', sendSubject: 'HCC MP'
+                            visibleModalEmail: false, sendTo: ['jlucio@imptekcorp.com'], sendMessage: 'Estimados. \nAdjunto el documento', sendSubject: 'HCC MP'
                         });
                         break;
                     case 'ERROR':

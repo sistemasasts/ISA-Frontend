@@ -78,6 +78,7 @@ import ReasignarResponsablePlanta from './components/quality-development/Solicit
 import ConsultaPrincipalPP from './components/quality-development/SolicitudConsulta/ConsultaPrincipalPP';
 import InformeSPP from './components/quality-development/SolicitudPruebasEnProceso/ValoresInforme/InformeSPP';
 import InformeSPPLectura from './components/quality-development/SolicitudPruebasEnProceso/ValoresInforme/InformeSPPLectura';
+import ConsultaTest from './components/quality-development/Test-type/ConsultaTest';
 
 
 
@@ -641,6 +642,7 @@ class MainPage extends Component {
 						<Route path="/quality-development_solicitudpp_ajuste_maquinaria_ver/:idSolicitud" component={VerAjusteMaquinaria} />
 						<Route path="/quality-development_solicitudpp_informe/:idSolicitud/:tipo/:accion" component={InformeSPP} />
                         <Route path="/quality-development_solicitudpp_informe_final/:idSolicitud/:tipo" component={InformeSPPLectura} />
+                        <Route path="/quality-development_consulta_tests" component={ConsultaTest} />
 
 						<Route path="/home" component={Home} />
 

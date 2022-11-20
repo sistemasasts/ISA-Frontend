@@ -90,7 +90,7 @@ class DimensionalesForm extends Component {
             monthNames: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
             monthNamesShort: ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"]
         };
-        return <Calendar id={props.rowIndex} dateFormat="yy/mm/dd" value={this.state.testDimensionalesData[props.rowIndex][field]} locale={es} showTime={true} onChange={(e) => this.onEditorValueChange(props, e.value)} />
+        return <Calendar appendTo={document.body} id={props.rowIndex} dateFormat="yy/mm/dd" value={this.state.testDimensionalesData[props.rowIndex][field]} locale={es} showTime={true} onChange={(e) => this.onEditorValueChange(props, e.value)} />
     }
     /* Metodo para ver el valor en la celda de la tabla Calendar y Hora */
     renderDate = (value, column) => {
