@@ -32,7 +32,8 @@ class VerAsignarResponsableSPP extends Component {
             mostrarControles: false,
             usuarios: [],
             responsable: null,
-            fechaPrueba: null
+            fechaPrueba: null,
+            mostrarBotonPruebaNoRealizada: false
         };
         this.asignarResponsable = this.asignarResponsable.bind(this);
         this.rechazarSolicitud = this.rechazarSolicitud.bind(this);
@@ -53,7 +54,8 @@ class VerAsignarResponsableSPP extends Component {
                 this.setState({
                     id: solicitud.id,
                     estado: solicitud.estado,
-                    mostrarControles: solicitud.estado === ESTADO
+                    mostrarControles: solicitud.estado === ESTADO,
+                    mostrarBotonPruebaNoRealizada: solicitud.fechaPrueba !== null
                 });
             }
         }
@@ -108,7 +110,7 @@ class VerAsignarResponsableSPP extends Component {
             observacionFlujo: this.state.observacion,
             usuarioAsignado: _.isEmpty(this.state.responsable) ? null : this.state.responsable.idUser,
             orden: ORDEN,
-            fechaPrueba: this.state.fechaPrueba
+            fechaPrueba: moment(this.state.fechaPrueba).format('YYYY-MM-DD HH:mm')
         }
     }
 
@@ -146,7 +148,7 @@ class VerAsignarResponsableSPP extends Component {
                         </div>
                         <div className='p-col-12 p-lg-6'>
                             <label htmlFor="float-input">FECHA REALIZACIÓN PRUEBA</label>
-                            <Calendar dateFormat="yy/mm/dd" value={this.state.fechaPrueba} locale={es} onChange={(e) => this.setState({ fechaPrueba: e.value })} showIcon={true} />
+                            <Calendar dateFormat="yy/mm/dd" value={this.state.fechaPrueba} locale={es} onChange={(e) => this.setState({ fechaPrueba: e.value })} showIcon={true} showTime={true} />
                         </div>
                         <div className='p-col-12 p-lg-12'>
                             <label htmlFor="float-input">OBSERVACIÓN</label>
@@ -160,7 +162,9 @@ class VerAsignarResponsableSPP extends Component {
                         < div >
                             <Button className="p-button-primary" label="ASIGNAR RESPONSABLE" onClick={this.asignarResponsable} />
                             {/* <Button className='p-button-secondary' label="RECHAZAR" onClick={this.rechazarSolicitud} /> */}
-                            <Button className='p-button-danger' label="PRUEBA NO REALIZADA DEFINITIVA" onClick={() => this.setState({ displayPruebaNoEjecutada: true })} />
+                            {this.state.mostrarBotonPruebaNoRealizada &&
+                                <Button className='p-button-danger' label="PRUEBA NO REALIZADA DEFINITIVA" onClick={() => this.setState({ displayPruebaNoEjecutada: true })} />
+                            }
                         </div>
                     }
                 </div>

@@ -62,12 +62,14 @@ class FormularioSPP extends Component {
             cantidadRequeridaProducir: null,
             unidadRequeridaProducir: null,
             unidadesCatalogo: [],
-            materialFormula: null
+            materialFormula: null,
+            mostrarMaterialesFormula: false
         };
         this.catalogoService = new CatalogoService();
         this.onObjectiveChange = this.onObjectiveChange.bind(this);
         this.onDescriptionMaterialLPChange = this.onDescriptionMaterialLPChange.bind(this);
         this.guardar = this.guardar.bind(this);
+        this.actualizar = this.actualizar.bind(this);
         this.enviarSolicitud = this.enviarSolicitud.bind(this);
         this.myUploader = this.myUploader.bind(this);
         this.leerImagen = this.leerImagen.bind(this);
@@ -117,12 +119,13 @@ class FormularioSPP extends Component {
                     area: solicitud.area,
                     origen: solicitud.origen,
                     imagen1Id: solicitud.imagen1Id,
-                    mostrarControles: solicitud.estado === 'NUEVO',
-                    editar: solicitud.estado === 'NUEVO',
+                    mostrarControles: _.includes(['NUEVO', 'REGRESADO_NOVEDAD_FORMA'], solicitud.estado),
+                    editar: _.includes(['NUEVO', 'REGRESADO_NOVEDAD_FORMA'], solicitud.estado),
                     puedeRepetirPrueba: solicitud.puedeRepetirPrueba,
                     cantidadRequeridaProducir: solicitud.cantidadRequeridaProducir,
                     unidadRequeridaProducir: solicitud.unidadRequeridaProducir,
-                    materialesFormula: solicitud.materialesFormula
+                    materialesFormula: solicitud.materialesFormula,
+                    mostrarMaterialesFormula: solicitud.area && _.startsWith(solicitud.area.nameArea, 'I+D')
                 });
             }
         }
@@ -161,7 +164,6 @@ class FormularioSPP extends Component {
             this.growl.show({ severity: 'error', detail: 'Complete los campos requeridos.' });
             return false;
         }
-        debugger
         this.props.openModal();
         const solicitudCreada = await SolicitudPruebasProcesoService.create(this.crearObjSolicitud());
         this.props.closeModal();
@@ -169,6 +171,15 @@ class FormularioSPP extends Component {
         setTimeout(function () {
             history.push(`/quality-development_solicitudpp_edit/${solicitudCreada.id}`);
         }, 1000);
+    }
+
+    async actualizar() {
+        if (!this.formularioValido()) {
+            this.growl.show({ severity: 'error', detail: 'Complete los campos requeridos.' });
+            return false;
+        }
+        const solicitudActualizada = await SolicitudPruebasProcesoService.actualizar(this.crearObjSolicitud());
+        this.growl.show({ severity: 'success', detail: 'Solicitud Actualizada!' });
     }
 
     crearObjSolicitud() {
@@ -194,16 +205,18 @@ class FormularioSPP extends Component {
     }
 
     formularioValido() {
+        var valido = true;
         if (_.isEmpty(moment(this.state.fechaEntrega).format("YYYY-MM-DD"))
             || _.isEmpty(this.state.objectivos)
             || _.isEmpty(this.state.linea)
             || _.isEmpty(this.state.origen)
-            || _.isEmpty(this.state.area)
-            || _.isEmpty(this.state.cantidadRequeridaProducir)
-            || _.isEmpty(this.state.unidadRequeridaProducir))
-            return false;
-
-        return true;
+            || _.isEmpty(this.state.area))
+            valido = false;
+        if (this.state.mostrarMaterialesFormula) {
+            if ((this.state.cantidadRequeridaProducir <= 0) || _.isEmpty(this.state.unidadRequeridaProducir))
+                valido = false;
+        }
+        return valido;
     }
 
     async enviarSolicitud() {
@@ -323,6 +336,13 @@ class FormularioSPP extends Component {
         });
     }
 
+    onChangeArea(value) {
+        this.setState({
+            area: value,
+            mostrarMaterialesFormula: _.startsWith(value.nameArea, 'I+D')
+        });
+    }
+
     render() {
         let es = {
             firstDayOfWeek: 1,
@@ -359,10 +379,10 @@ class FormularioSPP extends Component {
 
         let footerGroup = <ColumnGroup>
             <Row>
-                <Column style={{backgroundColor: '#A5D6A7', fontWeight:'bold'}} footer="FORMULA TOTAL" />
-                <Column style={{backgroundColor: '#A5D6A7', fontWeight:'bold'}} footer={_.sumBy(this.state.materialesFormula, (o) => { return o.porcentaje })} />
-                <Column style={{backgroundColor: '#A5D6A7', fontWeight:'bold'}} footer={_.sumBy(this.state.materialesFormula, (o) => { return o.cantidad })} />
-                <Column style={{backgroundColor: '#A5D6A7', fontWeight:'bold'}} footer={_.isEmpty(this.state.materialesFormula) ? '' : this.state.materialesFormula[0].unidad} />
+                <Column style={{ backgroundColor: '#A5D6A7', fontWeight: 'bold' }} footer="FORMULA TOTAL" />
+                <Column style={{ backgroundColor: '#A5D6A7', fontWeight: 'bold' }} footer={_.sumBy(this.state.materialesFormula, (o) => { return o.porcentaje })} />
+                <Column style={{ backgroundColor: '#A5D6A7', fontWeight: 'bold' }} footer={_.sumBy(this.state.materialesFormula, (o) => { return o.cantidad })} />
+                <Column style={{ backgroundColor: '#A5D6A7', fontWeight: 'bold' }} footer={_.isEmpty(this.state.materialesFormula) ? '' : this.state.materialesFormula[0].unidad} />
             </Row>
         </ColumnGroup>;
 
@@ -391,7 +411,7 @@ class FormularioSPP extends Component {
                     </div>
                     <div className='p-col-12 p-lg-4'>
                         <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Área</label>
-                        <Dropdown disabled={!this.state.editar} optionLabel='nameArea' options={this.state.catalogoArea} value={this.state.area} autoWidth={false} onChange={(e) => this.setState({ area: e.value })} placeholder="Selecione" />
+                        <Dropdown disabled={!this.state.editar} optionLabel='nameArea' options={this.state.catalogoArea} value={this.state.area} autoWidth={false} onChange={(e) => this.onChangeArea(e.value)} placeholder="Selecione" />
                     </div>
                     <div className='p-col-12 p-lg-4' style={{ marginTop: '20px' }}>
                         <Checkbox disabled={!this.state.editar} inputId="cbri" onChange={e => this.setState({ requiereInforme: e.checked })} checked={this.state.requiereInforme}></Checkbox>
@@ -524,7 +544,7 @@ class FormularioSPP extends Component {
                                                 <img style={{ width: 'auto', maxHeight: '100%', display: 'block', margin: 'auto' }} id="ItemPreview" src="" />
                                             }
                                         </div>
-                                        {this.state.id > 0 && this.state.estado === 'NUEVO' &&
+                                        {this.state.id > 0 && _.includes(['NUEVO', 'REGRESADO_NOVEDAD_FORMA'], this.state.estado) &&
                                             <FileUpload ref={(el) => this.fileUploadRef = el} mode="basic" name="demo" customUpload={true} uploadHandler={this.myUploader} accept="image/*" chooseLabel='Seleccione Imagen' uploadLabel='Subir Imagen' />
                                         }
                                     </div>
@@ -532,33 +552,35 @@ class FormularioSPP extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className="p-col-12 p-lg-12" >
-                        <div className='p-grid'>
-                            <label className="p-col-12 p-lg-12" style={{ fontWeight: 'bold' }} htmlFor="float-input"><span style={{ color: '#CB3234' }}>*</span>Material Detalle Formulación</label>
-                            <div className='p-col-12 p-lg-4'>
-                                <label style={{ fontWeight: 'bold' }} htmlFor="float-input">Cantidad Requerida Para Producir</label>
-                                <InputText keyfilter="num" value={this.state.cantidadRequeridaProducir} onChange={(e) => this.setState({ cantidadRequeridaProducir: e.target.value })} />
-                            </div>
-                            <div className='p-col-12 p-lg-3'>
-                                <label style={{ fontWeight: 'bold' }} htmlFor="float-input">Unidad</label>
-                                <Dropdown disabled={!this.state.editar} options={this.state.unidadesCatalogo} value={this.state.unidadRequeridaProducir} autoWidth={false} onChange={(e) => this.setState({ unidadRequeridaProducir: e.value })} placeholder="Selecione" />
-                            </div>
+                    {this.state.mostrarMaterialesFormula &&
 
-                            {this.state.id > 0 && this.state.estado === 'NUEVO' &&
-                                <div className='p-col-12 p-lg-12'>
-                                    <DataTable value={this.state.materialesFormula} rows={15} header={header} footerColumnGroup={footerGroup}
-                                        selectionMode="single" selection={this.state.selectedConfiguracion} onSelectionChange={e => this.setState({ selectedMaterialFormula: e.value })}
-                                        onRowSelect={this.onCarSelect}>
-                                        <Column field="nombre" header="Material" sortable={true} />
-                                        <Column field="porcentaje" header="Porcentaje(%)" sortable={true} style={{ textAlign: 'center' }} />
-                                        <Column field="cantidad" header="Cantidad" sortable={true} style={{ textAlign: 'center' }} />
-                                        <Column field="unidad" header="Unidad" style={{ textAlign: 'center' }} />
-                                    </DataTable>
+                        <div className="p-col-12 p-lg-12" >
+                            <div className='p-grid'>
+                                <label className="p-col-12 p-lg-12" style={{ fontWeight: 'bold' }} htmlFor="float-input"><span style={{ color: '#CB3234' }}>*</span>Material Detalle Formulación</label>
+                                <div className='p-col-12 p-lg-4'>
+                                    <label style={{ fontWeight: 'bold' }} htmlFor="float-input">Cantidad Requerida Para Producir</label>
+                                    <InputText keyfilter="num" value={this.state.cantidadRequeridaProducir} onChange={(e) => this.setState({ cantidadRequeridaProducir: e.target.value })} />
                                 </div>
-                            }
-                        </div>
-                    </div>
+                                <div className='p-col-12 p-lg-3'>
+                                    <label style={{ fontWeight: 'bold' }} htmlFor="float-input">Unidad</label>
+                                    <Dropdown disabled={!this.state.editar} options={this.state.unidadesCatalogo} value={this.state.unidadRequeridaProducir} autoWidth={false} onChange={(e) => this.setState({ unidadRequeridaProducir: e.value })} placeholder="Selecione" />
+                                </div>
 
+                                {this.state.id > 0 && _.includes(['NUEVO', 'REGRESADO_NOVEDAD_FORMA'], this.state.estado) &&
+                                    <div className='p-col-12 p-lg-12'>
+                                        <DataTable value={this.state.materialesFormula} rows={15} header={header} footerColumnGroup={footerGroup}
+                                            selectionMode="single" selection={this.state.selectedConfiguracion} onSelectionChange={e => this.setState({ selectedMaterialFormula: e.value })}
+                                            onRowSelect={this.onCarSelect}>
+                                            <Column field="nombre" header="Material" sortable={true} />
+                                            <Column field="porcentaje" header="Porcentaje(%)" sortable={true} style={{ textAlign: 'center' }} />
+                                            <Column field="cantidad" header="Cantidad" sortable={true} style={{ textAlign: 'center' }} />
+                                            <Column field="unidad" header="Unidad" style={{ textAlign: 'center' }} />
+                                        </DataTable>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
 
                     <div className='p-col-12 p-lg-12'>
                         <label style={{ fontWeight: 'bold' }} htmlFor="float-input">Se requieren verificaciones adicionales u otras en especial</label>
@@ -574,10 +596,10 @@ class FormularioSPP extends Component {
                         <div className='p-col-12 p-lg-12'>
                             <div className='p-col-12 p-lg-12 caja'>INFORMACIÓN ADICIONAL</div>
                             <div className='p-col-12 p-lg-12'>
-                                <Adjuntos solicitud={this.props.match.params.idSolicitud} orden={"INGRESO_SOLICITUD"} controles={this.state.mostrarControles} estado={'NUEVO'} tipo={TIPO_SOLICITUD} />
+                                <Adjuntos solicitud={this.props.match.params.idSolicitud} orden={"INGRESO_SOLICITUD"} controles={this.state.mostrarControles} estado={this.state.estado} tipo={TIPO_SOLICITUD} />
                                 <Historial solicitud={this.props.match.params.idSolicitud} tipo={TIPO_SOLICITUD} />
                             </div>
-                            {this.state.estado === 'NUEVO' &&
+                            {_.includes(['NUEVO', 'REGRESADO_NOVEDAD_FORMA'], this.state.estado) &&
                                 <div className='p-col-12 p-lg-12'>
                                     <label htmlFor="float-input">OBSERVACIÓN</label>
                                     <InputTextarea value={this.state.observacionFlujo} onChange={(e) => this.setState({ observacionFlujo: e.target.value })} rows={3} />
@@ -591,8 +613,9 @@ class FormularioSPP extends Component {
                     {this.state.id === 0 &&
                         < Button label="GUARDAR" onClick={this.guardar} />
                     }
-                    {this.state.id > 0 && this.state.estado === 'NUEVO' &&
+                    {this.state.id > 0 && _.includes(['NUEVO', 'REGRESADO_NOVEDAD_FORMA'], this.state.estado) &&
                         < div >
+                            <Button className="p-button" label="ACTUALIZAR" onClick={this.actualizar} />
                             <Button className="p-button-danger" label="ENVIAR" onClick={this.enviarSolicitud} />
                             <Button className='p-button-secondary' label="ANULAR" onClick={this.confirmarAnular} />
                         </div>

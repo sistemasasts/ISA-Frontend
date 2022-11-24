@@ -144,7 +144,7 @@ class VerPlantaSPP extends Component {
                                 <Button className='p-button-success' label="NOTIFICAR PRUEBA REALIZADA" onClick={this.marcarComoRealizada} />
                             } */}
 
-                            <Button className='p-button-secondary' label="PRUEBA NO REALIZADA" onClick={() => this.setState({ displayPruebaNoEjecutada: true })} />
+                            <Button className='p-button-danger' label="PRUEBA NO REALIZADA" onClick={() => this.setState({ displayPruebaNoEjecutada: true })} />
                             <Button className='p-button-success' label="INGRESAR DATOS DDP05" onClick={() => this.abrirInformeDatos()} />
                             <Button className='p-button-secondary' label="ATRÁS" onClick={this.redirigirInicio} />
 

@@ -39,6 +39,10 @@ class InformeSPP extends Component {
             cantidadProductoNoConforme: null,
             cantidadDesperdicio: null,
             cantidadProductoPrueba: null,
+            unidadProductoTerminado: null,
+            unidadProductoNoConforme: null,
+            unidadProductoPrueba: null,
+            unidadDesperdicio: null,
             observacionProduccion: null,
             observacionMantenimiento: null,
             observacionCalidad: null,
@@ -53,9 +57,11 @@ class InformeSPP extends Component {
             seleccionadoCondicionOperacion: null,
             seleccionadoCondicion: null,
             condicionOperacionId: null,
+            habilitarLineaFabricacionUnidad: true,
 
+            unidadesCatalogo: [],
             accion: null,
-            tipo: null
+            tipo: null,
         }
         this.catalogoService = new CatalogoService();
         this.rowExpansionTemplate = this.rowExpansionTemplate.bind(this);
@@ -73,6 +79,7 @@ class InformeSPP extends Component {
         lineaFabricacionCatalogo = [];
         const informe = await InformeSPPService.obtenerPorIdSolicitud(this.props.match.params.idSolicitud);
         this.catalogoService.getLineaFabricacion().then(data => { _.map(data, (o) => lineaFabricacionCatalogo.push(o)) });
+        this.catalogoService.getUnidadesMedida().then(data => this.setState({ unidadesCatalogo: data }));
         this.setState({ solicitudId: id, tipo: tipo, accion: accion })
         this.refrescar(informe);
     }
@@ -99,6 +106,10 @@ class InformeSPP extends Component {
                 cantidadProductoNoConforme: informe.cantidadProductoNoConforme,
                 cantidadDesperdicio: informe.cantidadDesperdicio,
                 cantidadProductoPrueba: informe.cantidadProductoPrueba,
+                unidadProductoTerminado: informe.unidadProductoTerminado,
+                unidadProductoNoConforme: informe.unidadProductoNoConforme,
+                unidadDesperdicio: informe.unidadDesperdicio,
+                unidadProductoPrueba: informe.unidadProductoPrueba,
                 observacionProduccion: informe.observacionProduccion,
                 observacionMantenimiento: informe.observacionMantenimiento,
                 observacionCalidad: informe.observacionCalidad
@@ -133,7 +144,7 @@ class InformeSPP extends Component {
     }
 
     async eliminarCondicion(id, condicionOperacionId) {
-        const detalleActualizado = await InformeSPPService.eliminarCondicion(condicionOperacionId, id, this.state.id);
+        const detalleActualizado = await InformeSPPService.eliminarCondicion(condicionOperacionId, id, this.state.id, 'PRODUCCION');
         this.growl.show({ severity: 'success', detail: 'Condición Eliminada!' });
         this.setState({ condicionesOperacion: detalleActualizado });
     }
@@ -193,7 +204,11 @@ class InformeSPP extends Component {
             cantidadProductoPrueba: this.state.cantidadProductoPrueba,
             observacionProduccion: this.state.observacionProduccion,
             observacionMantenimiento: this.state.observacionMantenimiento,
-            observacionCalidad: this.state.observacionCalidad
+            observacionCalidad: this.state.observacionCalidad,
+            unidadProductoTerminado: this.state.unidadProductoTerminado,
+            unidadProductoNoConforme: this.state.unidadProductoNoConforme,
+            unidadDesperdicio: this.state.unidadDesperdicio,
+            unidadProductoPrueba: this.state.unidadProductoPrueba
         }
     }
 
@@ -213,9 +228,9 @@ class InformeSPP extends Component {
 
     onChangeLineaFabricacion(e) {
         if (_.isObject(e))
-            this.setState({ lineaFabricacion: e.value, lineaFabricacionUnidad: e.unidad });
+            this.setState({ lineaFabricacion: e.value, lineaFabricacionUnidad: e.unidad, habilitarLineaFabricacionUnidad: _.isEqual(e.value, 'Bodega') });
         else
-            this.setState({ lineaFabricacion: e });
+            this.setState({ lineaFabricacion: e, habilitarLineaFabricacionUnidad: _.isEqual(e, 'Bodega') });
     }
 
     actionTemplateMateriales(rowData, column) {
@@ -311,7 +326,7 @@ class InformeSPP extends Component {
                             </div>
                             <div className='p-col-12 p-lg-2'>
                                 <label htmlFor="float-input">Unidad</label>
-                                <InputText readOnly={this.state.tipo !== 'PRODUCCION'} value={this.state.lineaFabricacionUnidad} onChange={(e) => this.setState({ lineaFabricacionUnidad: e.target.value })} />
+                                <InputText readOnly={!this.state.habilitarLineaFabricacionUnidad} value={this.state.lineaFabricacionUnidad} onChange={(e) => this.setState({ lineaFabricacionUnidad: e.target.value })} />
                             </div>
                         </div>
 
@@ -362,28 +377,36 @@ class InformeSPP extends Component {
                                 <label htmlFor="float-input">Producto Terminado</label>
                                 <div className="p-inputgroup">
                                     <InputText keyfilter="num" value={this.state.cantidadProductoTerminado} onChange={(e) => this.setState({ cantidadProductoTerminado: e.target.value })} />
-                                    <span className="p-inputgroup-addon">{this.state.lineaFabricacionUnidad}</span>
+                                    {/* <span className="p-inputgroup-addon">{this.state.lineaFabricacionUnidad}</span> */}
+                                    <Dropdown style={{ width: 'auto', minWidth: 'auto' }} value={this.state.unidadProductoTerminado} editable={true} options={this.state.unidadesCatalogo}
+                                        onChange={(e) => { this.setState({ unidadProductoTerminado: e.value }) }} placeholder='Seleccione...' />
                                 </div>
                             </div>
                             <div className='p-col-12 p-lg-3'>
                                 <label htmlFor="float-input">Producto No Conforme</label>
                                 <div className="p-inputgroup">
                                     <InputText keyfilter="num" value={this.state.cantidadProductoNoConforme} onChange={(e) => this.setState({ cantidadProductoNoConforme: e.target.value })} />
-                                    <span className="p-inputgroup-addon">{this.state.lineaFabricacionUnidad}</span>
+                                    {/* <span className="p-inputgroup-addon">{this.state.lineaFabricacionUnidad}</span> */}
+                                    <Dropdown style={{ width: 'auto', minWidth: 'auto' }} value={this.state.unidadProductoNoConforme} editable={true} options={this.state.unidadesCatalogo}
+                                        onChange={(e) => { this.setState({ unidadProductoNoConforme: e.value }) }} placeholder='Seleccione...' />
                                 </div>
                             </div>
                             <div className='p-col-12 p-lg-3'>
                                 <label htmlFor="float-input">Desperdicio</label>
                                 <div className="p-inputgroup">
                                     <InputText keyfilter="num" value={this.state.cantidadDesperdicio} onChange={(e) => this.setState({ cantidadDesperdicio: e.target.value })} />
-                                    <span className="p-inputgroup-addon">{this.state.lineaFabricacionUnidad}</span>
+                                    {/* <span className="p-inputgroup-addon">{this.state.lineaFabricacionUnidad}</span> */}
+                                    <Dropdown style={{ width: 'auto', minWidth: 'auto' }} value={this.state.unidadDesperdicio} editable={true} options={this.state.unidadesCatalogo}
+                                        onChange={(e) => { this.setState({ unidadDesperdicio: e.value }) }} placeholder='Seleccione...' />
                                 </div>
                             </div>
                             <div className='p-col-12 p-lg-3'>
                                 <label htmlFor="float-input">Producto de Prueba</label>
                                 <div className="p-inputgroup">
                                     <InputText keyfilter="num" value={this.state.cantidadProductoPrueba} onChange={(e) => this.setState({ cantidadProductoPrueba: e.target.value })} />
-                                    <span className="p-inputgroup-addon">{this.state.lineaFabricacionUnidad}</span>
+                                    {/* <span className="p-inputgroup-addon">{this.state.lineaFabricacionUnidad}</span> */}
+                                    <Dropdown style={{ width: 'auto', minWidth: 'auto' }} value={this.state.unidadProductoPrueba} editable={true} options={this.state.unidadesCatalogo}
+                                        onChange={(e) => { this.setState({ unidadProductoPrueba: e.value }) }} placeholder='Seleccione...' />
                                 </div>
                             </div>
                         </div>
@@ -431,10 +454,12 @@ class InformeSPP extends Component {
                         </div>
                     </div>
                 }
-                {this.state.accion === 'EDITAR' &&
+                {_.includes(['EDITAR', 'APROBAR'], this.state.accion) &&
                     <div className='p-col-12 p-lg-12 boton-opcion' >
                         <Button className='p-button-success' label="GUARDAR" onClick={this.guardar} />
-                        <Button className='p-button-secondary' label="ATRÁS" onClick={() => this.regresar()} />
+                        {this.state.accion === 'EDITAR' &&
+                            <Button className='p-button-secondary' label="ATRÁS" onClick={() => this.regresar()} />
+                        }
                     </div>
                 }
                 <FormMaterialUtilizado mostrar={this.state.mostrarFormMaterialUtilizado} informeId={this.state.id} origen={this} />

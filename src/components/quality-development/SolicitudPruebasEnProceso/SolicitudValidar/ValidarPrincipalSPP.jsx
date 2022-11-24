@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import history from '../../../../history';
 import { closeModal, openModal } from '../../../../store/actions/modalWaitAction';
-import { determinarColor } from '../../SolicitudEnsayo/ClasesUtilidades';
+import { determinarColor, determinarColorVigencia } from '../../SolicitudEnsayo/ClasesUtilidades';
 import * as _ from "lodash";
 import SolicitudPruebasProcesoService from '../../../../service/SolicitudPruebaProceso/SolicitudPruebasProcesoService';
 import * as moment from 'moment';
@@ -43,6 +43,10 @@ class ValidarPrincipalSPP extends Component {
         return <span className={determinarColor(rowData.estado)}>{estado}</span>;
     }
 
+    bodyTemplateVigencia(rowData) {
+        return <span className={determinarColorVigencia(rowData.vigenciaValidarSolicitud)}>{rowData.vigenciaValidarSolicitud} Día(s)</span>;
+    }
+
     render() {
 
         return (
@@ -56,6 +60,7 @@ class ValidarPrincipalSPP extends Component {
                     <Column body={this.actionTemplate} style={{ textAlign: 'center', width: '4em' }} />
                     <Column field="codigo" header="Código" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
                     <Column field="fechaSolicitud" header="Fecha Solicitud" sortable={true} style={{ textAlign: 'center', width: '12em' }} />
+                    <Column field="vigenciaValidarSolicitud" body={this.bodyTemplateVigencia} header="Vigencia" sortable={true} style={{ textAlign: 'center', width: '8em' }} />
                     <Column field="lineaAplicacion" header="Aplicación" sortable={true} style={{ textAlign: 'center', width: '12em' }} />
                     <Column field="fechaEntrega" header="Fecha Entrega" sortable={true} style={{ textAlign: 'center', width: '11em' }} />
                     <Column field="motivo" header="Motivo" sortable={true} style={{ width: '20em' }} />

@@ -45,6 +45,7 @@ class FormularioSPPLectura extends Component {
             materialesFormula: [],
             cantidadRequeridaProducir: null,
             unidadRequeridaProducir: null,
+            mostrarMaterialesFormula: false
         };
         this.leerImagen = this.leerImagen.bind(this);
         this.descargarReporte = this.descargarReporte.bind(this);
@@ -84,7 +85,8 @@ class FormularioSPPLectura extends Component {
                     imagen1Id: solicitud.imagen1Id,
                     cantidadRequeridaProducir: solicitud.cantidadRequeridaProducir,
                     unidadRequeridaProducir: solicitud.unidadRequeridaProducir,
-                    materialesFormula: solicitud.materialesFormula
+                    materialesFormula: solicitud.materialesFormula,
+                    mostrarMaterialesFormula: solicitud.area && _.startsWith(solicitud.area.nameArea, 'I+D')
                 });
             }
         }
@@ -312,30 +314,31 @@ class FormularioSPPLectura extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className="p-col-12 p-lg-12" >
-                        <div className='p-grid'>
-                            <label className="p-col-12 p-lg-12" style={{ fontWeight: 'bold' }} htmlFor="float-input"><span style={{ color: '#CB3234' }}>*</span>Material Detalle Formulación</label>
-                            <div className='p-col-12 p-lg-4'>
-                                <label style={{ fontWeight: 'bold' }} htmlFor="float-input">Cantidad Requerida Para Producir</label>
-                                <InputText keyfilter="num" value={this.state.cantidadRequeridaProducir} onChange={(e) => this.setState({ cantidadRequeridaProducir: e.target.value })} />
-                            </div>
-                            <div className='p-col-12 p-lg-3'>
-                                <label style={{ fontWeight: 'bold' }} htmlFor="float-input">Unidad</label>
-                                <InputText value={this.state.unidadRequeridaProducir} />
-                            </div>
-                            <div className='p-col-12 p-lg-12'>
-                                <DataTable value={this.state.materialesFormula} rows={15} footerColumnGroup={footerGroup}
-                                    selectionMode="single" selection={this.state.selectedConfiguracion} onSelectionChange={e => this.setState({ selectedMaterialFormula: e.value })}
-                                    onRowSelect={this.onCarSelect}>
-                                    <Column field="nombre" header="Material" sortable={true} />
-                                    <Column field="porcentaje" header="Porcentaje(%)" sortable={true} style={{ textAlign: 'center' }} />
-                                    <Column field="cantidad" header="Cantidad" sortable={true} style={{ textAlign: 'center' }} />
-                                    <Column field="unidad" header="Unidad" style={{ textAlign: 'center' }} />
-                                </DataTable>
+                    {this.state.mostrarMaterialesFormula &&
+                        <div className="p-col-12 p-lg-12" >
+                            <div className='p-grid'>
+                                <label className="p-col-12 p-lg-12" style={{ fontWeight: 'bold' }} htmlFor="float-input"><span style={{ color: '#CB3234' }}>*</span>Material Detalle Formulación</label>
+                                <div className='p-col-12 p-lg-4'>
+                                    <label style={{ fontWeight: 'bold' }} htmlFor="float-input">Cantidad Requerida Para Producir</label>
+                                    <InputText keyfilter="num" value={this.state.cantidadRequeridaProducir} onChange={(e) => this.setState({ cantidadRequeridaProducir: e.target.value })} />
+                                </div>
+                                <div className='p-col-12 p-lg-3'>
+                                    <label style={{ fontWeight: 'bold' }} htmlFor="float-input">Unidad</label>
+                                    <InputText value={this.state.unidadRequeridaProducir} />
+                                </div>
+                                <div className='p-col-12 p-lg-12'>
+                                    <DataTable value={this.state.materialesFormula} rows={15} footerColumnGroup={footerGroup}
+                                        selectionMode="single" selection={this.state.selectedConfiguracion} onSelectionChange={e => this.setState({ selectedMaterialFormula: e.value })}
+                                        onRowSelect={this.onCarSelect}>
+                                        <Column field="nombre" header="Material" sortable={true} />
+                                        <Column field="porcentaje" header="Porcentaje(%)" sortable={true} style={{ textAlign: 'center' }} />
+                                        <Column field="cantidad" header="Cantidad" sortable={true} style={{ textAlign: 'center' }} />
+                                        <Column field="unidad" header="Unidad" style={{ textAlign: 'center' }} />
+                                    </DataTable>
+                                </div>
                             </div>
                         </div>
-                    </div>
-
+                    }
 
                     <div className='p-col-12 p-lg-12'>
                         <label style={{ fontWeight: 'bold' }} htmlFor="float-input">Se requieren verificaciones adicionales u otras en especial</label>

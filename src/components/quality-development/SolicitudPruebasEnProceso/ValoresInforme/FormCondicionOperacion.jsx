@@ -104,7 +104,7 @@ class FormCondicionOperacion extends Component {
         return (
             <div>
                 <Growl ref={(el) => this.growl = el} style={{ marginTop: '75px' }} />
-                <Dialog header={this.state.id > 0 ? "Editar Condición Operación" : "Nuevo Condición Operación"} visible={this.state.display} style={{ width: '30vw' }} onHide={() => this.setState({ display: false })} blockScroll footer={dialogFooter} >
+                <Dialog header={this.state.id > 0 ? "Editar Condición Operación" : "Nuevo Condición Operación"} visible={this.state.display} style={{ width: '30vw' }} onHide={() => this.cerrarDialogo()} blockScroll footer={dialogFooter} >
                     <div className="p-grid p-fluid">
                         <div className='p-col-12 p-lg-12'>
                             <label htmlFor="float-input">Proceso</label>

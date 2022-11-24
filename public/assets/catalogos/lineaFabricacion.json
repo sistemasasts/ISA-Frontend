@@ -18,12 +18,12 @@
         {
             "label": "Cortes",
             "value": "Cortes",
-            "unidad": "UN"
+            "unidad": "un"
         },
         {
             "label": "Revestimientos Líquidos Acrílicos",
             "value": "Revestimientos Líquidos Acrílicos",
-            "unidad": "UN"
+            "unidad": "un"
         },
         {
             "label": "Emulsiones",
@@ -38,7 +38,12 @@
         {
             "label": "Metales",
             "value": "Metales",
-            "unidad": "UN"
+            "unidad": "un"
+        },
+        {
+            "label": "Bodega",
+            "value": "Bodega",
+            "unidad": "m2"
         }
     ]
 }

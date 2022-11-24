@@ -5,7 +5,7 @@ export function determinarColor(estado) {
         case 'ENVIADO_REVISION':
         case 'REVISION_INFORME':
             return 'customer-badge-warning';
-        case 'REGRESADO_NOVEDAD_INFORME':
+        case 'REGRESADO_NOVEDAD_FORMA':
         case 'RECHAZADO':
         case 'ANULADO':
         case 'PRUEBA_NO_EJECUTADA':

@@ -117,17 +117,17 @@ class FormMaterialUtilizado extends Component {
         return (
             <div>
                 <Growl ref={(el) => this.growl = el} style={{ marginTop: '75px' }} />
-                <Dialog header={this.state.id > 0 ? "Editar Material Utilizado" : "Nuevo Material Utilizado"} visible={this.state.display} style={{ width: '30vw' }} onHide={() => this.setState({ display: false })} blockScroll footer={dialogFooter} >
+                <Dialog header={this.state.id > 0 ? "Editar Material Utilizado" : "Nuevo Material Utilizado"} visible={this.state.display} style={{ width: '30vw' }} onHide={() => this.cerrarDialogo()} blockScroll footer={dialogFooter} >
                     <div className="p-grid p-fluid">
                         <div className='p-col-12 p-lg-12'>
                             <label htmlFor="float-input">Material</label>
                             <Dropdown appendTo={document.body} value={this.state.nombre} editable={true} options={this.state.catalogoProductos}
-                                onChange={(e) => { this.setState({ nombre: e.value }) }} />
+                                onChange={(e) => { this.setState({ nombre: e.value }) }} filter={true} />
                         </div>
                         <div className='p-col-12 p-lg-12'>
                             <label htmlFor="float-input">Unidad</label>
                             <Dropdown appendTo={document.body} value={this.state.unidad} editable={true} options={this.state.unidadesCatalogo}
-                                onChange={(e) => { this.setState({ unidad: e.value }) }} />
+                                onChange={(e) => { this.setState({ unidad: e.value }) }} filter={true} />
                         </div>
                         <div className='p-col-12 p-lg-12'>
                             <label htmlFor="float-input">Cantidad Solicitada</label>

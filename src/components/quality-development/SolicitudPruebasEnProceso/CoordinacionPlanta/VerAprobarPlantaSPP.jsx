@@ -74,7 +74,7 @@ class VerAprobarPlantaSPP extends Component {
     }
 
     abrirInformeDatos() {
-        window.open(`${window.location.origin}/#quality-development_solicitudpp_informe_final/${this.state.id}/PRODUCCION`)
+        window.open(`${window.location.origin}/#quality-development_solicitudpp_informe/${this.state.id}/PRODUCCION/APROBAR`)
     }
 
     render() {

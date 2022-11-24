@@ -15,6 +15,7 @@ import SolicitudPruebasProcesoService from '../../../../service/SolicitudPruebaP
 
 const ESTADO = 'ENVIADO_REVISION';
 const TIPO_SOLICITUD = 'SOLICITUD_PRUEBAS_PROCESO';
+const ORDEN = 'VALIDAR_SOLICITUD';
 
 class VerValidar extends Component {
 
@@ -28,6 +29,7 @@ class VerValidar extends Component {
         };
         this.validarSolicitud = this.validarSolicitud.bind(this);
         this.rechazarSolicitud = this.rechazarSolicitud.bind(this);
+        this.regresarSolicitud = this.regresarSolicitud.bind(this);
 
     }
 
@@ -72,10 +74,23 @@ class VerValidar extends Component {
         }, 1000);
     }
 
+    async regresarSolicitud() {
+        if (_.isEmpty(this.state.observacion)) {
+            this.growl.show({ severity: 'error', detail: 'Favor ingresa una Observación para regresar la solicitud.' });
+            return false;
+        }
+        await SolicitudPruebasProcesoService.regresarNovedadFormaSolicitud(this.crearObjSolicitud());
+        this.growl.show({ severity: 'success', detail: 'Solicitud Regresada!' });
+        setTimeout(function () {
+            history.push(`/quality-development_solicitudpp_validar`);
+        }, 1000);
+    }
+
     crearObjSolicitud() {
         return {
             id: this.state.id,
-            observacionFlujo: this.state.observacion
+            observacionFlujo: this.state.observacion,
+            orden: ORDEN
         }
     }
 
@@ -102,8 +117,9 @@ class VerValidar extends Component {
                 <div className='p-col-12 p-lg-12 boton-opcion' >
                     {this.state.id > 0 && this.state.estado === ESTADO &&
                         < div >
-                            <Button className="p-button-danger" label="APROBAR" onClick={this.validarSolicitud} />
+                            <Button className="p-button" label="APROBAR" onClick={this.validarSolicitud} />
                             <Button className='p-button-secondary' label="RECHAZAR" onClick={this.rechazarSolicitud} />
+                            <Button className='p-button-danger' label="REGRESAR" onClick={this.regresarSolicitud} />
                         </div>
                     }
                 </div>
