@@ -54,6 +54,8 @@ import ConsultaPrincipal from './components/quality-development/SolicitudConsult
 import VerSE from './components/quality-development/SolicitudConsulta/VerSE';
 import VerSPP from './components/quality-development/SolicitudConsulta/VerSPP';
 import ConsultaTest from './components/quality-development/Test-type/ConsultaTest';
+import Usuario from './components/administracion/usuarios/Usuario';
+import UsuarioFormulario from './components/administracion/usuarios/UsuarioFormulario';
 
 
 
@@ -593,6 +595,9 @@ class MainPage extends Component {
 						<Route path="/quality-development_consulta_solicitud_verse/:idSolicitud" component={VerSE} />
 						<Route path="/quality-development_consulta_solicitud_verspp/:idSolicitud" component={VerSPP} />
                         <Route path="/quality-development_consulta_tests" component={ConsultaTest} />
+
+                        <Route path="/administracion_usuario" component={Usuario} />
+                        <Route path="/administracion_usuario_registro/:idUsuario" component={UsuarioFormulario} />
 
 						<Route path="/home" component={Home} />
 
