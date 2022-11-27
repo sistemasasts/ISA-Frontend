@@ -46,3 +46,11 @@ export function determinarColorVigencia(vigencia) {
         return 'customer-badge-warning';
 
 }
+
+export function determinarColorActivo(estado) {
+    if (estado)
+        return 'customer-badge-default'
+    else
+        return 'customer-badge-danger';
+
+}

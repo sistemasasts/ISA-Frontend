@@ -79,6 +79,8 @@ import ConsultaPrincipalPP from './components/quality-development/SolicitudConsu
 import InformeSPP from './components/quality-development/SolicitudPruebasEnProceso/ValoresInforme/InformeSPP';
 import InformeSPPLectura from './components/quality-development/SolicitudPruebasEnProceso/ValoresInforme/InformeSPPLectura';
 import ConsultaTest from './components/quality-development/Test-type/ConsultaTest';
+import Usuario from './components/administracion/usuarios/Usuario';
+import UsuarioFormulario from './components/administracion/usuarios/UsuarioFormulario';
 
 
 
@@ -643,6 +645,9 @@ class MainPage extends Component {
 						<Route path="/quality-development_solicitudpp_informe/:idSolicitud/:tipo/:accion" component={InformeSPP} />
                         <Route path="/quality-development_solicitudpp_informe_final/:idSolicitud/:tipo" component={InformeSPPLectura} />
                         <Route path="/quality-development_consulta_tests" component={ConsultaTest} />
+
+                        <Route path="/administracion_usuario" component={Usuario} />
+                        <Route path="/administracion_usuario_registro/:idUsuario" component={UsuarioFormulario} />
 
 						<Route path="/home" component={Home} />
 
