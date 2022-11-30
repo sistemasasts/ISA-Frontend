@@ -8,6 +8,7 @@ const SolicitudEnsayoService = {
     listarTodosPorResponder: () => http.request.get(`${apiEndpoint}/usuarioGestion`),
     listarTodosPorAprobar: () => http.request.get(`${apiEndpoint}/usuarioAprobador`),
     create: (solicitud) => http.request.post(apiEndpoint, solicitud),
+    actualizar: (solicitud) => http.request.put(apiEndpoint, solicitud),
     listarPrioridadNivel: () => http.request.get(`${apiEndpoint}/prioridadesNivel`),
     listarPorId: (id) => http.request.get(`${apiEndpoint}/${id}`),
     enviarSolicitud: (solicitud) => http.request.post(`${apiEndpoint}/enviarSolicitud/`, solicitud),

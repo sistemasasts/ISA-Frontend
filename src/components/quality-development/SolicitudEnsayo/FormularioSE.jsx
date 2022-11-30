@@ -19,6 +19,12 @@ import * as moment from 'moment';
 import history from '../../../history';
 import Adjuntos from './Adjuntos';
 import Historial from './Historial';
+import { FileUpload } from 'primereact/fileupload';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import { determinarColorActivo } from './ClasesUtilidades';
+import { Toolbar } from 'primereact/toolbar';
+import SolicitudDocumentoService from '../../../service/SolicitudEnsayo/SolicitudDocumentoService';
 
 const TIPO_SOLICITUD = 'SOLICITUD_ENSAYO';
 class FormularioSE extends Component {
@@ -44,7 +50,13 @@ class FormularioSE extends Component {
             observacion: null,
             estado: null,
             mostrarControles: false,
-            editar: true
+            editar: true,
+            muestraEntrega: null,
+            muestraUbicacion: null,
+            muestraImagenId: null,
+            adjuntosRequeridos: [],
+            archivos: [],
+            adjuntoSeleccionado: null,
 
         };
         this.filterProveedorSingle = this.filterProveedorSingle.bind(this);
@@ -52,6 +64,12 @@ class FormularioSE extends Component {
         this.guardar = this.guardar.bind(this);
         this.enviarSolicitud = this.enviarSolicitud.bind(this);
         this.anularSolicitud = this.anularSolicitud.bind(this);
+        this.templateAdjunto = this.templateAdjunto.bind(this);
+        this.myUploader = this.myUploader.bind(this);
+        this.descargarAdjunto = this.descargarAdjunto.bind(this);
+        this.eliminarAdjunto = this.eliminarAdjunto.bind(this);
+        this.myUploaderImagenMuestra = this.myUploaderImagenMuestra.bind(this);
+        this.leerImagenMuestra = this.leerImagenMuestra.bind(this);
     }
 
     async componentDidMount() {
@@ -65,12 +83,15 @@ class FormularioSE extends Component {
         if (idSolicitud) {
             const solicitud = await SolicitudEnsayoService.listarPorId(idSolicitud);
             if (solicitud) {
+                console.log(solicitud);
                 let objetivosValor = _.split(solicitud.objetivo, ',');
                 let proveedorValor = null;
                 if (solicitud.proveedorId)
                     proveedorValor = { idProvider: solicitud.proveedorId, nameProvider: solicitud.proveedorNombre };
                 else
                     proveedorValor = solicitud.proveedorNombre;
+                if (solicitud.muestraImagenId)
+                    this.leerImagenMuestra(solicitud.muestraImagenId);
                 this.setState({
                     id: solicitud.id,
                     codigo: solicitud.codigo,
@@ -85,11 +106,21 @@ class FormularioSE extends Component {
                     tiempoEntrega: solicitud.tiempoEntrega,
                     objectivos: objetivosValor,
                     estado: solicitud.estado,
+                    muestraEntrega: moment(solicitud.muestraEntrega, 'YYYY-MM-DD').toDate(),
+                    muestraUbicacion: solicitud.muestraUbicacion,
+                    muestraImagenId: solicitud.muestraImagenId,
+                    adjuntosRequeridos: solicitud.adjuntosRequeridos,
                     mostrarControles: solicitud.estado === 'NUEVO',
                     editar: solicitud.estado === 'NUEVO'
                 });
+                this.listarArchivos(idSolicitud);
             }
         }
+    }
+
+    async listarArchivos(idSolicitud) {
+        const archivosData = await SolicitudDocumentoService.listarArchivos('NUEVO', 'INGRESO_SOLICITUD', idSolicitud);
+        this.setState({ archivos: archivosData });
     }
 
     filterProveedorSingle(event) {
@@ -114,7 +145,7 @@ class FormularioSE extends Component {
 
     async anularSolicitud() {
         this.props.openModal();
-        const objSE = { id: this.state.id, observacion: this.state.observacion, orden: 'INGRESO_SOLICITUD'};
+        const objSE = { id: this.state.id, observacion: this.state.observacion, orden: 'INGRESO_SOLICITUD' };
         await SolicitudEnsayoService.anularSolicitud(objSE);
         this.props.closeModal();
         this.growl.show({ severity: 'success', detail: 'Solicitud Anulada!' });
@@ -159,8 +190,9 @@ class FormularioSE extends Component {
             cantidad: this.state.cantidad,
             unidad: this.state.unidad,
             lineaAplicacion: this.state.lineaAplicacion,
-            uso: this.state.uso,
-            observacion: this.state.observacion
+            observacion: this.state.observacion,
+            muestraEntrega: moment(this.state.muestraEntrega).format("YYYY-MM-DD"),
+            muestraUbicacion: this.state.muestraUbicacion
         }
     }
 
@@ -168,20 +200,124 @@ class FormularioSE extends Component {
         debugger
         if (_.isEmpty(moment(this.state.fechaEntrega).format("YYYY-MM-DD")) || _.isEmpty(this.state.prioridad)
             || _.isEmpty(this.state.proveedorSeleccionado) || _.isEmpty(this.state.objectivos) || _.isEmpty(this.state.tiempoEntrega) || _.isEmpty(this.state.materialEntregado)
-            || _.isEmpty(this.state.cantidad) || _.isEmpty(this.state.unidad) || _.isEmpty(this.state.lineaAplicacion))
+            || _.isEmpty(this.state.cantidad) || _.isEmpty(this.state.unidad) || _.isEmpty(this.state.lineaAplicacion) || _.isEmpty(moment(this.state.muestraEntrega).format("YYYY-MM-DD")) || _.isEmpty(this.state.muestraUbicacion))
             return false;
 
         return true;
     }
 
     async enviarSolicitud() {
-        this.props.openModal();
+        await SolicitudEnsayoService.actualizar(this.crearObjSolicitud());
+        this.refrescar(this.state.id);
         await SolicitudEnsayoService.enviarSolicitud(this.crearObjSolicitud());
-        this.props.closeModal();
         this.growl.show({ severity: 'success', detail: 'Solicitud Enviada!' });
         setTimeout(function () {
             history.push(`/quality-development_solicitudse`);
         }, 2000);
+    }
+
+    onChangeNivelPrioridad(value) {
+        switch (value) {
+            case 'ALTO':
+                this.setState({ prioridad: value, tiempoEntrega: 'CASOS_ESPECIALES' });
+                break;
+            case 'MEDIO':
+                this.setState({ prioridad: value, tiempoEntrega: value });
+                break;
+            case 'BAJO':
+                this.setState({ prioridad: value, tiempoEntrega: value });
+                break;
+            default:
+                this.setState({ prioridad: value, tiempoEntrega: value });
+                break;
+        }
+    }
+
+    onChangeAdjunto(valueCheck, adjunto) {
+        this.setState({ value: valueCheck, adjuntoSeleccionado: adjunto });
+    }
+
+    templateAdjunto(row, column) {
+        return (
+            <div className="p-grid">
+                <div className='p-col-12 p-lg-1' style={{ textAlign: 'center' }}>
+                    <RadioButton disabled={row.documentoId > 0} value={row.id} name="city" onChange={(e) => this.onChangeAdjunto(e.value, row)} checked={this.state.value === row.id} />
+                </div>
+                <div className='p-col-12 p-lg-7'>
+                    {row.nombre}
+                </div>
+                <div className='p-col-12 p-lg-3' style={{ textAlign: 'right' }}>
+                    {row.obligatorio &&
+                        <span className='customer-badge-danger'>{row.obligatorio ? 'Obligatorio' : ''}</span>
+                    }
+                </div>
+                {row.documentoId > 0 &&
+                    <div className='p-col-12 p-lg-1' style={{ textAlign: 'center' }}>
+                        <span className='boton-archivo pi pi-download' onClick={() => this.descargarAdjunto(row.documentoId)} ></span>
+                        {this.state.mostrarControles &&
+                            < span className='boton-archivo pi pi-times' onClick={() => this.eliminarAdjunto(row.documentoId)} ></span>
+                        }
+                    </div>
+                }
+
+            </div>
+        );
+    }
+
+    async descargarAdjunto(idAdjunto) {
+        const nombreArchivo = this.state.archivos.find(x => x.id === idAdjunto).nombreArchivo;
+        const data = await SolicitudDocumentoService.ver(idAdjunto);
+        const ap = window.URL.createObjectURL(data)
+        const a = document.createElement('a');
+        document.body.appendChild(a);
+        a.href = ap;
+        a.download = `${nombreArchivo}`;
+        a.click();
+    }
+
+    async eliminarAdjunto(id) {
+        await SolicitudDocumentoService.eliminar(id);
+        this.growl.show({ severity: 'success', detail: 'Archivo eliminado' });
+        this.refrescar(this.state.id);
+    }
+
+    async myUploader(event) {
+        if (!this.state.adjuntoSeleccionado) {
+            this.growl.show({ severity: 'error', detail: 'Seleccione el documento a subir' });
+            this.fileUploadRef.clear();
+            return false;
+        }
+        await SolicitudDocumentoService.subirArchivo(this.crearSolicitudDocumento(event.files[0]));
+        this.growl.show({ severity: 'success', detail: 'Archivo subido' });
+        this.setState({ value: null, adjuntoSeleccionado: null });
+        this.refrescar(this.state.id);
+        this.fileUploadRef.clear();
+    }
+
+    crearSolicitudDocumento(archivo) {
+        let infoAdicional = {};
+        let formadata = new FormData();
+        infoAdicional.orden = 'INGRESO_SOLICITUD';
+        infoAdicional.idSolicitud = this.state.id;
+        infoAdicional.adjuntoRequeridoId = this.state.adjuntoSeleccionado ? this.state.adjuntoSeleccionado.id : 0;
+        formadata.append('file', archivo);
+        formadata.append('info', JSON.stringify(infoAdicional));
+        return formadata;
+    }
+
+    async myUploaderImagenMuestra(event) {
+        const respuesta = await SolicitudDocumentoService.subirArchivoImagenMuestra(this.crearSolicitudDocumento(event.files[0]));
+        this.setState({ muestraImagenId: respuesta.documentoEnsayo.id })
+        document.getElementById("ItemPreview").src = `data:${respuesta.documentoEnsayo.tipo};base64,` + respuesta.imagen;
+        this.fileUploadRef.clear();
+    }
+
+    async leerImagenMuestra(idDocumento) {
+        const respuesta = await SolicitudDocumentoService.verImagenMuestra(idDocumento);
+        if (respuesta) {
+            console.log(respuesta);
+            document.getElementById("ItemPreview").src = `data:${respuesta.documentoEnsayo.tipo};base64,` + respuesta.imagen;
+        }
     }
 
     render() {
@@ -211,7 +347,7 @@ class FormularioSE extends Component {
                     </div>
                     <div className='p-col-12 p-lg-3'>
                         <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Nivel Prioridad</label>
-                        <Dropdown disabled={!this.state.editar} options={this.state.nivelPrioridadData} value={this.state.prioridad} autoWidth={false} onChange={(event => this.setState({ prioridad: event.value }))} placeholder="Selecione" />
+                        <Dropdown disabled={!this.state.editar} options={this.state.nivelPrioridadData} value={this.state.prioridad} autoWidth={false} onChange={(event => this.onChangeNivelPrioridad(event.value))} placeholder="Selecione" />
                     </div>
                     <div className='p-col-12 p-lg-3'>
                         <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Proveedor</label>
@@ -255,49 +391,95 @@ class FormularioSE extends Component {
 
                             <label className="p-col-12 p-lg-12" htmlFor="float-input"> <span style={{ color: '#CB3234' }}>*</span>TIEMPO DE ENTREGA</label>
                             <div className="p-col-12 p-lg-4">
-                                <RadioButton disabled={!this.state.editar} inputId="rb1" name="deliverTime" value="INMEDIATO" onChange={(e) => this.setState({ tiempoEntrega: e.value })} checked={this.state.tiempoEntrega === 'INMEDIATO'} />
+                                <RadioButton disabled={!this.state.editar} inputId="rb1" name="deliverTime" value="INMEDIATO" checked={this.state.tiempoEntrega === 'INMEDIATO'} />
                                 <label htmlFor="rb1" className="p-radiobutton-label">Inmediato (Tiempo de desarrollo 5 días)</label>
                             </div>
                             <div className="p-col-12 p-lg-4">
-                                <RadioButton disabled={!this.state.editar} inputId="rb2" name="deliverTimerb2" value="MEDIO" onChange={(e) => this.setState({ tiempoEntrega: e.value })} checked={this.state.tiempoEntrega === 'MEDIO'} />
+                                <RadioButton disabled={!this.state.editar} inputId="rb2" name="deliverTimerb2" value="MEDIO" checked={this.state.tiempoEntrega === 'MEDIO'} />
                                 <label htmlFor="rb2" className="p-radiobutton-label">Medio (Tiempo de desarrollo 15 días)</label>
                             </div>
                             <div className="p-col-12 p-lg-4">
-                                <RadioButton disabled={!this.state.editar} inputId="rb3" name="deliverTimerb3" value="BAJO" onChange={(e) => this.setState({ tiempoEntrega: e.value })} checked={this.state.tiempoEntrega === 'BAJO'} />
+                                <RadioButton disabled={!this.state.editar} inputId="rb3" name="deliverTimerb3" value="BAJO" checked={this.state.tiempoEntrega === 'BAJO'} />
                                 <label htmlFor="rb3" className="p-radiobutton-label">Bajo (Tiempo de desarrollo 2 meses)</label>
                             </div>
                             <div className="p-col-12 p-lg-4">
-                                <RadioButton disabled={!this.state.editar} inputId="rb4" name="deliverTimerb4" value="CASOS_ESPECIALES" onChange={(e) => this.setState({ tiempoEntrega: e.value })} checked={this.state.tiempoEntrega === 'CASOS_ESPECIALES'} />
+                                <RadioButton disabled={!this.state.editar} inputId="rb4" name="deliverTimerb4" value="CASOS_ESPECIALES" checked={this.state.tiempoEntrega === 'CASOS_ESPECIALES'} />
                                 <label htmlFor="rb4" className="p-radiobutton-label">Casos Especiales</label>
                             </div>
                         </div>
 
                     </div>
-                    <div className='p-col-12 p-lg-12'>
-                        <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Material Entregado (Descripción)</label>
-                        <InputTextarea readOnly={!this.state.editar} value={this.state.materialEntregado} onChange={(e) => this.setState({ materialEntregado: e.target.value })} rows={2} placeholder='Descripción' />
+
+                    <div className='p-col-12 p-lg-6'>
+                        <div className="p-grid">
+                            <div className='p-col-12 p-lg-12'>
+                                <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Material Entregado (Descripción)</label>
+                                <InputTextarea readOnly={!this.state.editar} value={this.state.materialEntregado} onChange={(e) => this.setState({ materialEntregado: e.target.value })} rows={4} placeholder='Descripción' />
+                            </div>
+                            <div className='p-col-12 p-lg-6'>
+                                <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Cantidad</label>
+                                <InputText readOnly={!this.state.editar} value={this.state.cantidad} onChange={(e) => this.setState({ cantidad: e.target.value })} />
+                            </div>
+                            <div className='p-col-12 p-lg-6'>
+                                <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Unidad</label>
+                                <Dropdown disabled={!this.state.editar} options={unidadesMedida} value={this.state.unidad} autoWidth={false} onChange={(e) => this.setState({ unidad: e.value })} placeholder="Selecione" />
+                            </div>
+                            <div className='p-col-12 p-lg-6'>
+                                <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Línea de Aplicación</label>
+                                <Dropdown disabled={!this.state.editar} options={aplicationLine} value={this.state.lineaAplicacion} autoWidth={false} onChange={(e) => this.setState({ lineaAplicacion: e.value })} placeholder="Seleccione " />
+                            </div>
+
+                            <div className='p-col-12 p-lg-6'>
+                                <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Entrega de Muestra</label>
+                                <Calendar disabled={!this.state.editar} dateFormat="yy/mm/dd" value={this.state.muestraEntrega} locale={es} onChange={(e) => this.setState({ muestraEntrega: e.value })} showIcon={true} />
+                            </div>
+                            <div className='p-col-12 p-lg-12'>
+                                <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Ubicación de la Muestra</label>
+                                <InputTextarea readOnly={!this.state.editar} value={this.state.muestraUbicacion} onChange={(e) => this.setState({ muestraUbicacion: e.target.value })} rows={4} placeholder='Descripción' />
+                            </div>
+                        </div>
                     </div>
-                    <div className='p-col-12 p-lg-4'>
-                        <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Cantidad</label>
-                        <InputText readOnly={!this.state.editar} value={this.state.cantidad} onChange={(e) => this.setState({ cantidad: e.target.value })} />
+
+                    <div className='p-col-12 p-lg-6'>
+                        <div className='p-col-12 p-lg-12'>
+                            <span style={{ color: '#CB3234' }}>*</span><label style={{ fontWeight: 'bold' }} htmlFor="float-input">Imagen de la Muestra</label>
+                            <div style={{ height: '335px', bottom: '0px', top: '0px', display: 'flex', justifyContent: 'center', border: '1px solid #cccccc', borderRadius: '4px' }}>
+                                {this.state.muestraImagenId === null &&
+                                    <img style={{ width: 'auto', maxHeight: '100%', display: 'block', margin: 'auto' }} alt="Logo" src="assets/layout/images/icon-img.jpg" />
+                                }
+                                {this.state.muestraImagenId > 0 &&
+                                    <img style={{ width: 'auto', maxHeight: '100%', display: 'block', margin: 'auto' }} id="ItemPreview" src="" />
+                                }
+                            </div>
+                            {this.state.id > 0 && _.includes(['NUEVO', 'REGRESADO_NOVEDAD_FORMA'], this.state.estado) &&
+                                <FileUpload ref={(el) => this.fileUploadRef = el} mode="basic" name="demo" customUpload={true} uploadHandler={this.myUploaderImagenMuestra} accept="image/*" chooseLabel='Seleccione Imagen' uploadLabel='Subir Imagen' />
+                            }
+                        </div>
                     </div>
-                    <div className='p-col-12 p-lg-4'>
-                        <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Unidad</label>
-                        <Dropdown disabled={!this.state.editar} options={unidadesMedida} value={this.state.unidad} autoWidth={false} onChange={(e) => this.setState({ unidad: e.value })} placeholder="Selecione" />
-                    </div>
-                    <div className='p-col-12 p-lg-4'>
-                        <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Línea de Aplicación</label>
-                        <Dropdown disabled={!this.state.editar} options={aplicationLine} value={this.state.lineaAplicacion} autoWidth={false} onChange={(e) => this.setState({ lineaAplicacion: e.value })} placeholder="Seleccione " />
-                    </div>
-                    <div className='p-col-12 p-lg-12'>
-                        <label htmlFor="float-input">Uso (Descripción)</label>
-                        <InputTextarea readOnly={!this.state.editar} value={this.state.uso} onChange={(e) => this.setState({ uso: e.target.value })} rows={2} placeholder='Descripción' />
-                    </div>
+
                     {this.state.id > 0 &&
                         <div className='p-col-12 p-lg-12'>
                             <div className='p-col-12 p-lg-12 caja'>INFORMACIÓN ADICIONAL</div>
+                            <h3>ADJUNTOS REQUERIDOS</h3>
                             <div className='p-col-12 p-lg-12'>
-                                <Adjuntos solicitud={this.props.match.params.idSolicitud} orden={"INGRESO_SOLICITUD"} controles={this.state.mostrarControles} estado={'NUEVO'} tipo={TIPO_SOLICITUD} />
+                                {/* <DataTable value={this.state.adjuntosRequeridos} id="tbAdjunto"
+                                    selection={this.state.selectedCar2} onSelectionChange={e => this.setState({ selectedCar2: e.value })}>
+                                    <Column selectionMode="single" style={{ width: '3em' }} disabled={(e) => this.habilitarSeleccionAdjunto(e)} />
+                                    <Column field="nombre" />
+                                    <Column field="obligatorio" />
+                                </DataTable> */}
+
+                                <DataTable value={this.state.adjuntosRequeridos} id="tbAdjunto"
+                                    selection={this.state.adjuntoSeleccionado} onSelectionChange={e => this.setState({ adjuntoSeleccionado: e.value })}>
+                                    <Column body={this.templateAdjunto} />
+                                </DataTable>
+                                <Toolbar>
+                                    <div className="p-toolbar-group-left">
+                                        <FileUpload ref={(el) => this.fileUploadRef = el} mode="basic" customUpload={true} chooseLabel="Seleccione" uploadHandler={this.myUploader} auto={true} />
+                                    </div>
+                                </Toolbar>
+
+                                {/* <Adjuntos solicitud={this.props.match.params.idSolicitud} orden={"INGRESO_SOLICITUD"} controles={this.state.mostrarControles} estado={'NUEVO'} tipo={TIPO_SOLICITUD} /> */}
                                 <Historial solicitud={this.props.match.params.idSolicitud} tipo={TIPO_SOLICITUD} />
                             </div>
                             {this.state.estado === 'NUEVO' &&
