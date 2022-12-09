@@ -9,6 +9,7 @@ import * as _ from "lodash";
 import SolicitudPruebasProcesoService from '../../../../service/SolicitudPruebaProceso/SolicitudPruebasProcesoService';
 import { Button } from 'primereact/button';
 import history from '../../../../history';
+import AprobacionSolicitudService from '../../../../service/AprobacionSolicitudService';
 
 class AprobacionCalidad extends Component {
 
@@ -30,17 +31,23 @@ class AprobacionCalidad extends Component {
     }
 
     async refrescar() {
-        const solicitudes_data = await SolicitudPruebasProcesoService.listarPorAprobar('CALIDAD');
+        //const solicitudes_data = await SolicitudPruebasProcesoService.listarPorAprobar('CALIDAD');
+        const solicitudes_data = await AprobacionSolicitudService.listarPendientesRevisarInforme();
+        console.log(solicitudes_data)
         this.setState({ solicitudes: solicitudes_data });
     }
 
-    redirigirSolicitudEdicion(idSolcicitud) {
-        history.push(`/quality-development_solicitudpp_calidad_aprobar_ver/${idSolcicitud}`);
+    redirigirSolicitudEdicion(idSolcicitud, tipo) {
+        console.log(tipo);
+        if (tipo === 'SOLICITUD_ENSAYOS')
+            history.push(`/quality-development_solicitudse_calidad_aprobar_ver/${idSolcicitud}`);
+        else
+            history.push(`/quality-development_solicitudpp_calidad_aprobar_ver/${idSolcicitud}`);
     }
 
     actionTemplate(rowData, column) {
         return <div>
-            <Button type="button" icon="fa fa-external-link-square" onClick={() => this.redirigirSolicitudEdicion(rowData.id)}></Button>
+            <Button type="button" icon="fa fa-external-link-square" onClick={() => this.redirigirSolicitudEdicion(rowData.id, rowData.tipo)}></Button>
         </div>;
     }
 
@@ -64,11 +71,12 @@ class AprobacionCalidad extends Component {
                     <Column field="codigo" header="Código" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
                     <Column field="fechaSolicitud" header="Fecha Solicitud" sortable={true} style={{ textAlign: 'center', width: '12em' }} />
                     <Column field="fechaEntregaInforme" header="Entrega Informe" sortable={true} style={{ textAlign: 'center', width: '12em', color: 'red' }} />
+                    <Column field="tipoTexto" header="Tipo" sortable={true} style={{ textAlign: 'center', width: '15em' }} />
                     <Column field="vigencia" body={this.bodyTemplateVigencia} header="Vigencia" sortable={true} style={{ textAlign: 'center', width: '8em' }} />
                     <Column field="lineaAplicacion" header="Aplicación" sortable={true} style={{ textAlign: 'center', width: '12em' }} />
                     <Column field="fechaEntrega" header="Fecha Entrega" sortable={true} style={{ textAlign: 'center', width: '11em' }} />
                     <Column field="motivo" header="Motivo" sortable={true} style={{ width: '15em' }} />
-                    <Column field="nombreSolicitante" header="Solicitante" sortable={true} style={{ textAlign: 'center', width: '12em' }} />                    
+                    <Column field="nombreSolicitante" header="Solicitante" sortable={true} style={{ textAlign: 'center', width: '12em' }} />
                     <Column field='estado' body={this.bodyTemplateEstado} header="Estado" sortable style={{ textAlign: 'center', width: '12em' }} />
                 </DataTable>
             </div>

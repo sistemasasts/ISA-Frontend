@@ -13,6 +13,7 @@ import * as moment from 'moment';
 import { closeModal, openModal } from '../../../store/actions/modalWaitAction';
 import { connect } from 'react-redux';
 import SolicitudEnsayoService from '../../../service/SolicitudEnsayo/SolicitudEnsayoService';
+import SolicitudDocumentoService from '../../../service/SolicitudEnsayo/SolicitudDocumentoService';
 
 class FormularioSELectura extends Component {
 
@@ -35,8 +36,13 @@ class FormularioSELectura extends Component {
             prioridad: null,
             tiempoEntrega: null,
             observacion: null,
-            estado: null
+            estado: null,
+            muestraEntrega: null,
+            muestraUbicacion: null,
+            muestraImagenId: null,
         };
+
+        this.leerImagenMuestra = this.leerImagenMuestra.bind(this);
     }
 
     async componentDidMount() {
@@ -50,6 +56,8 @@ class FormularioSELectura extends Component {
             const solicitud = await SolicitudEnsayoService.listarPorId(idSolicitud);
             if (solicitud) {
                 let objetivosValor = _.split(solicitud.objetivo, ',');
+                if (solicitud.muestraImagenId)
+                    this.leerImagenMuestra(solicitud.muestraImagenId);
                 this.setState({
                     id: solicitud.id,
                     codigo: solicitud.codigo,
@@ -63,9 +71,19 @@ class FormularioSELectura extends Component {
                     prioridad: solicitud.prioridad,
                     tiempoEntrega: solicitud.tiempoEntrega,
                     objectivos: objetivosValor,
+                    muestraEntrega: moment(solicitud.muestraEntrega, 'YYYY-MM-DD').toDate(),
+                    muestraUbicacion: solicitud.muestraUbicacion,
+                    muestraImagenId: solicitud.muestraImagenId,
                     estado: solicitud.estado
                 });
             }
+        }
+    }
+
+    async leerImagenMuestra(idDocumento) {
+        const respuesta = await SolicitudDocumentoService.verImagenMuestra(idDocumento);
+        if (respuesta) {
+            document.getElementById("ItemPreview").src = `data:${respuesta.documentoEnsayo.tipo};base64,` + respuesta.imagen;
         }
     }
 
@@ -156,7 +174,7 @@ class FormularioSELectura extends Component {
                         </div>
 
                     </div>
-                    <div className='p-col-12 p-lg-12'>
+                    {/* <div className='p-col-12 p-lg-12'>
                         <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Material Entregado (Descripción)</label>
                         <InputTextarea readOnly value={this.state.materialEntregado} onChange={(e) => this.setState({ materialEntregado: e.target.value })} rows={2} placeholder='Descripción' />
                     </div>
@@ -175,30 +193,47 @@ class FormularioSELectura extends Component {
                     <div className='p-col-12 p-lg-12'>
                         <label htmlFor="float-input">Uso (Descripción)</label>
                         <InputTextarea readOnly value={this.state.uso} onChange={(e) => this.setState({ uso: e.target.value })} rows={2} placeholder='Descripción' />
-                    </div>
-                    {/* {this.state.id > 0 &&
-                        <div className='p-col-12 p-lg-12'>
-                            <div className='p-col-12 p-lg-12 caja'>INFORMACIÓN ADICIONAL</div>
+                    </div> */}
+                    <div className='p-col-12 p-lg-6'>
+                        <div className="p-grid">
                             <div className='p-col-12 p-lg-12'>
-                                <Adjuntos solicitud={this.props.match.params.idSolicitud} />
-                                <Historial solicitud={this.props.match.params.idSolicitud} />
+                                <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Material Entregado (Descripción)</label>
+                                <InputTextarea readOnly value={this.state.materialEntregado} onChange={(e) => this.setState({ materialEntregado: e.target.value })} rows={4} placeholder='Descripción' />
                             </div>
-                            <div className='p-col-12 p-lg-12'>
-                                <label htmlFor="float-input">OBSERVACIÓN</label>
-                                <InputTextarea value={this.state.observacion} onChange={(e) => this.setState({ observacion: e.target.value })} rows={3} />
+                            <div className='p-col-12 p-lg-6'>
+                                <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Cantidad</label>
+                                <InputText readOnly value={this.state.cantidad} onChange={(e) => this.setState({ cantidad: e.target.value })} />
                             </div>
-                        </div>
-                    }
-                </div>
+                            <div className='p-col-12 p-lg-6'>
+                                <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Unidad</label>
+                                <Dropdown disabled options={unidadesMedida} value={this.state.unidad} autoWidth={false} onChange={(e) => this.setState({ unidad: e.value })} placeholder="Selecione" />
+                            </div>
+                            <div className='p-col-12 p-lg-6'>
+                                <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Línea de Aplicación</label>
+                                <Dropdown disabled options={aplicationLine} value={this.state.lineaAplicacion} autoWidth={false} onChange={(e) => this.setState({ lineaAplicacion: e.value })} placeholder="Seleccione " />
+                            </div>
 
-                <div className='p-col-12 p-lg-12 boton-opcion' >
-                    {this.state.id > 0 && this.state.estado === 'ENVIADO_REVISION' &&
-                        < div >
-                            <Button className="p-button-danger" label="APROBAR" onClick={this.validarSolicitud} />
-                            <Button className='p-button-secondary' label="RECHAZAR" />
+                            <div className='p-col-12 p-lg-6'>
+                                <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Entrega de Muestra</label>
+                                <Calendar disabled dateFormat="yy/mm/dd" value={this.state.muestraEntrega} locale={es} onChange={(e) => this.setState({ muestraEntrega: e.value })} showIcon={true} />
+                            </div>
+                            <div className='p-col-12 p-lg-12'>
+                                <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Ubicación de la Muestra</label>
+                                <InputTextarea readOnly value={this.state.muestraUbicacion} onChange={(e) => this.setState({ muestraUbicacion: e.target.value })} rows={4} placeholder='Descripción' />
+                            </div>
                         </div>
-                    }
-                </div> */}
+                    </div>
+                    <div className='p-col-12 p-lg-6'>
+                        <div className='p-col-12 p-lg-12'>
+                            <span style={{ color: '#CB3234' }}>*</span><label style={{ fontWeight: 'bold' }} htmlFor="float-input">Imagen de la Muestra</label>
+                            <div style={{ height: '335px', bottom: '0px', top: '0px', display: 'flex', justifyContent: 'center', border: '1px solid #cccccc', borderRadius: '4px' }}>
+                                {this.state.muestraImagenId > 0 &&
+                                    <img style={{ width: 'auto', maxHeight: '100%', display: 'block', margin: 'auto' }} id="ItemPreview" src="" />
+                                }
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div >
         )

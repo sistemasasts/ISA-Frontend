@@ -13,7 +13,7 @@ import Historial from '../Historial';
 import SolicitudEnsayoService from '../../../../service/SolicitudEnsayo/SolicitudEnsayoService';
 import { Dropdown } from 'primereact/dropdown';
 
-const ESTADO = 'REVISION_INFORME';
+const ESTADO = 'PENDIENTE_APROBACION';
 const TIPO_SOLICITUD = 'SOLICITUD_ENSAYO';
 class VerAprobar extends Component {
 

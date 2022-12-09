@@ -18,6 +18,7 @@ import * as _ from "lodash";
 import * as moment from 'moment';
 import Historial from '../Historial';
 import FormularioSELectura from '../FormularioSELectura';
+import UsuarioService from '../../../../service/UsuarioService';
 
 const ESTADO = 'ENVIADO_REVISION';
 const TIPO_SOLICITUD = 'SOLICITUD_ENSAYO';
@@ -30,6 +31,8 @@ class VerValidar extends Component {
             id: 0,
             observacion: null,
             estado: null,
+            responsable: null,
+            usuarios: [],
             mostrarControles: false
         };
         this.validarSolicitud = this.validarSolicitud.bind(this);
@@ -40,7 +43,8 @@ class VerValidar extends Component {
     async componentDidMount() {
         this.refrescar(this.props.match.params.idSolicitud);
         const prioridadesNivel = await SolicitudEnsayoService.listarPrioridadNivel();
-        this.setState({ nivelPrioridadData: prioridadesNivel });
+        const catalogo_usuarios = await UsuarioService.list();
+        this.setState({ nivelPrioridadData: prioridadesNivel, usuarios: catalogo_usuarios });
     }
 
     async refrescar(idSolicitud) {
@@ -57,9 +61,11 @@ class VerValidar extends Component {
     }
 
     async validarSolicitud() {
-        this.props.openModal();
+        if(_.isEmpty(this.state.responsable)){
+            this.growl.show({ severity: 'error', detail: 'Debe seleccionar el responsable.' });
+            return false;
+        }
         await SolicitudEnsayoService.validarSolicitud(this.crearObjSolicitud());
-        this.props.closeModal();
         this.growl.show({ severity: 'success', detail: 'Solicitud Aprobada!' });
         setTimeout(function () {
             history.push(`/quality-development_solicitudse_validar`);
@@ -83,6 +89,7 @@ class VerValidar extends Component {
     crearObjSolicitud() {
         return {
             id: this.state.id,
+            usuarioGestion: this.state.responsable.idUser,
             observacion: this.state.observacion
         }
     }
@@ -100,6 +107,13 @@ class VerValidar extends Component {
                             <Adjuntos solicitud={this.props.match.params.idSolicitud} orden={"VALIDAR_SOLICITUD"} controles={this.state.mostrarControles} estado={ESTADO} tipo={TIPO_SOLICITUD} />
                             <Historial solicitud={this.props.match.params.idSolicitud} tipo={TIPO_SOLICITUD} />
                         </div>
+
+                        <div className='p-col-12 p-lg-12 caja'>ASIGNACIÓN RESPONSABLE</div>
+                        <div className='p-col-12 p-lg-6'>
+                            <label htmlFor="float-input">RESPONSABLE</label>
+                            <Dropdown value={this.state.responsable} optionLabel='employee.completeName' options={this.state.usuarios} onChange={(e) => this.setState({ responsable: e.value })} placeholder="Seleccione" />
+                        </div>
+
                         <div className='p-col-12 p-lg-12'>
                             <label htmlFor="float-input">OBSERVACIÓN</label>
                             <InputTextarea value={this.state.observacion} onChange={(e) => this.setState({ observacion: e.target.value })} rows={3} />

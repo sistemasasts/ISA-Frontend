@@ -32,13 +32,16 @@ class PrincipalSE extends Component {
         this.setState({ solicitudes: solicitudes_data });
     }
 
-    redirigirSolicitudEdicion(idSolcicitud) {
-        history.push(`/quality-development_solicitudse_edit/${idSolcicitud}`);
+    redirigirSolicitudEdicion(solicitud) {
+        if (_.isEqual(solicitud.estado, 'FINALIZADO'))
+            history.push(`/quality-development_solicitudse_planesaccion/${solicitud.id}`);
+        else
+            history.push(`/quality-development_solicitudse_edit/${solicitud.id}`);
     }
 
     actionTemplate(rowData, column) {
         return <div>
-            <Button type="button" icon="fa fa-external-link-square" onClick={() => that.redirigirSolicitudEdicion(rowData.id)}></Button>
+            <Button type="button" icon="fa fa-external-link-square" onClick={() => that.redirigirSolicitudEdicion(rowData)}></Button>
         </div>;
     }
 

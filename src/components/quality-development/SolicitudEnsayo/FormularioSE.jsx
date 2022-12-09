@@ -309,7 +309,7 @@ class FormularioSE extends Component {
         const respuesta = await SolicitudDocumentoService.subirArchivoImagenMuestra(this.crearSolicitudDocumento(event.files[0]));
         this.setState({ muestraImagenId: respuesta.documentoEnsayo.id })
         document.getElementById("ItemPreview").src = `data:${respuesta.documentoEnsayo.tipo};base64,` + respuesta.imagen;
-        this.fileUploadRef.clear();
+        this.fileUploadRefIM.clear();
     }
 
     async leerImagenMuestra(idDocumento) {
@@ -452,7 +452,7 @@ class FormularioSE extends Component {
                                 }
                             </div>
                             {this.state.id > 0 && _.includes(['NUEVO', 'REGRESADO_NOVEDAD_FORMA'], this.state.estado) &&
-                                <FileUpload ref={(el) => this.fileUploadRef = el} mode="basic" name="demo" customUpload={true} uploadHandler={this.myUploaderImagenMuestra} accept="image/*" chooseLabel='Seleccione Imagen' uploadLabel='Subir Imagen' />
+                                <FileUpload ref={(el) => this.fileUploadRefIM = el} mode="basic" name="demo" customUpload={true} uploadHandler={this.myUploaderImagenMuestra} accept="image/*" chooseLabel='Seleccione Imagen' uploadLabel='Subir Imagen' />
                             }
                         </div>
                     </div>
@@ -473,12 +473,13 @@ class FormularioSE extends Component {
                                     selection={this.state.adjuntoSeleccionado} onSelectionChange={e => this.setState({ adjuntoSeleccionado: e.value })}>
                                     <Column body={this.templateAdjunto} />
                                 </DataTable>
-                                <Toolbar>
-                                    <div className="p-toolbar-group-left">
-                                        <FileUpload ref={(el) => this.fileUploadRef = el} mode="basic" customUpload={true} chooseLabel="Seleccione" uploadHandler={this.myUploader} auto={true} />
-                                    </div>
-                                </Toolbar>
-
+                                {this.state.id > 0 && _.includes(['NUEVO', 'REGRESADO_NOVEDAD_FORMA'], this.state.estado) &&
+                                    <Toolbar>
+                                        <div className="p-toolbar-group-left">
+                                            <FileUpload ref={(el) => this.fileUploadRef = el} mode="basic" customUpload={true} chooseLabel="Seleccione" uploadHandler={this.myUploader} auto={true} />
+                                        </div>
+                                    </Toolbar>
+                                }
                                 {/* <Adjuntos solicitud={this.props.match.params.idSolicitud} orden={"INGRESO_SOLICITUD"} controles={this.state.mostrarControles} estado={'NUEVO'} tipo={TIPO_SOLICITUD} /> */}
                                 <Historial solicitud={this.props.match.params.idSolicitud} tipo={TIPO_SOLICITUD} />
                             </div>

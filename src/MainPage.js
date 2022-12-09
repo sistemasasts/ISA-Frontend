@@ -81,6 +81,8 @@ import InformeSPPLectura from './components/quality-development/SolicitudPruebas
 import ConsultaTest from './components/quality-development/Test-type/ConsultaTest';
 import Usuario from './components/administracion/usuarios/Usuario';
 import UsuarioFormulario from './components/administracion/usuarios/UsuarioFormulario';
+import VerAprobarSE from './components/quality-development/SolicitudPruebasEnProceso/CoordinacionDesarrolloProductos/VerAprobarSE';
+import SEPlanesAccion from './components/quality-development/SolicitudEnsayo/SolicitudPlanesAccion/SEPlanesAccion';
 
 
 
@@ -604,6 +606,7 @@ class MainPage extends Component {
 						<Route path="/quality-development_solicitudse" component={PrincipalSE} />
 						<Route path="/quality-development_solicitudse_new" component={FormularioSE} />
 						<Route path="/quality-development_solicitudse_edit/:idSolicitud" component={FormularioSE} />
+                        <Route path="/quality-development_solicitudse_planesaccion/:idSolicitud" component={SEPlanesAccion} />
 						<Route path="/quality-development_solicitudse_validar" component={ValidarPrincipal} />
 						<Route path="/quality-development_solicitudse_validar_solicitud/:idSolicitud" component={VerValidar} />
 						<Route path="/quality-development_solicitudse_procesar" component={ResponderPrincipal} />
@@ -636,6 +639,7 @@ class MainPage extends Component {
 						<Route path="/quality-development_solicitudpp_mantenimiento_aprobar_ver/:idSolicitud" component={VerAprobarManteSPP} />
 						<Route path="/quality-development_solicitudpp_calidad_aprobar_principal" component={AprobacionCalidad} />
 						<Route path="/quality-development_solicitudpp_calidad_aprobar_ver/:idSolicitud" component={VerAprobarCalidadSPP} />
+                        <Route path="/quality-development_solicitudse_calidad_aprobar_ver/:idSolicitud" component={VerAprobarSE} />
 						<Route path="/quality-development_solicitudpp_planta_aprobar_principal" component={AprobacionPlanta} />
 						<Route path="/quality-development_solicitudpp_planta_aprobar_ver/:idSolicitud" component={VerAprobarPlantaSPP} />
 						<Route path="/quality-development_solicitudpp_aprobar_principal" component={AprobacionPrincipalSPP} />

@@ -1,0 +1,197 @@
+import { Button } from 'primereact/button';
+import { Growl } from 'primereact/growl';
+import { InputTextarea } from 'primereact/inputtextarea';
+import React, { Component } from 'react';
+import history from '../../../../history';
+import Adjuntos from '../Adjuntos';
+import "../../../site.css";
+import * as _ from "lodash";
+import FormularioSELectura from '../FormularioSELectura';
+import Historial from '../Historial';
+import SolicitudEnsayoService from '../../../../service/SolicitudEnsayo/SolicitudEnsayoService';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import FormPlanAccion from './FormPlanAccion';
+import SolicitudPlanAccionService from '../../../../service/SolicitudPlanAccion/SolicitudPlanAccionService';
+import { determinarColorActivo } from '../ClasesUtilidades';
+import Confirmacion from '../../Shared/Confirmacion';
+
+const ESTADO = 'FINALIZADO';
+const TIPO_SOLICITUD = 'SOLICITUD_ENSAYO';
+class SEPlanesAccion extends Component {
+
+    constructor() {
+        super();
+        this.state = {
+            id: 0,
+            observacion: null,
+            estado: null,
+            aprobacion: null,
+            mostrarControles: false,
+            mostrarFormPlanAccion: false,
+            planSeleccionado: null,
+            planesAccion: [],
+
+            mostrarConfirmacion: false,
+            contenidoConfirmacion: null,
+            identificadorConfirmacion: null
+        };
+        this.regresarSolicitud = this.regresarSolicitud.bind(this);
+        this.finalizarProceso = this.finalizarProceso.bind(this);
+        this.actionTemplate = this.actionTemplate.bind(this);
+        this.eliminarPlan = this.eliminarPlan.bind(this);
+        this.abrirDialogoPlanAccion = this.abrirDialogoPlanAccion.bind(this);
+        this.refrescarPlanesAccion = this.refrescarPlanesAccion.bind(this);
+        this.actionTemplateCumplido = this.actionTemplateCumplido.bind(this);
+        this.confirmarEnviarNuevaSolicitud = this.confirmarEnviarNuevaSolicitud.bind(this);
+        this.confirmarFinalizarProceso = this.confirmarFinalizarProceso.bind(this);
+        this.respuestaConfirmacion = this.respuestaConfirmacion.bind(this);
+    }
+
+    async componentDidMount() {
+        this.refrescar(this.props.match.params.idSolicitud);
+        this.setState({ id: this.props.match.params.idSolicitud });
+    }
+
+    async refrescar(idSolicitud) {
+        if (idSolicitud) {
+            const solicitud = await SolicitudEnsayoService.listarPorId(idSolicitud);
+            if (solicitud) {
+                const planes = await SolicitudPlanAccionService.listarPorTipo('SOLICITUD_ENSAYOS', idSolicitud);
+                this.setState({
+                    id: solicitud.id,
+                    estado: solicitud.estado,
+                    planesAccion: planes,
+                    mostrarControles: solicitud.estado === ESTADO
+                });
+            }
+        }
+    }
+
+    async refrescarPlanesAccion() {
+        const planes = await SolicitudPlanAccionService.listarPorTipo('SOLICITUD_ENSAYOS', this.state.id);
+        this.setState({ planesAccion: planes });
+    }
+
+    abrirDialogoPlanAccion(plan) {
+        this.setState({ planSeleccionado: plan, mostrarFormPlanAccion: true });
+    }
+
+    actionTemplate(rowData, column) {
+        return <div>
+            <Button type="button" icon="pi pi-pencil" className="p-button-warning" onClick={() => this.abrirDialogoPlanAccion(rowData)}></Button>
+            <Button type="button" icon="pi pi-trash" className="p-button-danger" style={{ marginLeft: '.5em' }} onClick={() => this.eliminarPlan(rowData.id)}></Button>
+        </div>;
+    }
+
+    actionTemplateCumplido(rowData) {
+        if (rowData.cumplido === null)
+            return "";
+        else
+            return <span className={determinarColorActivo(rowData.cumplido)}>{rowData.cumplido ? 'SI' : 'NO'}</span>;
+    }
+
+    async eliminarPlan(idPlan) {
+        await SolicitudPlanAccionService.eliminar(idPlan);
+        this.growl.show({ severity: 'success', detail: 'Plan de acción eliminado!' });
+
+    }
+
+    regresarSolicitud() {
+        history.push(`/quality-development_solicitudse`);
+    }
+
+    respuestaConfirmacion(identificador) {
+        console.log(identificador)
+        switch (identificador) {
+            case 'finalizarProceso':
+                console.log('SI finalizar proceso')
+                break;
+            case 'nuevaSolicitud':
+                console.log('SI enviar nueva solicitud')
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    confirmarFinalizarProceso() {
+        this.setState({ mostrarConfirmacion: true, contenidoConfirmacion: '¿Está seguro de Finalizar el Proceso?', identificadorConfirmacion: 'finalizarProceso' });
+    }
+
+    confirmarEnviarNuevaSolicitud() {
+        this.setState({ mostrarConfirmacion: true, contenidoConfirmacion: '¿Está seguro de enviar una nueva solicitud?', identificadorConfirmacion: 'nuevaSolicitud' });
+    }
+
+
+    async finalizarProceso() {
+        if (_.isEmpty(this.state.aprobacion)) {
+            this.growl.show({ severity: 'error', detail: 'Favor seleccione un Tipo de Aprobación.' });
+            return false;
+        }
+        await SolicitudEnsayoService.aprobarSolicitud(this.crearObjSolicitud());
+        this.growl.show({ severity: 'success', detail: 'Solicitud Aprobada!' });
+
+        setTimeout(function () {
+            history.push(`/quality-development_solicitudse_aprobar`);
+        }, 2000);
+    }
+
+    crearObjSolicitud() {
+        return {
+            id: this.state.id,
+            observacion: this.state.observacion,
+            tipoAprobacion: this.state.aprobacion
+        }
+    }
+
+    render() {
+        let header = <div className="p-clearfix" style={{ width: '10%' }}>
+            <Button style={{ float: 'left' }} label="Agregar" icon="pi pi-plus" onClick={() => this.setState({ mostrarFormPlanAccion: true })} />
+        </div>;
+        return (
+            <div className="card card-w-title">
+                <Growl ref={(el) => this.growl = el} style={{ marginTop: '75px' }} />
+                <FormularioSELectura solicitud={this.props.match.params.idSolicitud} />
+                {this.state.id > 0 &&
+                    <div className='p-grid p-grid-responsive p-fluid'>
+                        <div className='p-col-12 p-lg-12 caja'>INFORMACIÓN ADICIONAL</div>
+                        <div className='p-col-12 p-lg-12'>
+                            <Adjuntos solicitud={this.props.match.params.idSolicitud} orden={"APROBAR_INFORME"} controles={this.state.mostrarControles} estado={ESTADO} tipo={TIPO_SOLICITUD} />
+                            <Historial solicitud={this.props.match.params.idSolicitud} tipo={TIPO_SOLICITUD} />
+                        </div>
+                        <div className='p-col-12 p-lg-12 caja'>PLANES DE ACCIÓN</div>
+                        <div className='p-col-12 p-lg-12'>
+                            <DataTable value={this.state.planesAccion} rows={15} header={header} >
+                                <Column field="descripcion" header="Descripción" />
+                                <Column field="fechaInicio" header="Fecha Inicio" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
+                                <Column field="fechaFin" header="Fecha Fin" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
+                                <Column field="cumplido" header="Cumplimiento" body={this.actionTemplateCumplido} style={{ textAlign: 'center', width: '8em' }} />
+                                <Column body={this.actionTemplate} style={{ textAlign: 'center', width: '8em' }} />
+                            </DataTable>
+                        </div>
+                        <div className='p-col-12 p-lg-12'>
+                            <label htmlFor="float-input">OBSERVACIÓN</label>
+                            <InputTextarea value={this.state.observacion} onChange={(e) => this.setState({ observacion: e.target.value })} rows={3} />
+                        </div>
+
+                    </div>
+                }
+                <div className='p-col-12 p-lg-12 boton-opcion' >
+                    {this.state.id > 0 && this.state.estado === ESTADO &&
+                        < div >
+                            <Button className="p-button-danger" label="FINALIZAR PROCESO" onClick={this.confirmarFinalizarProceso} />
+                            <Button className='p-button' label="ENVIAR NUEVA SOLICITUD" onClick={this.confirmarEnviarNuevaSolicitud} />
+                            <Button className='p-button-secondary' label="ATRÁS" onClick={this.regresarSolicitud} />
+                        </div>
+                    }
+                </div>
+                <FormPlanAccion mostrar={this.state.mostrarFormPlanAccion} solicitudId={this.state.id} origen={this} tipo={'SOLICITUD_ENSAYOS'} />
+                <Confirmacion mostrar={this.state.mostrarConfirmacion} contenido={this.state.contenidoConfirmacion} origen={this} identificador={this.state.identificadorConfirmacion} />
+            </div>
+        )
+    }
+}
+
+export default SEPlanesAccion;
