@@ -56,12 +56,12 @@ class VerAprobarCalidadSPP extends Component {
             this.growl.show({ severity: 'success', detail: 'Solicitud Rechazada!' });
         this.props.closeModal();
         setTimeout(function () {
-            history.push(`/quality-development_solicitudpp_mantenimiento_aprobar_principal`);
+            history.push(`/quality-development_solicitudpp_calidad_aprobar_principal`);
         }, 2000);
     }
 
     redirigirInicio() {
-        history.push(`/quality-development_solicitudpp_mantenimiento_aprobar_principal`);
+        history.push(`/quality-development_solicitudpp_calidad_aprobar_principal`);
     }
 
     crearObjSolicitud(aprobado) {
