@@ -11,8 +11,9 @@ import * as _ from "lodash";
 import FormularioSELectura from '../FormularioSELectura';
 import Historial from '../Historial';
 import SolicitudEnsayoService from '../../../../service/SolicitudEnsayo/SolicitudEnsayoService';
+import Confirmacion from '../../Shared/Confirmacion';
 
-const ESTADO = ['EN_PROCESO', 'REGRESADO_NOVEDAD_INFORME'];
+const ESTADO = ['EN_PROCESO', 'REGRESADO_NOVEDAD_INFORME', 'PENDIENTE_PRUEBAS_PROCESO'];
 const TIPO_SOLICITUD = 'SOLICITUD_ENSAYO';
 let ESTADO_SOLICITUD;
 class VerResponder extends Component {
@@ -23,14 +24,20 @@ class VerResponder extends Component {
             id: 0,
             observacion: null,
             estado: null,
-            mostrarControles: false
+            mostrarControles: false,
+
+            mostrarConfirmacion: false,
+            contenidoConfirmacion: null,
+            identificadorConfirmacion: null
         };
         this.responderSolicitud = this.responderSolicitud.bind(this);
         this.anularSolicitud = this.anularSolicitud.bind(this);
+        this.confirmarIniciarPruebasProceso = this.confirmarIniciarPruebasProceso.bind(this);
+        this.respuestaConfirmacion = this.respuestaConfirmacion.bind(this);
     }
 
     async componentDidMount() {
-        this.refrescar(this.props.match.params.idSolicitud);        
+        this.refrescar(this.props.match.params.idSolicitud);
     }
 
     async refrescar(idSolicitud) {
@@ -68,6 +75,26 @@ class VerResponder extends Component {
         }, 1000);
     }
 
+    confirmarIniciarPruebasProceso() {
+        this.setState({ mostrarConfirmacion: true, contenidoConfirmacion: '¿Está seguro de iniciar la prueba en proceso?', identificadorConfirmacion: 'iniciarProceso' });
+    }
+
+    async respuestaConfirmacion(identificador) {
+        switch (identificador) {
+            case 'iniciarProceso':
+                const objSE = { id: this.state.id, observacion: this.state.observacion };
+                const solicitudpp = await SolicitudEnsayoService.iniciarPruebaEnProceso(objSE);
+                this.growl.show({ severity: 'success', detail: 'Solicitud prueba en proceso iniciada!' });
+
+                setTimeout(function () {
+                    history.push(`/quality-development_solicitudpp_edit/${solicitudpp.id}`);
+                }, 1000);
+                break;
+            default:
+                break;
+        }
+    }
+
     crearObjSolicitud() {
         return {
             id: this.state.id,
@@ -96,11 +123,20 @@ class VerResponder extends Component {
                 <div className='p-col-12 p-lg-12 boton-opcion' >
                     {this.state.id > 0 && _.includes(ESTADO, this.state.estado) &&
                         < div >
-                            <Button className="p-button-danger" label="ENVIAR INFORME" onClick={this.responderSolicitud} />
-                            <Button className='p-button-secondary' label="ANULAR" onClick={this.anularSolicitud} />
+                            {this.state.estado !== 'PENDIENTE_PRUEBAS_PROCESO' &&
+                                <div>
+                                    <Button className="p-button-danger" label="ENVIAR INFORME" onClick={this.responderSolicitud} />
+                                    <Button className='p-button-secondary' label="ANULAR" onClick={this.anularSolicitud} />
+                                </div>
+                            }
+                            {this.state.estado === 'PENDIENTE_PRUEBAS_PROCESO' &&
+                                <Button className='p-button' label="INICIAR PRUEBAS EN PROCESO" onClick={this.confirmarIniciarPruebasProceso} />
+                            }
+
                         </div>
                     }
                 </div>
+                <Confirmacion mostrar={this.state.mostrarConfirmacion} contenido={this.state.contenidoConfirmacion} origen={this} identificador={this.state.identificadorConfirmacion} />
 
             </div>
         )

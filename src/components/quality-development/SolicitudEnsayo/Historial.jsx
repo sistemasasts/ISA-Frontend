@@ -30,8 +30,8 @@ class Historial extends Component {
         let historialComletoData;
         if (this.props.tipo === 'SOLICITUD_ENSAYO'){
             historialData = await SolicitudHistorialService.listarPorIdSolicitud(this.props.solicitud);
-            historialComletoData = [];
-        }            
+            historialComletoData = await SolicitudHistorialService.listarCompletoPorIdSolicitud(this.props.solicitud);
+        }
         if (this.props.tipo === 'SOLICITUD_PRUEBAS_PROCESO') {
             historialData = await SolicitudPruebaProcesoHistorialService.listarPorIdSolicitud(this.props.solicitud);
             historialComletoData = await SolicitudPruebaProcesoHistorialService.listarCompletoPorIdSolicitud(this.props.solicitud);
@@ -91,7 +91,12 @@ class Historial extends Component {
                         <TabPanel header="Completo" leftIcon="pi pi-list" >
                             <Accordion multiple={true}>
                                 {this.state.historialCompleto.map(item => <AccordionTab header={item.codigo}>
-                                    <DataView emptyMessage="" value={item.historial} itemTemplate={this.itemTemplate}></DataView>
+                                    {this.props.tipo === 'SOLICITUD_ENSAYO' &&
+                                        <DataView emptyMessage="" value={ item.historialSE} itemTemplate={this.itemTemplate}></DataView>
+                                    }
+                                    {this.props.tipo === 'SOLICITUD_PRUEBAS_PROCESO' &&
+                                        <DataView emptyMessage="" value={ item.historial} itemTemplate={this.itemTemplate}></DataView>
+                                    }
                                 </AccordionTab>
                                 )}
                             </Accordion>

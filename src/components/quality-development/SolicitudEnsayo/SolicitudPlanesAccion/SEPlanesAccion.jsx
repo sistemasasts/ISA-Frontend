@@ -37,7 +37,6 @@ class SEPlanesAccion extends Component {
             identificadorConfirmacion: null
         };
         this.regresarSolicitud = this.regresarSolicitud.bind(this);
-        this.finalizarProceso = this.finalizarProceso.bind(this);
         this.actionTemplate = this.actionTemplate.bind(this);
         this.eliminarPlan = this.eliminarPlan.bind(this);
         this.abrirDialogoPlanAccion = this.abrirDialogoPlanAccion.bind(this);
@@ -101,14 +100,26 @@ class SEPlanesAccion extends Component {
         history.push(`/quality-development_solicitudse`);
     }
 
-    respuestaConfirmacion(identificador) {
+    async respuestaConfirmacion(identificador) {
         console.log(identificador)
         switch (identificador) {
             case 'finalizarProceso':
-                console.log('SI finalizar proceso')
+                if (_.isEmpty(this.state.observacion)) {
+                    this.growl.show({ severity: 'error', detail: 'El campo observación es obligatorio.' });
+                    return false;
+                }
+                await SolicitudEnsayoService.finalizarProceso(this.crearObjSolicitud());
+                this.growl.show({ severity: 'success', detail: 'Solicitud finalizada.' });
+                setTimeout(() => {
+                    this.regresarSolicitud();
+                }, 400);
                 break;
             case 'nuevaSolicitud':
-                console.log('SI enviar nueva solicitud')
+                const nuevaSolicitud = await SolicitudEnsayoService.crearAPartirSolicitudPadre(this.state.id);
+                this.growl.show({ severity: 'success', detail: 'Solicitud creada.' });
+                setTimeout(() => {
+                    history.push(`/quality-development_solicitudse_edit/${nuevaSolicitud.id}`);
+                }, 400);
                 break;
 
             default:
@@ -124,26 +135,16 @@ class SEPlanesAccion extends Component {
         this.setState({ mostrarConfirmacion: true, contenidoConfirmacion: '¿Está seguro de enviar una nueva solicitud?', identificadorConfirmacion: 'nuevaSolicitud' });
     }
 
-
-    async finalizarProceso() {
-        if (_.isEmpty(this.state.aprobacion)) {
-            this.growl.show({ severity: 'error', detail: 'Favor seleccione un Tipo de Aprobación.' });
-            return false;
-        }
-        await SolicitudEnsayoService.aprobarSolicitud(this.crearObjSolicitud());
-        this.growl.show({ severity: 'success', detail: 'Solicitud Aprobada!' });
-
-        setTimeout(function () {
-            history.push(`/quality-development_solicitudse_aprobar`);
-        }, 2000);
-    }
-
     crearObjSolicitud() {
         return {
             id: this.state.id,
-            observacion: this.state.observacion,
-            tipoAprobacion: this.state.aprobacion
+            observacion: this.state.observacion
         }
+    }
+
+    planesAccionTodosCumplidos() {
+        const cumplidosNo = _.filter(this.state.planesAccion, (o) => { return !o.cumplido });
+        return !cumplidosNo.length > 0;
     }
 
     render() {
@@ -182,7 +183,9 @@ class SEPlanesAccion extends Component {
                     {this.state.id > 0 && this.state.estado === ESTADO &&
                         < div >
                             <Button className="p-button-danger" label="FINALIZAR PROCESO" onClick={this.confirmarFinalizarProceso} />
-                            <Button className='p-button' label="ENVIAR NUEVA SOLICITUD" onClick={this.confirmarEnviarNuevaSolicitud} />
+                            {this.planesAccionTodosCumplidos() &&
+                                <Button className='p-button' label="ENVIAR NUEVA SOLICITUD" onClick={this.confirmarEnviarNuevaSolicitud} />
+                            }
                             <Button className='p-button-secondary' label="ATRÁS" onClick={this.regresarSolicitud} />
                         </div>
                     }

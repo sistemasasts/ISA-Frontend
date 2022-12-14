@@ -23,6 +23,9 @@ const SolicitudEnsayoService = {
     listarTiposAprobacion: () => http.request.get(`${apiEndpoint}/tiposAprobacion`),
     listarEstados: () => http.request.get(`${apiEndpoint}/estados`),
     consultar: (page, size, consulta) => http.request.post(`${apiEndpoint}/consulta/?page=${page}&size=${size}`, consulta),
+    crearAPartirSolicitudPadre: (id) => http.request.get(`${apiEndpoint}/crearAPartirSolicitudPadre/${id}`),
+    finalizarProceso: (solicitud) => http.request.post(`${apiEndpoint}/finalizarProceso/`, solicitud),
+    iniciarPruebaEnProceso: (solicitud) => http.request.post(`${apiEndpoint}/iniciarPruebaEnProceso/`, solicitud),
 
 }
 
