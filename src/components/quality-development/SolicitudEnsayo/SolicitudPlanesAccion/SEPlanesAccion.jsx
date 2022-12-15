@@ -15,6 +15,8 @@ import FormPlanAccion from './FormPlanAccion';
 import SolicitudPlanAccionService from '../../../../service/SolicitudPlanAccion/SolicitudPlanAccionService';
 import { determinarColorActivo } from '../ClasesUtilidades';
 import Confirmacion from '../../Shared/Confirmacion';
+import EncuestaSatisfaccion from '../../Shared/EncuestaSatisfaccion';
+import EncuestaSatisfaccionService from '../../../../service/EncuestaSatisfaccionService';
 
 const ESTADO = 'FINALIZADO';
 const TIPO_SOLICITUD = 'SOLICITUD_ENSAYO';
@@ -34,7 +36,9 @@ class SEPlanesAccion extends Component {
 
             mostrarConfirmacion: false,
             contenidoConfirmacion: null,
-            identificadorConfirmacion: null
+            identificadorConfirmacion: null,
+
+            mostrarEncuesta: false
         };
         this.regresarSolicitud = this.regresarSolicitud.bind(this);
         this.actionTemplate = this.actionTemplate.bind(this);
@@ -57,11 +61,14 @@ class SEPlanesAccion extends Component {
             const solicitud = await SolicitudEnsayoService.listarPorId(idSolicitud);
             if (solicitud) {
                 const planes = await SolicitudPlanAccionService.listarPorTipo('SOLICITUD_ENSAYOS', idSolicitud);
+                const mostrar = await EncuestaSatisfaccionService.existeEncuesta('SOLICITUD_ENSAYOS', idSolicitud);
+                console.log(mostrar);
                 this.setState({
                     id: solicitud.id,
                     estado: solicitud.estado,
                     planesAccion: planes,
-                    mostrarControles: solicitud.estado === ESTADO
+                    mostrarControles: solicitud.estado === ESTADO,
+                    mostrarEncuesta: !mostrar
                 });
             }
         }
@@ -192,6 +199,7 @@ class SEPlanesAccion extends Component {
                 </div>
                 <FormPlanAccion mostrar={this.state.mostrarFormPlanAccion} solicitudId={this.state.id} origen={this} tipo={'SOLICITUD_ENSAYOS'} />
                 <Confirmacion mostrar={this.state.mostrarConfirmacion} contenido={this.state.contenidoConfirmacion} origen={this} identificador={this.state.identificadorConfirmacion} />
+                <EncuestaSatisfaccion mostrar={this.state.mostrarEncuesta} solicitud={this.state.id} tipo={'SOLICITUD_ENSAYOS'} />
             </div>
         )
     }

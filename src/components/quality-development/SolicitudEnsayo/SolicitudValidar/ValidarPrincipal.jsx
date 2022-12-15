@@ -54,7 +54,7 @@ class ValidarPrincipal extends Component {
                     onRowSelect={this.onCarSelect}>
                     <Column body={this.actionTemplate} style={{ textAlign: 'center', width: '5em' }} />
                     <Column field="codigo" header="Código" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
-                    <Column field="fechaCreacion" header="Fecha Solicitud" sortable={true} />
+                    <Column field="fechaSolicitud" header="Fecha Solicitud" sortable={true} />
                     <Column field="proveedorNombre" header="Proveedor" sortable={true} />
                     <Column field="fechaEntrega" header="Fecha Entrega" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
                     <Column field="detalleMaterial" header="Material" />

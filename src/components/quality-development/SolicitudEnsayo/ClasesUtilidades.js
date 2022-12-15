@@ -19,11 +19,12 @@ export function determinarColor(estado) {
 export function determinarColorTipoAprobacion(tipoAprobacion) {
     switch (tipoAprobacion) {
         case 'LIBRE_USO':
-        case 'LABORATORIO':
-        case 'PLANTA':
+        case 'NIVEL LABORATORIO':
+        case 'NIVEL PLANTA':
         case 'SOLICITUD SOLUCIONES TÉCNICAS':
         case 'CREACIÓN DE MATERIAS PRIMAS':
         case 'GESTIONAR E IMPLEMENTAR CAMBIOS':
+        case 'SOLICITUD PRUEBA PROCESO':
             return 'customer-badge-default';
         case 'REPETIR PRUEBA':
         case 'MATERIAL NO VALIDADO':

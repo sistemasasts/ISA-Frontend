@@ -156,8 +156,8 @@ class FormularioSELectura extends Component {
 
                             <label className="p-col-12 p-lg-12" htmlFor="float-input"> <span style={{ color: '#CB3234' }}>*</span>TIEMPO DE ENTREGA</label>
                             <div className="p-col-12 p-lg-4">
-                                <RadioButton inputId="rb1" name="deliverTime" value="INMEDIATO" checked={this.state.tiempoEntrega === 'INMEDIATO'} />
-                                <label htmlFor="rb1" className="p-radiobutton-label">Inmediato (Tiempo de desarrollo 5 días)</label>
+                                <RadioButton inputId="rb4" name="deliverTimerb4" value="CASOS_ESPECIALES" checked={this.state.tiempoEntrega === 'CASOS_ESPECIALES'} />
+                                <label htmlFor="rb4" className="p-radiobutton-label">Casos Especiales (Tiempo de desarrollo hasta 10 días)</label>
                             </div>
                             <div className="p-col-12 p-lg-4">
                                 <RadioButton inputId="rb2" name="deliverTimerb2" value="MEDIO" checked={this.state.tiempoEntrega === 'MEDIO'} />
@@ -166,10 +166,6 @@ class FormularioSELectura extends Component {
                             <div className="p-col-12 p-lg-4">
                                 <RadioButton inputId="rb3" name="deliverTimerb3" value="BAJO" checked={this.state.tiempoEntrega === 'BAJO'} />
                                 <label htmlFor="rb3" className="p-radiobutton-label">Bajo (Tiempo de desarrollo 2 meses)</label>
-                            </div>
-                            <div className="p-col-12 p-lg-4">
-                                <RadioButton inputId="rb4" name="deliverTimerb4" value="CASOS_ESPECIALES" checked={this.state.tiempoEntrega === 'CASOS_ESPECIALES'} />
-                                <label htmlFor="rb4" className="p-radiobutton-label">Casos Especiales</label>
                             </div>
                         </div>
 
