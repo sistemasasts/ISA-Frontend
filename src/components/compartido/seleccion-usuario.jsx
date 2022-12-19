@@ -19,7 +19,7 @@ export class SeleccionUsuario extends Component {
     }
 
     async componentDidMount() {
-        const catalogo_usuarios = await UsuarioService.list();
+        const catalogo_usuarios = await UsuarioService.listarActivos();
         this.setState({ usuarios: this.transformarDatos(catalogo_usuarios) });
     }
 

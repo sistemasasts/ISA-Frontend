@@ -25,6 +25,7 @@ import { CatalogoService } from '../../../service/CatalogoService';
 import ProductoService from '../../../service/productoService';
 import { ColumnGroup } from 'primereact/columngroup';
 import { Row } from 'primereact/row';
+import { RadioButton } from 'primereact/radiobutton';
 
 const TIPO_SOLICITUD = "SOLICITUD_PRUEBAS_PROCESO";
 class FormularioSPP extends Component {
@@ -63,7 +64,8 @@ class FormularioSPP extends Component {
             unidadRequeridaProducir: null,
             unidadesCatalogo: [],
             materialFormula: null,
-            mostrarMaterialesFormula: false
+            mostrarMaterialesFormula: false,
+            contieneAdjunto: "NO",
         };
         this.catalogoService = new CatalogoService();
         this.onObjectiveChange = this.onObjectiveChange.bind(this);
@@ -125,7 +127,8 @@ class FormularioSPP extends Component {
                     cantidadRequeridaProducir: solicitud.cantidadRequeridaProducir,
                     unidadRequeridaProducir: solicitud.unidadRequeridaProducir,
                     materialesFormula: solicitud.materialesFormula,
-                    mostrarMaterialesFormula: solicitud.area && _.startsWith(solicitud.area.nameArea, 'I+D')
+                    mostrarMaterialesFormula: solicitud.area && _.startsWith(solicitud.area.nameArea, 'I+D'),
+                    contieneAdjunto: solicitud.contieneAdjuntoDescripcionProducto ? 'SI' : 'NO'
                 });
             }
         }
@@ -200,7 +203,8 @@ class FormularioSPP extends Component {
             observacion: this.state.observacion,
             observacionFlujo: this.state.observacionFlujo,
             cantidadRequeridaProducir: this.state.cantidadRequeridaProducir,
-            unidadRequeridaProducir: this.state.unidadRequeridaProducir
+            unidadRequeridaProducir: this.state.unidadRequeridaProducir,
+            contieneAdjuntoDescripcionProducto: _.isEqual(this.state.contieneAdjunto, "SI") ? true : false
         }
     }
 
@@ -525,6 +529,13 @@ class FormularioSPP extends Component {
                                         <span style={{ color: '#CB3234' }}>*</span><label style={{ fontWeight: 'bold' }} htmlFor="float-input">Descripción del Producto que se quiere obtener</label>
                                         <InputTextarea readOnly={!this.state.editar} value={this.state.descripcionProducto} onChange={(e) => this.setState({ descripcionProducto: e.target.value })} rows={8} placeholder='Descripción' />
                                     </div>
+                                    <div className="p-col-12">
+                                        <label style={{ marginRight: '10px', fontWeight:'bold', color:'red' }} htmlFor="rb1" className="p-radiobutton-label">Contiene Adjunto</label>
+                                        <RadioButton inputId="rb1" name="si" value="SI" onChange={(e) => this.setState({ contieneAdjunto: e.value })} checked={this.state.contieneAdjunto === 'SI'} />
+                                        <label htmlFor="rb1" className="p-radiobutton-label">SI</label>
+                                        <RadioButton style={{ marginLeft: '10px' }} inputId="rb2" name="no" value="NO" onChange={(e) => this.setState({ contieneAdjunto: e.value })} checked={this.state.contieneAdjunto === 'NO'} />
+                                        <label htmlFor="rb2" className="p-radiobutton-label">NO</label>
+                                    </div>
                                     <div className='p-col-12 p-lg-12'>
                                         <span style={{ color: '#CB3234' }}>*</span><label style={{ fontWeight: 'bold' }} htmlFor="float-input">Información sobre Variables de Proceso que deben ser controladas</label>
                                         <InputTextarea readOnly={!this.state.editar} value={this.state.variablesProceso} onChange={(e) => this.setState({ variablesProceso: e.target.value })} rows={8} placeholder='Descripción' />
@@ -588,7 +599,7 @@ class FormularioSPP extends Component {
                     </div>
 
                     <div className='p-col-12 p-lg-12'>
-                        <label style={{ fontWeight: 'bold' }} htmlFor="float-input">Observaciones</label>
+                        <label style={{ fontWeight: 'bold' }} htmlFor="float-input">Secuencial y motivo de prueba</label>
                         <InputTextarea readOnly={!this.state.editar} value={this.state.observacion} onChange={(e) => this.setState({ observacion: e.target.value })} rows={2} placeholder='Descripción' />
                     </div>
 

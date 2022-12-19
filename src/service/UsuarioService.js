@@ -4,6 +4,7 @@ const apiEndpoint = '/userimptek'
 
 const UsuarioService = {
     list: () => http.request.get(apiEndpoint),
+    listarActivos: () => http.request.get(`${apiEndpoint}/activos`),
     listarPorId: (id) => http.request.get(`${apiEndpoint}/${id}`),
     listarAreas: () => http.request.get(`${apiEndpoint}/areas`),
     listarTipos: () => http.request.get(`${apiEndpoint}/tiposEmpleados`),
