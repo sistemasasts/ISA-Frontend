@@ -42,9 +42,17 @@ class VerAsignarResponsableSPP extends Component {
     }
 
     async componentDidMount() {
-        const catalogo_usuarios = await UsuarioService.list();
+        const catalogo_usuarios = await UsuarioService.listarActivos();
         this.refrescar(this.props.match.params.idSolicitud);
-        this.setState({ usuarios: catalogo_usuarios });
+        this.setState({ usuarios: this.transformarDatos(catalogo_usuarios) });
+    }
+
+    transformarDatos(data) {
+        const usuairosCasteo = [];
+        _.forEach(data, (x) => {
+            usuairosCasteo.push({ 'label': `${x.idUser} - ${x.employee.completeName}`, 'value': x.idUser });
+        });
+        return usuairosCasteo;
     }
 
     async refrescar(idSolicitud) {
@@ -108,7 +116,7 @@ class VerAsignarResponsableSPP extends Component {
         return {
             id: this.state.id,
             observacionFlujo: this.state.observacion,
-            usuarioAsignado: _.isEmpty(this.state.responsable) ? null : this.state.responsable.idUser,
+            usuarioAsignado: _.isEmpty(this.state.responsable) ? null : this.state.responsable,
             orden: ORDEN,
             fechaPrueba: moment(this.state.fechaPrueba).format('YYYY-MM-DD HH:mm')
         }
@@ -144,7 +152,7 @@ class VerAsignarResponsableSPP extends Component {
                         <div className='p-col-12 p-lg-12 caja'>ASIGNACIÓN RESPONSABLE</div>
                         <div className='p-col-12 p-lg-6'>
                             <label htmlFor="float-input">RESPONSABLE</label>
-                            <Dropdown value={this.state.responsable} optionLabel='nickName' options={this.state.usuarios} onChange={(e) => this.setState({ responsable: e.value })} placeholder="Seleccione" />
+                            <Dropdown value={this.state.responsable} options={this.state.usuarios} onChange={(e) => this.setState({ responsable: e.value })} placeholder="Seleccione" />
                         </div>
                         <div className='p-col-12 p-lg-6'>
                             <label htmlFor="float-input">FECHA REALIZACIÓN PRUEBA</label>

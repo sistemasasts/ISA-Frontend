@@ -19,6 +19,7 @@ import { ColumnGroup } from 'primereact/columngroup';
 import { Row } from 'primereact/row';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
+import { RadioButton } from 'primereact/radiobutton';
 
 class FormularioSPPLectura extends Component {
 
@@ -45,7 +46,8 @@ class FormularioSPPLectura extends Component {
             materialesFormula: [],
             cantidadRequeridaProducir: null,
             unidadRequeridaProducir: null,
-            mostrarMaterialesFormula: false
+            mostrarMaterialesFormula: false,
+            contieneAdjunto: null
         };
         this.leerImagen = this.leerImagen.bind(this);
         this.descargarReporte = this.descargarReporte.bind(this);
@@ -86,7 +88,8 @@ class FormularioSPPLectura extends Component {
                     cantidadRequeridaProducir: solicitud.cantidadRequeridaProducir,
                     unidadRequeridaProducir: solicitud.unidadRequeridaProducir,
                     materialesFormula: solicitud.materialesFormula,
-                    mostrarMaterialesFormula: solicitud.area && _.startsWith(solicitud.area.nameArea, 'I+D')
+                    mostrarMaterialesFormula: solicitud.area && _.startsWith(solicitud.area.nameArea, 'I+D'),
+                    contieneAdjunto: solicitud.contieneAdjuntoDescripcionProducto ? 'SI' : 'NO'
                 });
             }
         }
@@ -294,6 +297,13 @@ class FormularioSPPLectura extends Component {
                                         <span style={{ color: '#CB3234' }}>*</span><label style={{ fontWeight: 'bold' }} htmlFor="float-input">Descripción del Producto que se quiere obtener</label>
                                         <InputTextarea readOnly value={this.state.descripcionProducto} onChange={(e) => this.setState({ descripcionProducto: e.target.value })} rows={8} placeholder='Descripción' />
                                     </div>
+                                    <div className="p-col-12">
+                                        <label style={{ marginRight: '10px', fontWeight:'bold', color:'red' }} htmlFor="rb1" className="p-radiobutton-label">Contiene Adjunto</label>
+                                        <RadioButton inputId="rb1" name="si" value="SI" onChange={(e) => this.setState({ contieneAdjunto: e.value })} checked={this.state.contieneAdjunto === 'SI'} />
+                                        <label htmlFor="rb1" className="p-radiobutton-label">SI</label>
+                                        <RadioButton style={{ marginLeft: '10px' }} inputId="rb2" name="no" value="NO" onChange={(e) => this.setState({ contieneAdjunto: e.value })} checked={this.state.contieneAdjunto === 'NO'} />
+                                        <label htmlFor="rb2" className="p-radiobutton-label">NO</label>
+                                    </div>
                                     <div className='p-col-12 p-lg-12'>
                                         <span style={{ color: '#CB3234' }}>*</span><label style={{ fontWeight: 'bold' }} htmlFor="float-input">Información sobre Variables de Proceso que deben ser controladas</label>
                                         <InputTextarea readOnly value={this.state.variablesProceso} onChange={(e) => this.setState({ variablesProceso: e.target.value })} rows={8} placeholder='Descripción' />
@@ -346,7 +356,7 @@ class FormularioSPPLectura extends Component {
                     </div>
 
                     <div className='p-col-12 p-lg-12'>
-                        <label style={{ fontWeight: 'bold' }} htmlFor="float-input">Observaciones</label>
+                        <label style={{ fontWeight: 'bold' }} htmlFor="float-input">Secuencial y motivo de prueba</label>
                         <InputTextarea readOnly value={this.state.observacion} onChange={(e) => this.setState({ observacion: e.target.value })} rows={2} placeholder='Descripción' />
                     </div>
                 </div>
