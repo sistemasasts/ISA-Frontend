@@ -83,6 +83,7 @@ import Usuario from './components/administracion/usuarios/Usuario';
 import UsuarioFormulario from './components/administracion/usuarios/UsuarioFormulario';
 import VerAprobarSE from './components/quality-development/SolicitudPruebasEnProceso/CoordinacionDesarrolloProductos/VerAprobarSE';
 import SEPlanesAccion from './components/quality-development/SolicitudEnsayo/SolicitudPlanesAccion/SEPlanesAccion';
+import UnidadMedida from './components/quality-development/UnidadesMedida/UnidadMedida';
 
 
 
@@ -652,6 +653,7 @@ class MainPage extends Component {
 
                         <Route path="/administracion_usuario" component={Usuario} />
                         <Route path="/administracion_usuario_registro/:idUsuario" component={UsuarioFormulario} />
+                        <Route path="/quality-development_unidad_medida" component={UnidadMedida} />
 
 						<Route path="/home" component={Home} />
 
