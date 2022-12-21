@@ -2,25 +2,22 @@ import { Button } from 'primereact/button';
 import { Growl } from 'primereact/growl';
 import { InputTextarea } from 'primereact/inputtextarea';
 import React, { Component } from 'react';
-import history from '../../../../history';
-import Adjuntos from '../Adjuntos';
-import "../../../site.css";
+import history from '../../../history';
+import Adjuntos from '../SolicitudEnsayo/Adjuntos';
+import "../../site.css";
 import * as _ from "lodash";
-import FormularioSELectura from '../FormularioSELectura';
-import Historial from '../Historial';
-import SolicitudEnsayoService from '../../../../service/SolicitudEnsayo/SolicitudEnsayoService';
+import FormularioSELectura from '../SolicitudEnsayo/FormularioSELectura';
+import Historial from '../SolicitudEnsayo/Historial';
+import SolicitudEnsayoService from '../../../service/SolicitudEnsayo/SolicitudEnsayoService';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import FormPlanAccion from './FormPlanAccion';
-import SolicitudPlanAccionService from '../../../../service/SolicitudPlanAccion/SolicitudPlanAccionService';
-import { determinarColorActivo } from '../ClasesUtilidades';
-import Confirmacion from '../../Shared/Confirmacion';
-import EncuestaSatisfaccion from '../../Shared/EncuestaSatisfaccion';
-import EncuestaSatisfaccionService from '../../../../service/EncuestaSatisfaccionService';
+import SolicitudPlanAccionService from '../../../service/SolicitudPlanAccion/SolicitudPlanAccionService';
+import { determinarColorActivo } from '../SolicitudEnsayo/ClasesUtilidades';
+import Confirmacion from '../Shared/Confirmacion';
 
-const ESTADO = 'FINALIZADO';
+const ESTADO = 'PENDIENTE_PLANES_ACCION';
 const TIPO_SOLICITUD = 'SOLICITUD_ENSAYO';
-class SEPlanesAccion extends Component {
+class SEPlanesAccionVer extends Component {
 
     constructor() {
         super();
@@ -42,7 +39,7 @@ class SEPlanesAccion extends Component {
         };
         this.regresarSolicitud = this.regresarSolicitud.bind(this);
         this.actionTemplate = this.actionTemplate.bind(this);
-        this.eliminarPlan = this.eliminarPlan.bind(this);
+        this.marcarCumplimiento = this.marcarCumplimiento.bind(this);
         this.abrirDialogoPlanAccion = this.abrirDialogoPlanAccion.bind(this);
         this.refrescarPlanesAccion = this.refrescarPlanesAccion.bind(this);
         this.actionTemplateCumplido = this.actionTemplateCumplido.bind(this);
@@ -61,14 +58,11 @@ class SEPlanesAccion extends Component {
             const solicitud = await SolicitudEnsayoService.listarPorId(idSolicitud);
             if (solicitud) {
                 const planes = await SolicitudPlanAccionService.listarPorTipo('SOLICITUD_ENSAYOS', idSolicitud);
-                const mostrar = await EncuestaSatisfaccionService.existeEncuesta('SOLICITUD_ENSAYOS', idSolicitud);
-                console.log(mostrar);
                 this.setState({
                     id: solicitud.id,
                     estado: solicitud.estado,
                     planesAccion: planes,
-                    mostrarControles: solicitud.estado === ESTADO,
-                    mostrarEncuesta: !mostrar
+                    mostrarControles: solicitud.estado === ESTADO
                 });
             }
         }
@@ -85,8 +79,8 @@ class SEPlanesAccion extends Component {
 
     actionTemplate(rowData, column) {
         return <div>
-            <Button type="button" icon="pi pi-pencil" className="p-button-warning" onClick={() => this.abrirDialogoPlanAccion(rowData)}></Button>
-            <Button type="button" icon="pi pi-trash" className="p-button-danger" style={{ marginLeft: '.5em' }} onClick={() => this.eliminarPlan(rowData.id)}></Button>
+            <Button type="button" icon="pi pi-check" className="p-button-success"  onClick={() => this.marcarCumplimiento(rowData.id, true)}></Button>
+            <Button type="button" icon="pi pi-times" className="p-button-danger"  style={{ marginLeft: '.5em' }} onClick={() => this.marcarCumplimiento(rowData.id, false)}></Button>
         </div>;
     }
 
@@ -97,14 +91,14 @@ class SEPlanesAccion extends Component {
             return <span className={determinarColorActivo(rowData.cumplido)}>{rowData.cumplido ? 'SI' : 'NO'}</span>;
     }
 
-    async eliminarPlan(idPlan) {
-        await SolicitudPlanAccionService.eliminar(idPlan);
-        this.growl.show({ severity: 'success', detail: 'Plan de acción eliminado!' });
-
+    async marcarCumplimiento(idPlan, cumplidoPlan) {
+        await SolicitudPlanAccionService.marcarCumplimiento({ id: idPlan, cumplido: cumplidoPlan });
+        this.growl.show({ severity: 'success', detail: 'Plan de acción actualizado!' });
+        this.refrescarPlanesAccion();
     }
 
     regresarSolicitud() {
-        history.push(`/quality-development_solicitudse`);
+        history.push(`/quality-development_solicitud_revisar_plan_accion`);
     }
 
     async respuestaConfirmacion(identificador) {
@@ -131,7 +125,7 @@ class SEPlanesAccion extends Component {
     }
 
     confirmarFinalizarProceso() {
-        this.setState({ mostrarConfirmacion: true, contenidoConfirmacion: '¿Está seguro de confirmar el ingreso de planes de acción?', identificadorConfirmacion: 'finalizarProceso' });
+        this.setState({ mostrarConfirmacion: true, contenidoConfirmacion: '¿Está seguro de finalizar el proceso?', identificadorConfirmacion: 'finalizarProceso' });
     }
 
     confirmarEnviarNuevaSolicitud() {
@@ -167,11 +161,12 @@ class SEPlanesAccion extends Component {
                         </div>
                         <div className='p-col-12 p-lg-12 caja'>PLANES DE ACCIÓN</div>
                         <div className='p-col-12 p-lg-12'>
-                            <DataTable value={this.state.planesAccion} rows={15} header={header} >
+                            <DataTable value={this.state.planesAccion} rows={15} >
                                 <Column field="descripcion" header="Descripción" />
                                 <Column field="fechaInicio" header="Fecha Inicio" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
                                 <Column field="fechaFin" header="Fecha Fin" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
-                                <Column body={this.actionTemplate} style={{ textAlign: 'center', width: '8em' }} />
+                                <Column header="Cumplido" body={this.actionTemplateCumplido} style={{ textAlign: 'center', width: '8em' }} />
+                                <Column header="Cumplimiento" body={this.actionTemplate} style={{ textAlign: 'center', width: '12em' }} />
                             </DataTable>
                         </div>
                         <div className='p-col-12 p-lg-12'>
@@ -184,20 +179,18 @@ class SEPlanesAccion extends Component {
                 <div className='p-col-12 p-lg-12 boton-opcion' >
                     {this.state.id > 0 && this.state.estado === ESTADO &&
                         < div >
-                            <Button className="p-button-danger" label="CONFIRMAR PLANES DE ACCIÓN" onClick={this.confirmarFinalizarProceso} />
-                            {/* {this.planesAccionTodosCumplidos() &&
+                            <Button className="p-button-danger" label="FINALIZAR PROCESO" onClick={this.confirmarFinalizarProceso} />
+                            {this.planesAccionTodosCumplidos() &&
                                 <Button className='p-button' label="ENVIAR NUEVA SOLICITUD" onClick={this.confirmarEnviarNuevaSolicitud} />
-                            } */}
+                            }
                             <Button className='p-button-secondary' label="ATRÁS" onClick={this.regresarSolicitud} />
                         </div>
                     }
                 </div>
-                <FormPlanAccion mostrar={this.state.mostrarFormPlanAccion} solicitudId={this.state.id} origen={this} tipo={'SOLICITUD_ENSAYOS'} />
                 <Confirmacion mostrar={this.state.mostrarConfirmacion} contenido={this.state.contenidoConfirmacion} origen={this} identificador={this.state.identificadorConfirmacion} />
-                <EncuestaSatisfaccion mostrar={this.state.mostrarEncuesta} solicitud={this.state.id} tipo={'SOLICITUD_ENSAYOS'} />
             </div>
         )
     }
 }
 
-export default SEPlanesAccion;
+export default SEPlanesAccionVer;

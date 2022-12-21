@@ -84,6 +84,8 @@ import UsuarioFormulario from './components/administracion/usuarios/UsuarioFormu
 import VerAprobarSE from './components/quality-development/SolicitudPruebasEnProceso/CoordinacionDesarrolloProductos/VerAprobarSE';
 import SEPlanesAccion from './components/quality-development/SolicitudEnsayo/SolicitudPlanesAccion/SEPlanesAccion';
 import UnidadMedida from './components/quality-development/UnidadesMedida/UnidadMedida';
+import RevisarPlanAccionPrincipal from './components/quality-development/RevisionPlanAccion/RevisarPlanAccionPrincipal';
+import SEPlanesAccionVer from './components/quality-development/RevisionPlanAccion/SEPlanesAccionVer';
 
 
 
@@ -650,6 +652,8 @@ class MainPage extends Component {
 						<Route path="/quality-development_solicitudpp_informe/:idSolicitud/:tipo/:accion" component={InformeSPP} />
                         <Route path="/quality-development_solicitudpp_informe_final/:idSolicitud/:tipo" component={InformeSPPLectura} />
                         <Route path="/quality-development_consulta_tests" component={ConsultaTest} />
+                        <Route path="/quality-development_solicitud_revisar_plan_accion" component={RevisarPlanAccionPrincipal} />
+                        <Route path="/quality-development_solicitud_revisar_plan_accion_ver/:idSolicitud" component={SEPlanesAccionVer} />
 
                         <Route path="/administracion_usuario" component={Usuario} />
                         <Route path="/administracion_usuario_registro/:idUsuario" component={UsuarioFormulario} />

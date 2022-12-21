@@ -137,11 +137,11 @@ class FormPlanAccion extends Component {
                             <label htmlFor="float-input">Descripción</label>
                             <InputTextarea value={this.state.descripcion} onChange={(e) => this.setState({ descripcion: e.target.value })} rows={3} />
                         </div>
-                        <div className='p-col-12 p-lg-12'>
+                        {/* <div className='p-col-12 p-lg-12'>
                             <label htmlFor="float-input">Cumplido</label>
                             <Dropdown appendTo={document.body} value={this.state.cumplidoTexto} options={opcionesCumplimiento}
                                 onChange={(e) => { this.setState({ cumplidoTexto: e.value }) }} placeholder="Seleccione.." showClear={true} />
-                        </div>
+                        </div> */}
                     </div>
                 </Dialog>
             </div>

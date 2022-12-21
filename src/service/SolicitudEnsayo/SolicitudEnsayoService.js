@@ -26,6 +26,8 @@ const SolicitudEnsayoService = {
     crearAPartirSolicitudPadre: (id) => http.request.get(`${apiEndpoint}/crearAPartirSolicitudPadre/${id}`),
     finalizarProceso: (solicitud) => http.request.post(`${apiEndpoint}/finalizarProceso/`, solicitud),
     iniciarPruebaEnProceso: (solicitud) => http.request.post(`${apiEndpoint}/iniciarPruebaEnProceso/`, solicitud),
+    confirmarPlanesAccion: (solicitud) => http.request.post(`${apiEndpoint}/confirmarPlanesAccion/`, solicitud),
+    listarPorRevisarPlanAccion: () => http.request.get(`${apiEndpoint}/pendienteRevisarPlanAccion`),
 
 }
 
