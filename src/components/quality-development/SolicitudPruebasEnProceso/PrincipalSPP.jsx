@@ -48,9 +48,9 @@ class PrincipalSPP extends Component {
     }
 
     bodyTemplateActivo(rowData) {
-        if (rowData.aprobado === null)
+        if (rowData.tipoAprobacion === null)
             return '';
-        if (rowData.aprobado)
+        else
             return <span className={determinarColorActivo(rowData.aprobado)}>{rowData.aprobadoTexto}</span>;
     }
 

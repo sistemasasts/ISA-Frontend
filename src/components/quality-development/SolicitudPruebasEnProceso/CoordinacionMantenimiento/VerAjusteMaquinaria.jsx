@@ -14,6 +14,11 @@ import { ToggleButton } from 'primereact/togglebutton';
 import { Message } from 'primereact/message';
 import { Dialog } from 'primereact/dialog';
 import * as _ from "lodash";
+import FormPlanAccion from '../../SolicitudEnsayo/SolicitudPlanesAccion/FormPlanAccion';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import SolicitudPlanAccionService from '../../../../service/SolicitudPlanAccion/SolicitudPlanAccionService';
+import { determinarColorActivo } from '../../SolicitudEnsayo/ClasesUtilidades';
 
 const ORDEN = 'AJUSTE_MAQUINARIA'
 const ESTADO = 'PENDIENTE_AJUSTE_MAQUINARIA';
@@ -29,11 +34,19 @@ class VerAjusteMaquinaria extends Component {
             estado: null,
             mostrarControles: false,
             factible: false,
-            displayFactible: false
+            displayFactible: false,
+
+            mostrarFormPlanAccion: false,
+            planSeleccionado: null,
+            planesAccion: [],
         };
         this.responderSolicitud = this.responderSolicitud.bind(this);
         this.redirigirInicio = this.redirigirInicio.bind(this);
         this.confirmarFinalizacion = this.confirmarFinalizacion.bind(this);
+        this.abrirDialogoPlanAccion = this.abrirDialogoPlanAccion.bind(this);
+        this.refrescarPlanesAccion = this.refrescarPlanesAccion.bind(this);
+        this.actionTemplate = this.actionTemplate.bind(this);
+        this.actionTemplateCumplido = this.actionTemplateCumplido.bind(this);
     }
 
     async componentDidMount() {
@@ -44,10 +57,12 @@ class VerAjusteMaquinaria extends Component {
         if (idSolicitud) {
             const solicitud = await SolicitudPruebasProcesoService.listarPorId(idSolicitud);
             if (solicitud) {
+                const planes = await SolicitudPlanAccionService.listarPorTipo('SOLICITUD_PRUEBAS_EN_PROCESO', idSolicitud);
                 this.setState({
                     id: solicitud.id,
                     estado: solicitud.estado,
-                    mostrarControles: solicitud.estado === ESTADO
+                    mostrarControles: solicitud.estado === ESTADO,
+                    planesAccion: planes,
                 });
             }
         }
@@ -86,7 +101,38 @@ class VerAjusteMaquinaria extends Component {
 
     }
 
+    async refrescarPlanesAccion() {
+        const planes = await SolicitudPlanAccionService.listarPorTipo('SOLICITUD_PRUEBAS_EN_PROCESO', this.state.id);
+        this.setState({ planesAccion: planes });
+    }
+
+    abrirDialogoPlanAccion(plan) {
+        this.setState({ planSeleccionado: plan, mostrarFormPlanAccion: true });
+    }
+
+    actionTemplate(rowData, column) {
+        return <div>
+            <Button type="button" icon="pi pi-pencil" className="p-button-warning" onClick={() => this.abrirDialogoPlanAccion(rowData)}></Button>
+            <Button type="button" icon="pi pi-trash" className="p-button-danger" style={{ marginLeft: '.5em' }} onClick={() => this.eliminarPlan(rowData.id)}></Button>
+        </div>;
+    }
+    actionTemplateCumplido(rowData) {
+        if (rowData.cumplido === null)
+            return "";
+        else
+            return <span className={determinarColorActivo(rowData.cumplido)}>{rowData.cumplido ? 'SI' : 'NO'}</span>;
+    }
+
+    async eliminarPlan(idPlan) {
+        await SolicitudPlanAccionService.eliminar(idPlan);
+        this.growl.show({ severity: 'success', detail: 'Plan de acción eliminado!' });
+
+    }
+
     render() {
+        let header = <div className="p-clearfix" style={{ width: '10%' }}>
+            <Button style={{ float: 'left' }} label="Agregar" icon="pi pi-plus" onClick={() => this.setState({ mostrarFormPlanAccion: true })} />
+        </div>;
         const dialogFooter = (
             <div>
                 <Button icon="pi pi-check" onClick={this.responderSolicitud} label="Si" />
@@ -104,6 +150,25 @@ class VerAjusteMaquinaria extends Component {
                         <div className='p-col-12 p-lg-12'>
                             <Adjuntos solicitud={this.props.match.params.idSolicitud} orden={ORDEN} controles={this.state.mostrarControles} estado={ESTADO} tipo={TIPO_SOLICITUD} />
                             <Historial solicitud={this.props.match.params.idSolicitud} tipo={TIPO_SOLICITUD} />
+                        </div>
+                        <div className='p-col-12 p-lg-12 caja'>PLANES DE ACCIÓN</div>
+                        <div className='p-col-12 p-lg-12'>
+                            {this.state.mostrarControles &&
+                                <DataTable value={this.state.planesAccion} rows={15} header={header} >
+                                    <Column field="descripcion" header="Descripción" />
+                                    <Column field="fechaInicio" header="Fecha Inicio" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
+                                    <Column field="fechaFin" header="Fecha Fin" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
+                                    <Column body={this.actionTemplateCumplido} header='Cumplido' style={{ textAlign: 'center', width: '8em' }} />
+                                    <Column body={this.actionTemplate} style={{ textAlign: 'center', width: '8em' }} />
+                                </DataTable>
+                            }
+                            {!this.state.mostrarControles &&
+                                <DataTable value={this.state.planesAccion} rows={15} >
+                                    <Column field="descripcion" header="Descripción" />
+                                    <Column field="fechaInicio" header="Fecha Inicio" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
+                                    <Column field="fechaFin" header="Fecha Fin" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
+                                </DataTable>
+                            }
                         </div>
                         <div className='p-col-12 p-lg-3'>
                             <label htmlFor="float-input" style={{ fontWeight: 'bold' }}>¿ES FACTIBLE?</label>
@@ -137,6 +202,7 @@ class VerAjusteMaquinaria extends Component {
                         <p>¿Está seguro de notificar que los ajustes de maquinaria NO SON FACTIBLES?</p>
                     }
                 </Dialog>
+                <FormPlanAccion mostrar={this.state.mostrarFormPlanAccion} solicitudId={this.state.id} origen={this} tipo={'SOLICITUD_PRUEBAS_EN_PROCESO'} />
 
             </div >
         )

@@ -193,11 +193,14 @@ class FormPlanAccion extends Component {
                                 </div>
                             }
                         </div>
-                        {/* <div className='p-col-12 p-lg-12'>
-                            <label htmlFor="float-input">Cumplido</label>
-                            <Dropdown appendTo={document.body} value={this.state.cumplidoTexto} options={opcionesCumplimiento}
-                                onChange={(e) => { this.setState({ cumplidoTexto: e.value }) }} placeholder="Seleccione.." showClear={true} />
-                        </div> */}
+                        {!_.isEmpty(this.state.tipo) && _.isEqual(this.state.tipo, 'SOLICITUD_PRUEBAS_EN_PROCESO') &&
+                            <div className='p-col-12 p-lg-12'>
+                                <label htmlFor="float-input">Cumplido</label>
+                                <Dropdown appendTo={document.body} value={this.state.cumplidoTexto} options={opcionesCumplimiento}
+                                    onChange={(e) => { this.setState({ cumplidoTexto: e.value }) }} placeholder="Seleccione.." showClear={true} />
+                            </div>
+                        }
+
                     </div>
                 </Dialog>
             </div>
