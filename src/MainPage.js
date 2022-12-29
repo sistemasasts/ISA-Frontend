@@ -86,6 +86,7 @@ import SEPlanesAccion from './components/quality-development/SolicitudEnsayo/Sol
 import UnidadMedida from './components/quality-development/UnidadesMedida/UnidadMedida';
 import RevisarPlanAccionPrincipal from './components/quality-development/RevisionPlanAccion/RevisarPlanAccionPrincipal';
 import SEPlanesAccionVer from './components/quality-development/RevisionPlanAccion/SEPlanesAccionVer';
+import SEPlanesAccionRev from './components/quality-development/SolicitudEnsayo/SolicitudPlanesAccion/SEPlanesAccionRev';
 
 
 
@@ -654,6 +655,7 @@ class MainPage extends Component {
                         <Route path="/quality-development_consulta_tests" component={ConsultaTest} />
                         <Route path="/quality-development_solicitud_revisar_plan_accion" component={RevisarPlanAccionPrincipal} />
                         <Route path="/quality-development_solicitud_revisar_plan_accion_ver/:idSolicitud" component={SEPlanesAccionVer} />
+						<Route path="/quality-development_solicitud_revisar_plan_accion_rev/:idSolicitud" component={SEPlanesAccionRev} />
 
                         <Route path="/administracion_usuario" component={Usuario} />
                         <Route path="/administracion_usuario_registro/:idUsuario" component={UsuarioFormulario} />

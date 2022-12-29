@@ -9,6 +9,7 @@ import { Calendar } from 'primereact/calendar';
 import * as moment from 'moment';
 import * as _ from "lodash";
 import { Dropdown } from 'primereact/dropdown';
+import { Message } from 'primereact/message';
 
 const opcionesCumplimiento = [{ label: 'SI', value: 'SI' }, { label: 'NO', value: 'NO' }];
 class FormPlanAccion extends Component {
@@ -25,11 +26,14 @@ class FormPlanAccion extends Component {
             display: false,
             nombreVentana: '',
             tipo: null,
-            cumplidoTexto: null
+            cumplidoTexto: null,
+
+            camposObligatorios: []
         }
         this.catalogoService = new CatalogoService();
         this.cerrarDialogo = this.cerrarDialogo.bind(this);
         this.operar = this.operar.bind(this);
+        this.validarCamposRequeridos = this.validarCamposRequeridos.bind(this);
     }
 
     componentDidUpdate(prevProps) {
@@ -75,20 +79,23 @@ class FormPlanAccion extends Component {
             cumplido: null,
             nombreVentana: '',
             tipo: null,
+            camposObligatorios: []
         })
     }
 
     async operar() {
-        if (this.state.id && this.state.id > 0) {
-            await SolicitudPlanAccionService.actualizar(this.crearObj());
-            this.actualizarTablaCondiciones();
-            this.growl.show({ severity: 'success', detail: 'Plan de acción actualizado!' });
-        } else {
-            await SolicitudPlanAccionService.create(this.crearObj());
-            this.actualizarTablaCondiciones();
-            this.growl.show({ severity: 'success', detail: 'Plan de acción agregado!' });
+        if (this.validarCamposRequeridos()) {
+            if (this.state.id && this.state.id > 0) {
+                await SolicitudPlanAccionService.actualizar(this.crearObj());
+                this.actualizarTablaCondiciones();
+                this.growl.show({ severity: 'success', detail: 'Plan de acción actualizado!' });
+            } else {
+                await SolicitudPlanAccionService.create(this.crearObj());
+                this.actualizarTablaCondiciones();
+                this.growl.show({ severity: 'success', detail: 'Plan de acción agregado!' });
+            }
+            this.cerrarDialogo();
         }
-        this.cerrarDialogo();
     }
 
     actualizarTablaCondiciones() {
@@ -105,6 +112,40 @@ class FormPlanAccion extends Component {
             solicitudId: this.state.solicitudId,
             tipoSolicitud: this.state.tipo
         }
+    }
+
+    validarCamposRequeridos() {
+        var camposOblogatoriosDetectados = []
+        if (this.state.fechaInicio === null) {
+            let obj = { campo: '', obligatorio: true }
+            obj.campo = 'fechaInicio'; obj.obligatorio = true
+            camposOblogatoriosDetectados.push(obj);
+        }
+        if (this.state.fechaFin === null) {
+            let obj = { campo: '', obligatorio: true }
+            obj.campo = 'fechaFin'; obj.obligatorio = true
+            camposOblogatoriosDetectados.push(obj);
+        }
+        if (_.isEmpty(this.state.descripcion)) {
+            let obj = { campo: '', obligatorio: true }
+            obj.campo = 'descripcion'; obj.obligatorio = true
+            camposOblogatoriosDetectados.push(obj);
+        }
+        this.setState({ camposObligatorios: camposOblogatoriosDetectados })
+        return camposOblogatoriosDetectados.length === 0 ? true : false;
+    }
+
+    determinarEsCampoRequerido(nombreCampo) {
+        var resultado = false
+        _.forEach(this.state.camposObligatorios, (x) => {
+            if (x.campo === nombreCampo)
+                resultado = true
+        })
+        /* this.state.camposObligatorios.map(function (campo) {
+            if (campo.campo === nombreCampo)
+                resultado = true
+        }) */
+        return resultado;
     }
 
     render() {
@@ -127,15 +168,30 @@ class FormPlanAccion extends Component {
                     <div className="p-grid p-fluid">
                         <div className='p-col-12 p-lg-12'>
                             <label htmlFor="float-input">Fecha Inicio</label>
-                            <Calendar appendTo={document.body} dateFormat="yy/mm/dd" value={this.state.fechaInicio} locale={es} onChange={(e) => this.setState({ fechaInicio: e.value })} showIcon={true} />
+                            <Calendar className={this.determinarEsCampoRequerido('fechaInicio') && 'p-error'} appendTo={document.body} dateFormat="yy/mm/dd" value={this.state.fechaInicio} locale={es} onChange={(e) => this.setState({ fechaInicio: e.value })} showIcon={true} />
+                            {this.determinarEsCampoRequerido('fechaInicio') &&
+                                <div style={{ marginTop: '8px' }}>
+                                    <Message severity="error" text="Campo Obligatorio" />
+                                </div>
+                            }
                         </div>
                         <div className='p-col-12 p-lg-12'>
                             <label htmlFor="float-input">Fecha Fin</label>
-                            <Calendar appendTo={document.body} dateFormat="yy/mm/dd" value={this.state.fechaFin} locale={es} onChange={(e) => this.setState({ fechaFin: e.value })} showIcon={true} />
+                            <Calendar className={this.determinarEsCampoRequerido('fechaFin') && 'p-error'} appendTo={document.body} dateFormat="yy/mm/dd" value={this.state.fechaFin} locale={es} onChange={(e) => this.setState({ fechaFin: e.value })} showIcon={true} />
+                            {this.determinarEsCampoRequerido('fechaFin') &&
+                                <div style={{ marginTop: '8px' }}>
+                                    <Message severity="error" text="Campo Obligatorio" />
+                                </div>
+                            }
                         </div>
                         <div className='p-col-12 p-lg-12'>
                             <label htmlFor="float-input">Descripción</label>
-                            <InputTextarea value={this.state.descripcion} onChange={(e) => this.setState({ descripcion: e.target.value })} rows={3} />
+                            <InputTextarea className={this.determinarEsCampoRequerido('descripcion') && 'p-error'} value={this.state.descripcion} onChange={(e) => this.setState({ descripcion: e.target.value })} rows={3} />
+                            {this.determinarEsCampoRequerido('descripcion') &&
+                                <div style={{ marginTop: '8px' }}>
+                                    <Message severity="error" text="Campo Obligatorio" />
+                                </div>
+                            }
                         </div>
                         {/* <div className='p-col-12 p-lg-12'>
                             <label htmlFor="float-input">Cumplido</label>

@@ -167,18 +167,28 @@ class SEPlanesAccion extends Component {
                         </div>
                         <div className='p-col-12 p-lg-12 caja'>PLANES DE ACCIÓN</div>
                         <div className='p-col-12 p-lg-12'>
-                            <DataTable value={this.state.planesAccion} rows={15} header={header} >
-                                <Column field="descripcion" header="Descripción" />
-                                <Column field="fechaInicio" header="Fecha Inicio" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
-                                <Column field="fechaFin" header="Fecha Fin" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
-                                <Column body={this.actionTemplate} style={{ textAlign: 'center', width: '8em' }} />
-                            </DataTable>
+                            {this.state.mostrarControles &&
+                                <DataTable value={this.state.planesAccion} rows={15} header={header} >
+                                    <Column field="descripcion" header="Descripción" />
+                                    <Column field="fechaInicio" header="Fecha Inicio" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
+                                    <Column field="fechaFin" header="Fecha Fin" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
+                                    <Column body={this.actionTemplate} style={{ textAlign: 'center', width: '8em' }} />
+                                </DataTable>
+                            }
+                            {!this.state.mostrarControles &&
+                                <DataTable value={this.state.planesAccion} rows={15} >
+                                    <Column field="descripcion" header="Descripción" />
+                                    <Column field="fechaInicio" header="Fecha Inicio" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
+                                    <Column field="fechaFin" header="Fecha Fin" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
+                                </DataTable>
+                            }
                         </div>
-                        <div className='p-col-12 p-lg-12'>
-                            <label htmlFor="float-input">OBSERVACIÓN</label>
-                            <InputTextarea value={this.state.observacion} onChange={(e) => this.setState({ observacion: e.target.value })} rows={3} />
-                        </div>
-
+                        {this.state.mostrarControles &&
+                            <div className='p-col-12 p-lg-12'>
+                                <label htmlFor="float-input">OBSERVACIÓN</label>
+                                <InputTextarea value={this.state.observacion} onChange={(e) => this.setState({ observacion: e.target.value })} rows={3} />
+                            </div>
+                        }
                     </div>
                 }
                 <div className='p-col-12 p-lg-12 boton-opcion' >

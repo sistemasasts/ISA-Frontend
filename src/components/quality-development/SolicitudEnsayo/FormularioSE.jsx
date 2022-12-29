@@ -25,6 +25,7 @@ import { Column } from 'primereact/column';
 import { determinarColorActivo } from './ClasesUtilidades';
 import { Toolbar } from 'primereact/toolbar';
 import SolicitudDocumentoService from '../../../service/SolicitudEnsayo/SolicitudDocumentoService';
+import SolicitudPlanAccionService from '../../../service/SolicitudPlanAccion/SolicitudPlanAccionService';
 
 const TIPO_SOLICITUD = 'SOLICITUD_ENSAYO';
 class FormularioSE extends Component {
@@ -58,6 +59,8 @@ class FormularioSE extends Component {
             archivos: [],
             adjuntoSeleccionado: null,
 
+            planesAccion: []
+
         };
         this.filterProveedorSingle = this.filterProveedorSingle.bind(this);
         this.onObjectiveChange = this.onObjectiveChange.bind(this);
@@ -70,6 +73,7 @@ class FormularioSE extends Component {
         this.eliminarAdjunto = this.eliminarAdjunto.bind(this);
         this.myUploaderImagenMuestra = this.myUploaderImagenMuestra.bind(this);
         this.leerImagenMuestra = this.leerImagenMuestra.bind(this);
+        this.actionTemplateCumplido = this.actionTemplateCumplido.bind(this);
     }
 
     async componentDidMount() {
@@ -84,6 +88,7 @@ class FormularioSE extends Component {
             const solicitud = await SolicitudEnsayoService.listarPorId(idSolicitud);
             if (solicitud) {
                 console.log(solicitud);
+                const planes = await SolicitudPlanAccionService.listarPorTipo('SOLICITUD_ENSAYOS', idSolicitud);
                 let objetivosValor = _.split(solicitud.objetivo, ',');
                 let proveedorValor = null;
                 if (solicitud.proveedorId)
@@ -91,7 +96,7 @@ class FormularioSE extends Component {
                 else
                     proveedorValor = solicitud.proveedorNombre;
                 if (solicitud.muestraImagenId)
-                    this.leerImagenMuestra(solicitud.muestraImagenId);
+                    this.leerImagenMuestra(solicitud.muestraImagenId);                
                 this.setState({
                     id: solicitud.id,
                     codigo: solicitud.codigo,
@@ -111,7 +116,8 @@ class FormularioSE extends Component {
                     muestraImagenId: solicitud.muestraImagenId,
                     adjuntosRequeridos: solicitud.adjuntosRequeridos,
                     mostrarControles: solicitud.estado === 'NUEVO',
-                    editar: solicitud.estado === 'NUEVO'
+                    editar: solicitud.estado === 'NUEVO',
+                    planesAccion: planes
                 });
                 this.listarArchivos(idSolicitud);
             }
@@ -320,6 +326,13 @@ class FormularioSE extends Component {
         }
     }
 
+    actionTemplateCumplido(rowData) {
+        if (rowData.cumplido === null)
+            return "";
+        else
+            return <span className={determinarColorActivo(rowData.cumplido)}>{rowData.cumplido ? 'SI' : 'NO'}</span>;
+    }
+
     render() {
         let es = {
             firstDayOfWeek: 1,
@@ -479,6 +492,20 @@ class FormularioSE extends Component {
                                 {/* <Adjuntos solicitud={this.props.match.params.idSolicitud} orden={"INGRESO_SOLICITUD"} controles={this.state.mostrarControles} estado={'NUEVO'} tipo={TIPO_SOLICITUD} /> */}
                                 <Historial solicitud={this.props.match.params.idSolicitud} tipo={TIPO_SOLICITUD} />
                             </div>
+                            {!_.isEmpty(this.state.planesAccion) &&
+                                <div>
+                                    <div className='p-col-12 p-lg-12 caja'>PLANES DE ACCIÓN</div>
+                                    <div className='p-col-12 p-lg-12'>
+                                        <DataTable value={this.state.planesAccion} rows={15} >
+                                            <Column field="descripcion" header="Descripción" />
+                                            <Column field="fechaInicio" header="Fecha Inicio" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
+                                            <Column field="fechaFin" header="Fecha Fin" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
+                                            <Column header="Cumplido" body={this.actionTemplateCumplido} style={{ textAlign: 'center', width: '8em' }} />
+                                        </DataTable>
+                                    </div>
+                                </div>
+                            }
+
                             {this.state.estado === 'NUEVO' &&
                                 <div className='p-col-12 p-lg-12'>
                                     <label htmlFor="float-input">OBSERVACIÓN</label>

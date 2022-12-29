@@ -4,6 +4,9 @@ export function determinarColor(estado) {
         case 'EN_PROCESO':
         case 'ENVIADO_REVISION':
         case 'REVISION_INFORME':
+        case 'PENDIENTE_APROBACION':
+        case 'PENDIENTE_PRUEBAS_PROCESO':
+        case 'GESTION_PRUEBAS_PROCESO':
             return 'customer-badge-warning';
         case 'REGRESADO_NOVEDAD_FORMA':
         case 'RECHAZADO':
@@ -11,14 +14,20 @@ export function determinarColor(estado) {
         case 'PRUEBA_NO_EJECUTADA':
         case 'PRUEBA_NO_REALIZADA':
             return 'customer-badge-danger';
-        case 'FINALIZADO': return 'customer-badge-success';
+        case 'FINALIZADO':
+        case 'PROCESO_FINALIZADO':
+        case 'LIBRE_USO':
+        case 'GESTIONAR_IMPLEMENTAR_CAMBIOS':
+        case 'ENVIAR_SOLUCIONES_TECNICAS':
+        case 'CREACION_MATERIA_PRIMA':
+            return 'customer-badge-success';
         default: return 'customer-badge-default'
     }
 }
 
 export function determinarColorTipoAprobacion(tipoAprobacion) {
     switch (tipoAprobacion) {
-        case 'LIBRE_USO':
+        case 'LIBRE USO':
         case 'NIVEL LABORATORIO':
         case 'NIVEL PLANTA':
         case 'SOLICITUD SOLUCIONES TÉCNICAS':
@@ -31,6 +40,17 @@ export function determinarColorTipoAprobacion(tipoAprobacion) {
         case 'AJUSTE MAQUINARIA':
         case 'NO_APROBADO':
             return 'customer-badge-danger';
+
+        default: return ''
+    }
+}
+
+export function determinarColorTipoSolicitud(tipo) {
+    switch (tipo) {
+        case 'SOLICITUD_ENSAYO':
+            return 'customer-badge-success';
+        case 'SOLICITUD_PRUEBAS_EN_PROCESO':        
+            return 'customer-badge-default';
 
         default: return ''
     }

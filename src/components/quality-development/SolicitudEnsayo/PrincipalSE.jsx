@@ -33,8 +33,11 @@ class PrincipalSE extends Component {
     }
 
     redirigirSolicitudEdicion(solicitud) {
-        if (_.isEqual(solicitud.estado, 'FINALIZADO'))
+        const estados = ['FINALIZADO', 'PENDIENTE_PLANES_ACCION']
+        if (_.includes(estados, solicitud.estado))
             history.push(`/quality-development_solicitudse_planesaccion/${solicitud.id}`);
+        else if (_.isEqual(solicitud.estado, 'PLANES_ACCION_REVISADOS'))
+            history.push(`/quality-development_solicitud_revisar_plan_accion_rev/${solicitud.id}`);
         else
             history.push(`/quality-development_solicitudse_edit/${solicitud.id}`);
     }

@@ -299,9 +299,9 @@ class FormularioSPPLectura extends Component {
                                     </div>
                                     <div className="p-col-12">
                                         <label style={{ marginRight: '10px', fontWeight:'bold', color:'red' }} htmlFor="rb1" className="p-radiobutton-label">Contiene Adjunto</label>
-                                        <RadioButton inputId="rb1" name="si" value="SI" onChange={(e) => this.setState({ contieneAdjunto: e.value })} checked={this.state.contieneAdjunto === 'SI'} />
+                                        <RadioButton inputId="rb1" name="si" value="SI" checked={this.state.contieneAdjunto === 'SI'} />
                                         <label htmlFor="rb1" className="p-radiobutton-label">SI</label>
-                                        <RadioButton style={{ marginLeft: '10px' }} inputId="rb2" name="no" value="NO" onChange={(e) => this.setState({ contieneAdjunto: e.value })} checked={this.state.contieneAdjunto === 'NO'} />
+                                        <RadioButton style={{ marginLeft: '10px' }} inputId="rb2" name="no" value="NO" checked={this.state.contieneAdjunto === 'NO'} />
                                         <label htmlFor="rb2" className="p-radiobutton-label">NO</label>
                                     </div>
                                     <div className='p-col-12 p-lg-12'>

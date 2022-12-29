@@ -4,7 +4,7 @@ import { Growl } from 'primereact/growl';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { closeModal, openModal } from '../../../../store/actions/modalWaitAction';
-import { determinarColor, determinarColorVigencia } from '../../SolicitudEnsayo/ClasesUtilidades';
+import { determinarColor, determinarColorTipoSolicitud, determinarColorVigencia } from '../../SolicitudEnsayo/ClasesUtilidades';
 import * as _ from "lodash";
 import SolicitudPruebasProcesoService from '../../../../service/SolicitudPruebaProceso/SolicitudPruebasProcesoService';
 import { Button } from 'primereact/button';
@@ -60,6 +60,10 @@ class AprobacionCalidad extends Component {
         return <span className={determinarColorVigencia(rowData.vigencia)}>{rowData.vigencia}Día(s)</span>;
     }
 
+    bodyTemplateTipo(rowData) {
+        return <span className={determinarColorTipoSolicitud(rowData.tipo)}>{rowData.tipoTexto}</span>;
+    }
+
     render() {
         return (
             <div className="card card-w-title">
@@ -71,7 +75,7 @@ class AprobacionCalidad extends Component {
                     <Column field="codigo" header="Código" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
                     <Column field="fechaSolicitud" header="Fecha Solicitud" sortable={true} style={{ textAlign: 'center', width: '12em' }} />
                     <Column field="fechaEntregaInforme" header="Entrega Informe" sortable={true} style={{ textAlign: 'center', width: '12em', color: 'red' }} />
-                    <Column field="tipoTexto" header="Tipo" sortable={true} style={{ textAlign: 'center', width: '15em' }} />
+                    <Column field="tipoTexto" body={this.bodyTemplateTipo} header="Tipo" sortable={true} style={{ textAlign: 'center', width: '15em' }} />
                     <Column field="vigencia" body={this.bodyTemplateVigencia} header="Vigencia" sortable={true} style={{ textAlign: 'center', width: '8em' }} />
                     <Column field="lineaAplicacion" header="Aplicación" sortable={true} style={{ textAlign: 'center', width: '12em' }} />
                     <Column field="fechaEntrega" header="Fecha Entrega" sortable={true} style={{ textAlign: 'center', width: '11em' }} />
