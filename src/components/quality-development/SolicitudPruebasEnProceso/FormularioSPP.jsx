@@ -26,6 +26,7 @@ import ProductoService from '../../../service/productoService';
 import { ColumnGroup } from 'primereact/columngroup';
 import { Row } from 'primereact/row';
 import { RadioButton } from 'primereact/radiobutton';
+import UnidadMedidaService from '../../../service/UnidadMedidaService';
 
 const TIPO_SOLICITUD = "SOLICITUD_PRUEBAS_PROCESO";
 class FormularioSPP extends Component {
@@ -87,11 +88,13 @@ class FormularioSPP extends Component {
     async componentDidMount() {
         const catalogAreas = await SolicitudPruebasProcesoService.listarAreas();
         const catalogoOrigen = await SolicitudPruebasProcesoService.listarOrigen();
-        this.catalogoService.getUnidadesMedida().then(data => this.setState({ unidadesCatalogo: data }));
+        //this.catalogoService.getUnidadesMedida().then(data => this.setState({ unidadesCatalogo: data }));
+        //this.setState({ unidadesMedida: unidades });
+        const unidades = await UnidadMedidaService.listarActivos();
         let catalogoMateriales = await ProductoService.list();
         const productos = _.map(_.uniqBy(catalogoMateriales, 'nameProduct'), (o) => { return { label: o.nameProduct, value: o.nameProduct } });
         this.refrescar(this.props.match.params.idSolicitud);
-        this.setState({ catalogoOrigen: catalogoOrigen, catalogoArea: catalogAreas, catalogoProductos: productos });
+        this.setState({ catalogoOrigen: catalogoOrigen, catalogoArea: catalogAreas, catalogoProductos: productos, unidadesCatalogo: unidades });
     }
 
     async refrescar(idSolicitud) {

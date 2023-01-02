@@ -6,6 +6,7 @@ import InformeSPPService from '../../../../service/SolicitudPruebaProceso/Inform
 import { Growl } from 'primereact/growl';
 import { CatalogoService } from '../../../../service/CatalogoService';
 import { InputText } from 'primereact/inputtext';
+import UnidadMedidaService from '../../../../service/UnidadMedidaService';
 
 class FormCondicion extends Component {
 
@@ -65,8 +66,10 @@ class FormCondicion extends Component {
         this.fetchData(this.props.origen);
     }
 
-    obtenerCatalgoUnidades() {
-        this.catalogoService.getUnidadesMedida().then(data => this.setState({ unidadesCatalogo: data }));
+    async obtenerCatalgoUnidades() {
+        //this.catalogoService.getUnidadesMedida().then(data => this.setState({ unidadesCatalogo: data }));
+        const unidades = await UnidadMedidaService.listarActivos();
+        this.setState({ unidadesCatalogo: unidades });
         this.catalogoService.getProcesoCondicion().then(data => this.setState({ condicionesCatalogo: data }));
         this.catalogoService.getProcesoCondicionMaquinaria().then(data => this.setState({ maquinariaCatalogo: data }));
     }

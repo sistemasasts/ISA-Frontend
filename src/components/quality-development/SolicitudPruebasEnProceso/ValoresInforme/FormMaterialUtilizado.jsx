@@ -8,6 +8,7 @@ import InformeSPPService from '../../../../service/SolicitudPruebaProceso/Inform
 import ProductoService from '../../../../service/productoService';
 import { Growl } from 'primereact/growl';
 import { CatalogoService } from '../../../../service/CatalogoService';
+import UnidadMedidaService from '../../../../service/UnidadMedidaService';
 
 class FormMaterialUtilizado extends Component {
 
@@ -59,8 +60,10 @@ class FormMaterialUtilizado extends Component {
         this.fetchData(this.props.origen);
     }
 
-    obtenerCatalgoUnidades() {
-        this.catalogoService.getUnidadesMedida().then(data => this.setState({ unidadesCatalogo: data }));
+    async obtenerCatalgoUnidades() {
+        const unidades = await UnidadMedidaService.listarActivos();
+        this.setState({ unidadesCatalogo: unidades });
+        //this.catalogoService.getUnidadesMedida().then(data => this.setState({ unidadesCatalogo: data }));
     }
 
     async cargarProductos() {

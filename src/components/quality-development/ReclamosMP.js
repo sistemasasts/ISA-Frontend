@@ -160,6 +160,7 @@ class Complaint extends Component {
                 if (o.nameProduct == e.value) {
                     idProductTmp = o.idProduct;
                     if (o.providers !== undefined) {
+                        console.log(o.providers)
                         o.providers.map(function (p) {
                             let pTmp = { label: '', value: '' }
                             pTmp.label = p.nameProvider;
@@ -707,7 +708,7 @@ class Complaint extends Component {
             switch (sesion.employee.area.nameArea.toUpperCase()) {
                 case 'COMPRAS':
                     return 'none';
-                case 'CALIDAD':
+                case 'I+D':
                     return '';
                 case 'TECNOLOGÍA DE LA INFORMACIÓN':
                     return '';

@@ -15,6 +15,7 @@ import { Growl } from 'primereact/growl'
 import { connect } from 'react-redux'
 import { openModal, closeModal } from '../../../store/actions/modalWaitAction'
 import { Message } from 'primereact/message'
+import UnidadMedidaService from '../../../service/UnidadMedidaService';
 
 var that;
 class PncForm extends Component {
@@ -208,7 +209,7 @@ class PncForm extends Component {
         }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         
         if (this.props.product && this.props.product !== null) {
             this.setState({ foundProduct: this.props.product })
@@ -245,7 +246,9 @@ class PncForm extends Component {
         })
         this.catalogoService.getProcedencia().then(data => this.setState({ procedencia: data }));
         this.catalogoService.getProcedenciaLinea().then(data => this.setState({ procedenciaLinea: data }));
-        this.catalogoService.getUnidadesMedida().then(data => this.setState({ unidadesMedida: data }));
+        //this.catalogoService.getUnidadesMedida().then(data => this.setState({ unidadesMedida: data }));
+        const unidades = await UnidadMedidaService.listarActivos();
+        this.setState({ unidadesMedida: unidades });
         this.catalogoService.getLineaAfectada().then(data => this.setState({ lineaAfectada: data }));
 
     }

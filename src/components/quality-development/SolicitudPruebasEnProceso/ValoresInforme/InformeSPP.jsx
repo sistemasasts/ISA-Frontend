@@ -16,6 +16,7 @@ import FormCondicion from './FormCondicion';
 import { InputTextarea } from 'primereact/inputtextarea';
 import SeccionMantenimiento from './SeccionMatenimiento';
 import history from '../../../../history';
+import UnidadMedidaService from '../../../../service/UnidadMedidaService';
 
 var lineaFabricacionCatalogo = [];
 class InformeSPP extends Component {
@@ -79,8 +80,9 @@ class InformeSPP extends Component {
         lineaFabricacionCatalogo = [];
         const informe = await InformeSPPService.obtenerPorIdSolicitud(this.props.match.params.idSolicitud);
         this.catalogoService.getLineaFabricacion().then(data => { _.map(data, (o) => lineaFabricacionCatalogo.push(o)) });
-        this.catalogoService.getUnidadesMedida().then(data => this.setState({ unidadesCatalogo: data }));
-        this.setState({ solicitudId: id, tipo: tipo, accion: accion })
+        //this.catalogoService.getUnidadesMedida().then(data => this.setState({ unidadesCatalogo: data }));
+        const unidades = await UnidadMedidaService.listarActivos();
+        this.setState({ solicitudId: id, tipo: tipo, accion: accion, unidadesCatalogo: unidades })
         this.refrescar(informe);
     }
 

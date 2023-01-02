@@ -11,6 +11,7 @@ import { Button } from 'primereact/button';
 
 import { CatalogoService } from '../../../service/CatalogoService';
 import { connect } from 'react-redux';
+import UnidadMedidaService from '../../../service/UnidadMedidaService';
 
 var that;
 class EspecificacionForm extends Component {
@@ -44,8 +45,10 @@ class EspecificacionForm extends Component {
 
     }
 
-    componentDidMount() {
-        this.catalogoService.getUnidadesMedida().then(data => this.setState({ unidadesMedida: data }));
+    async componentDidMount() {
+        //this.catalogoService.getUnidadesMedida().then(data => this.setState({ unidadesMedida: data }));
+        const unidades = await UnidadMedidaService.listarActivos();
+        this.setState({ unidadesMedida: unidades });
     }
 
     cargarInformacionPropiedadSeleccionada(propiedad) {

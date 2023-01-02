@@ -10,7 +10,8 @@ import { CatalogoService } from '../../../service/CatalogoService';
 import EspecificacionForm from './EspecificacionForm';
 import EspecificacionService from '../../../service/EspecificacionService';
 import { Dropdown } from 'primereact/dropdown';
-
+import UnidadMedidaService from '../../../service/UnidadMedidaService';
+import * as _ from "lodash";
 
 var that;
 class ProductoPropiedad extends Component {
@@ -24,7 +25,7 @@ class ProductoPropiedad extends Component {
             especificacionSeleccionada: {},
             display: false,
             crearEspecificacion: false,
-            unidadesMedida:[]
+            unidadesMedida: []
 
         };
         that = this;
@@ -44,7 +45,9 @@ class ProductoPropiedad extends Component {
     }
 
     async componentDidMount() {
-        this.catalogoService.getUnidadesMedida().then(data => this.setState({ unidadesMedida: data }));
+        //this.catalogoService.getUnidadesMedida().then(data => this.setState({ unidadesMedida: data }));
+        const unidades = await UnidadMedidaService.listarActivos();
+        this.setState({ unidadesMedida: unidades });
         this.refrescarLista();
     }
 
@@ -154,7 +157,7 @@ class ProductoPropiedad extends Component {
                     </DataTable>
                 }
                 {this.state.crearEspecificacion && <div className="p-col-12 p-lg-12">
-                    <EspecificacionForm product = {this.state.productoSeleccionado} _this={this} />
+                    <EspecificacionForm product={this.state.productoSeleccionado} _this={this} />
 
                 </div>
 
