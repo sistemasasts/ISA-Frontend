@@ -134,6 +134,11 @@ class FormularioSPPLectura extends Component {
         return _.includes(['PENDIENTE_APROBACION', 'FINALIZADO', 'PENDIENTE_AJUSTE_MAQUINARIA', 'ENVIADO_REVISION', 'EN_PROCESO', 'PRUEBA_NO_EJECUTADA'], this.state.estado);
     }
 
+    bodyTemplateCantidad(rowData) {
+        const cantidad = (rowData.cantidad).toFixed(2);
+        return <span>{cantidad}</span>;
+    }
+
     render() {
         let es = {
             firstDayOfWeek: 1,
@@ -146,8 +151,8 @@ class FormularioSPPLectura extends Component {
         let footerGroup = <ColumnGroup>
             <Row>
                 <Column style={{ backgroundColor: '#A5D6A7', fontWeight: 'bold' }} footer="FORMULA TOTAL" />
-                <Column style={{ backgroundColor: '#A5D6A7', fontWeight: 'bold' }} footer={_.sumBy(this.state.materialesFormula, (o) => { return o.porcentaje })} />
-                <Column style={{ backgroundColor: '#A5D6A7', fontWeight: 'bold' }} footer={_.sumBy(this.state.materialesFormula, (o) => { return o.cantidad })} />
+                <Column style={{ backgroundColor: '#A5D6A7', fontWeight: 'bold' }} footer={(_.sumBy(this.state.materialesFormula, (o) => { return o.porcentaje })).toFixed(2)} />
+                <Column style={{ backgroundColor: '#A5D6A7', fontWeight: 'bold' }} footer={(_.sumBy(this.state.materialesFormula, (o) => { return o.cantidad })).toFixed(2)} />
                 <Column style={{ backgroundColor: '#A5D6A7', fontWeight: 'bold' }} footer={_.isEmpty(this.state.materialesFormula) ? '' : this.state.materialesFormula[0].unidad ? this.state.materialesFormula[0].unidad.abreviatura : ""} />
             </Row>
         </ColumnGroup>;
@@ -344,7 +349,7 @@ class FormularioSPPLectura extends Component {
                                         onRowSelect={this.onCarSelect}>
                                         <Column field="nombre" header="Material" sortable={true} />
                                         <Column field="porcentaje" header="Porcentaje(%)" sortable={true} style={{ textAlign: 'center' }} />
-                                        <Column field="cantidad" header="Cantidad" sortable={true} style={{ textAlign: 'center' }} />
+                                        <Column field="cantidad" body={this.bodyTemplateCantidad} header="Cantidad" sortable={true} style={{ textAlign: 'center' }} />
                                         <Column field="unidad.abreviatura" header="Unidad" style={{ textAlign: 'center' }} />
                                     </DataTable>
                                 </div>
