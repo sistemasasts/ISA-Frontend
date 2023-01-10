@@ -395,7 +395,7 @@ class FormularioSPP extends Component {
                 <Column style={{ backgroundColor: '#A5D6A7', fontWeight: 'bold' }} footer="FORMULA TOTAL" />
                 <Column style={{ backgroundColor: '#A5D6A7', fontWeight: 'bold' }} footer={(_.sumBy(this.state.materialesFormula, (o) => { return o.porcentaje })).toFixed(2)} />
                 <Column style={{ backgroundColor: '#A5D6A7', fontWeight: 'bold' }} footer={(_.sumBy(this.state.materialesFormula, (o) => { return o.cantidad })).toFixed(2)} />
-                <Column style={{ backgroundColor: '#A5D6A7', fontWeight: 'bold' }} footer={_.isEmpty(this.state.materialesFormula) ? '' : this.state.materialesFormula[0].unidad} />
+                <Column style={{ backgroundColor: '#A5D6A7', fontWeight: 'bold' }} footer={_.isEmpty(this.state.materialesFormula) ? '' : this.state.materialesFormula[0].unidad ? this.state.materialesFormula[0].unidad.abreviatura : ""} />
             </Row>
         </ColumnGroup>;
 

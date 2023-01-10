@@ -63,7 +63,9 @@ class FormularioSPPLectura extends Component {
     async refrescar(idSolicitud) {
         if (idSolicitud) {
             const solicitud = await SolicitudPruebasProcesoService.listarPorId(idSolicitud);
-            this.leerImagen(solicitud.imagen1Id);
+            console.log(solicitud);
+            if (solicitud.imagen1Id)
+                this.leerImagen(solicitud.imagen1Id);
             if (solicitud) {
                 let objetivosValor = _.split(solicitud.motivo, ',');
                 let detalleMaterialValor = _.split(solicitud.materialLineaProceso, ',');
@@ -96,7 +98,7 @@ class FormularioSPPLectura extends Component {
     }
 
     async leerImagen(idDocumento) {
-        const respuesta = await SolicitudPruebaProcesoDocumentoService.verImagen(idDocumento);
+        const respuesta = await SolicitudPruebaProcesoDocumentoService.verImagen(idDocumento);        
         if (respuesta) {
             document.getElementById("ItemPreview1").src = `data:${respuesta.documento.tipo};base64,` + respuesta.imagen;
         }
@@ -146,7 +148,7 @@ class FormularioSPPLectura extends Component {
                 <Column style={{ backgroundColor: '#A5D6A7', fontWeight: 'bold' }} footer="FORMULA TOTAL" />
                 <Column style={{ backgroundColor: '#A5D6A7', fontWeight: 'bold' }} footer={_.sumBy(this.state.materialesFormula, (o) => { return o.porcentaje })} />
                 <Column style={{ backgroundColor: '#A5D6A7', fontWeight: 'bold' }} footer={_.sumBy(this.state.materialesFormula, (o) => { return o.cantidad })} />
-                <Column style={{ backgroundColor: '#A5D6A7', fontWeight: 'bold' }} footer={_.isEmpty(this.state.materialesFormula) ? '' : this.state.materialesFormula[0].unidad} />
+                <Column style={{ backgroundColor: '#A5D6A7', fontWeight: 'bold' }} footer={_.isEmpty(this.state.materialesFormula) ? '' : this.state.materialesFormula[0].unidad ? this.state.materialesFormula[0].unidad.abreviatura : ""} />
             </Row>
         </ColumnGroup>;
         return (
@@ -316,7 +318,7 @@ class FormularioSPPLectura extends Component {
                                         <span style={{ color: '#CB3234' }}>*</span><label style={{ fontWeight: 'bold' }} htmlFor="float-input">Imagen especificaciones y variables</label>
                                         <div style={{ height: '365px', bottom: '0px', top: '0px', display: 'flex', justifyContent: 'center', border: '1px solid #cccccc', borderRadius: '4px' }}>
                                             {this.state.imagen1Id > 0 &&
-                                                <img style={{ width: 'auto', maxHeight: '100%',maxWidth: '100%', display: 'block', margin: 'auto' }} id="ItemPreview1" src="" />
+                                                <img style={{ width: 'auto', maxHeight: '100%', maxWidth: '100%', display: 'block', margin: 'auto' }} id="ItemPreview1" src="" />
                                             }
                                         </div>
                                     </div>
