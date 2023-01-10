@@ -84,6 +84,7 @@ class EspecificacionForm extends Component {
             productPropertyDTO.minProperty = this.state.minimo;
             productPropertyDTO.maxProperty = this.state.maximo;
             productPropertyDTO.unitProperty = this.state.unidad;
+            productPropertyDTO.unitId = this.state.unidad;
             productPropertyDTO.propertyNorm = this.state.norma;
             productPropertyDTO.asUser = this.props.currentUser.nickName;
             productPropertyDTO.typeProperty = this.state.propiedadSeleccionada.typeProperty;

@@ -9,7 +9,7 @@ import { RadioButton } from 'primereact/radiobutton';
 import { Calendar } from 'primereact/calendar';
 import { connect } from 'react-redux';
 import { closeModal, openModal } from '../../../store/actions/modalWaitAction';
-import { unidadesMedida, aplicationLine } from '../../../global/catalogs';
+import { aplicationLine } from '../../../global/catalogs';
 import { Button } from 'primereact/button';
 import ProveedorService from '../../../service/ProveedorService';
 import SolicitudEnsayoService from '../../../service/SolicitudEnsayo/SolicitudEnsayoService';
@@ -26,6 +26,7 @@ import { determinarColorActivo } from './ClasesUtilidades';
 import { Toolbar } from 'primereact/toolbar';
 import SolicitudDocumentoService from '../../../service/SolicitudEnsayo/SolicitudDocumentoService';
 import SolicitudPlanAccionService from '../../../service/SolicitudPlanAccion/SolicitudPlanAccionService';
+import UnidadMedidaService from '../../../service/UnidadMedidaService';
 
 const TIPO_SOLICITUD = 'SOLICITUD_ENSAYO';
 class FormularioSE extends Component {
@@ -59,6 +60,7 @@ class FormularioSE extends Component {
             archivos: [],
             adjuntoSeleccionado: null,
 
+            unidadesMedida: [],
             planesAccion: []
 
         };
@@ -80,14 +82,14 @@ class FormularioSE extends Component {
         this.refrescar(this.props.match.params.idSolicitud);
         const proveedores = await ProveedorService.list();
         const prioridadesNivel = await SolicitudEnsayoService.listarPrioridadNivel();
-        this.setState({ proveedoresData: proveedores, nivelPrioridadData: prioridadesNivel });
+        const unidades = await UnidadMedidaService.listarActivos();
+        this.setState({ proveedoresData: proveedores, nivelPrioridadData: prioridadesNivel, unidadesMedida: unidades });
     }
 
     async refrescar(idSolicitud) {
         if (idSolicitud) {
             const solicitud = await SolicitudEnsayoService.listarPorId(idSolicitud);
             if (solicitud) {
-                console.log(solicitud);
                 const planes = await SolicitudPlanAccionService.listarPorTipo('SOLICITUD_ENSAYOS', idSolicitud);
                 let objetivosValor = _.split(solicitud.objetivo, ',');
                 let proveedorValor = null;
@@ -96,13 +98,13 @@ class FormularioSE extends Component {
                 else
                     proveedorValor = solicitud.proveedorNombre;
                 if (solicitud.muestraImagenId)
-                    this.leerImagenMuestra(solicitud.muestraImagenId);                
+                    this.leerImagenMuestra(solicitud.muestraImagenId);
                 this.setState({
                     id: solicitud.id,
                     codigo: solicitud.codigo,
                     proveedorSeleccionado: proveedorValor,
                     cantidad: solicitud.cantidad,
-                    unidad: solicitud.unidad,
+                    unidad: solicitud.unidad ? solicitud.unidad.id : 0,
                     materialEntregado: solicitud.detalleMaterial,
                     lineaAplicacion: solicitud.lineaAplicacion,
                     uso: solicitud.uso,
@@ -194,7 +196,7 @@ class FormularioSE extends Component {
             tiempoEntrega: this.state.tiempoEntrega,
             detalleMaterial: this.state.materialEntregado,
             cantidad: this.state.cantidad,
-            unidad: this.state.unidad,
+            unidad: { id: this.state.unidad },
             lineaAplicacion: this.state.lineaAplicacion,
             observacion: this.state.observacion,
             muestraEntrega: moment(this.state.muestraEntrega).format("YYYY-MM-DD"),
@@ -206,7 +208,7 @@ class FormularioSE extends Component {
         debugger
         if (_.isEmpty(moment(this.state.fechaEntrega).format("YYYY-MM-DD")) || _.isEmpty(this.state.prioridad)
             || _.isEmpty(this.state.proveedorSeleccionado) || _.isEmpty(this.state.objectivos) || _.isEmpty(this.state.tiempoEntrega) || _.isEmpty(this.state.materialEntregado)
-            || _.isEmpty(this.state.cantidad) || _.isEmpty(this.state.unidad) || _.isEmpty(this.state.lineaAplicacion) || _.isEmpty(moment(this.state.muestraEntrega).format("YYYY-MM-DD")) || _.isEmpty(this.state.muestraUbicacion))
+            || _.isEmpty(this.state.cantidad) || this.state.unidad === 0 || _.isEmpty(this.state.lineaAplicacion) || _.isEmpty(moment(this.state.muestraEntrega).format("YYYY-MM-DD")) || _.isEmpty(this.state.muestraUbicacion))
             return false;
 
         return true;
@@ -431,7 +433,7 @@ class FormularioSE extends Component {
                             </div>
                             <div className='p-col-12 p-lg-6'>
                                 <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Unidad</label>
-                                <Dropdown disabled={!this.state.editar} options={unidadesMedida} value={this.state.unidad} autoWidth={false} onChange={(e) => this.setState({ unidad: e.value })} placeholder="Selecione" />
+                                <Dropdown disabled={!this.state.editar} options={this.state.unidadesMedida} value={this.state.unidad} autoWidth={false} onChange={(e) => this.setState({ unidad: e.value })} placeholder="Selecione" />
                             </div>
                             <div className='p-col-12 p-lg-6'>
                                 <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Línea de Aplicación</label>
@@ -454,10 +456,10 @@ class FormularioSE extends Component {
                             <span style={{ color: '#CB3234' }}>*</span><label style={{ fontWeight: 'bold' }} htmlFor="float-input">Imagen de la Muestra</label>
                             <div style={{ height: '335px', bottom: '0px', top: '0px', display: 'flex', justifyContent: 'center', border: '1px solid #cccccc', borderRadius: '4px' }}>
                                 {this.state.muestraImagenId === null &&
-                                    <img style={{ width: 'auto', maxHeight: '100%', display: 'block', margin: 'auto' }} alt="Logo" src="assets/layout/images/icon-img.jpg" />
+                                    <img style={{ width: 'auto', maxHeight: '100%', maxWidth: '100%', display: 'block', margin: 'auto' }} alt="Logo" src="assets/layout/images/icon-img.jpg" />
                                 }
                                 {this.state.muestraImagenId > 0 &&
-                                    <img style={{ width: 'auto', maxHeight: '100%', display: 'block', margin: 'auto' }} id="ItemPreview" src="" />
+                                    <img style={{ width: 'auto', maxHeight: '100%', maxWidth: '100%', display: 'block', margin: 'auto' }} id="ItemPreview" src="" />
                                 }
                             </div>
                             {this.state.id > 0 && _.includes(['NUEVO', 'REGRESADO_NOVEDAD_FORMA'], this.state.estado) &&

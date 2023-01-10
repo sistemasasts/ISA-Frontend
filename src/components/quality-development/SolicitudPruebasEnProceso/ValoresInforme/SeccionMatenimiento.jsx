@@ -55,7 +55,7 @@ class SeccionMantenimiento extends Component {
                         <Column field="maquinaria" header="Maquinaria" sortable={true} />
                         <Column field="nombre" header="Condición" sortable={true} />
                         <Column field="valor" header="Valor" style={{ textAlign: 'center' }} />
-                        <Column field="unidad" header="Unidad" sortable={true} style={{ textAlign: 'center' }} />
+                        <Column field="unidad.abreviatura" header="Unidad" sortable={true} style={{ textAlign: 'center' }} />
                         <Column body={(e) => this.actionTemplateCondicion(e, data.id)} style={{ textAlign: 'center', width: '8em' }} />
                     </DataTable>
                 </div>

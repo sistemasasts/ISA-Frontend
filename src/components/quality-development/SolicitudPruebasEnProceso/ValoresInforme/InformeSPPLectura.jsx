@@ -110,7 +110,7 @@ class InformeSPPLectura extends Component {
                         onSelectionChange={e => this.setState({ seleccionadoCondicion: e.value })}>
                         <Column field="nombre" header="Condición" sortable={true} />
                         <Column field="valor" header="Valor" style={{ textAlign: 'center' }} />
-                        <Column field="unidad" header="Unidad" sortable={true} style={{ textAlign: 'center' }} />
+                        <Column field="unidad.abreviatura" header="Unidad" sortable={true} style={{ textAlign: 'center' }} />
                     </DataTable>
                 </div>
             </div>
@@ -126,7 +126,7 @@ class InformeSPPLectura extends Component {
                         <Column field="maquinaria" header="Maquinaria" sortable={true} />
                         <Column field="nombre" header="Condición" sortable={true} />
                         <Column field="valor" header="Valor" style={{ textAlign: 'center' }} />
-                        <Column field="unidad" header="Unidad" sortable={true} style={{ textAlign: 'center' }} />
+                        <Column field="unidad.abreviatura" header="Unidad" sortable={true} style={{ textAlign: 'center' }} />
                     </DataTable>
                 </div>
             </div>
@@ -227,7 +227,7 @@ class InformeSPPLectura extends Component {
                             <div className='p-col-12 p-lg-12'>
                                 <DataTable value={this.state.materialesUtilizado} rows={15}>
                                     <Column field="nombre" header="Material" sortable={true} />
-                                    <Column field="unidad" header="Unidad" style={{ textAlign: 'center' }} />
+                                    <Column field="unidad.abreviatura" header="Unidad" style={{ textAlign: 'center' }} />
                                     <Column field="cantidadSolicitada" header="Cantidad Solicitada" sortable={true} style={{ textAlign: 'center' }} />
                                     <Column field="cantidadUtilizada" header="Cantidad Utilizada" sortable={true} style={{ textAlign: 'center' }} />
                                     <Column field="porcentajeVariacion" header="Variación (%)" sortable={true} style={{ textAlign: 'center' }} />

@@ -51,17 +51,18 @@ class UnidadMedida extends Component {
     }
 
     async editarUnidad(data) {
-        await UnidadMedidaService.update({
+        const resultado = await UnidadMedidaService.update({
             id: data.id,
+            abreviatura: data.abreviatura,
             nombre: data.nombre,
             activo: data.activo,
-            idOriginal: this.state.idUnidadOriginal
         });
+        this.refrescarLista();
     }
 
 
     onRowEditorValidator(rowData) {
-        let value = rowData['id'];
+        let value = rowData['abreviatura'];
         let descripcion = rowData['nombre'];
         return value.length > 0 && descripcion.length > 0;
     }
@@ -88,11 +89,9 @@ class UnidadMedida extends Component {
 
     onRowEditSave(event) {
         console.log(event)
-        console.log(this.state.idUnidadOriginal)
         if (this.onRowEditorValidator(event.data)) {
             delete this.clonedCars[event.data.id];
             this.editarUnidad(event.data);
-            this.refrescarLista();
             this.growl.show({ severity: 'success', summary: 'Success', detail: 'Unidad de medida actualizada' });
         }
         else {
@@ -145,10 +144,10 @@ class UnidadMedida extends Component {
                     <div className="card card-w-title">
                         <h1>Unidades de Medida</h1>
                         <DataTable header={header} value={this.state.listaUnidades} editMode="row" rowEditorValidator={this.onRowEditorValidator} onRowEditInit={this.onRowEditInit} onRowEditSave={this.onRowEditSave}
-                        onRowEditCancel={this.onRowEditCancel} paginator={true} rows={20}>
-                            <Column field="id" header="Código" sortable={true} filter={true} editor={(props) => this.editorForRowEditing(props, 'id')} style={{ width: '13.5em', textAlign: 'center' }} />
-                            <Column field="nombre" header="Descripción" sortable={true} filter={true} editor={(props) => this.editorForRowEditing(props, 'nombre')} />
-                            <Column field="activo" header="Activo" sortable={true} editor={(props) => this.editorForRowEditingBoolean(props, 'activo')} style={{ width: '13.5em',textAlign: 'center' }} body={this.bodyTemplateEstado} />
+                            onRowEditCancel={this.onRowEditCancel} paginator={true} rows={20}>
+                            <Column field="abreviatura" header="Abreviatura" sortable={true} filter={true} editor={(props) => this.editorForRowEditing(props, 'abreviatura')} style={{ width: '13.5em', textAlign: 'center' }} />
+                            <Column field="nombre" header="Nombre" sortable={true} filter={true} editor={(props) => this.editorForRowEditing(props, 'nombre')} />
+                            <Column field="activo" header="Activo" sortable={true} editor={(props) => this.editorForRowEditingBoolean(props, 'activo')} style={{ width: '13.5em', textAlign: 'center' }} body={this.bodyTemplateEstado} />
                             <Column rowEditor={true} style={{ 'width': '100px', 'textAlign': 'center' }}></Column>
                         </DataTable>
                         <Dialog header="Nuevo" visible={this.state.display} modal={true} style={{ width: '50vw' }} footer={dialogFooter} onHide={() => this.setState({ display: false })}>

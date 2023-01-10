@@ -47,7 +47,7 @@ export function determinarColorTipoAprobacion(tipoAprobacion) {
 
 export function determinarColorTipoSolicitud(tipo) {
     switch (tipo) {
-        case 'SOLICITUD_ENSAYO':
+        case 'SOLICITUD_ENSAYOS':
             return 'customer-badge-success';
         case 'SOLICITUD_PRUEBAS_EN_PROCESO':        
             return 'customer-badge-default';

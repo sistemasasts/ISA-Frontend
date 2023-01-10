@@ -167,7 +167,8 @@ class PncForm extends Component {
             pncNew.product = { idProduct: this.state.foundProduct.idProduct };
             pncNew.area = { idArea: this.state.area };
             pncNew.source = this.state.source;
-            pncNew.unitNCP = this.state.unitNCP;
+            //pncNew.unitNCP = this.state.unitNCP;
+            pncNew.unit = {id: this.state.unitNCP};
             pncNew.asUser = this.props.currentUser.nickName;
             let stringFiveMs = '';
             this.state.fivems.map(function (o) {
@@ -223,7 +224,7 @@ class PncForm extends Component {
                 area: this.props.pnc.area && this.props.pnc.area.idArea,
                 amountProduced: this.props.pnc.amountProduced,
                 amountNonConforming: this.props.pnc.amountNonConforming,
-                unitNCP: this.props.pnc.unitNCP,
+                unitNCP: this.props.pnc.unit.id,
                 validityAverage: this.props.pnc.validityPercent,
                 pesoPNCKG: this.props.pnc.weightKg,
                 orderProduction: this.props.pnc.orderProduction,

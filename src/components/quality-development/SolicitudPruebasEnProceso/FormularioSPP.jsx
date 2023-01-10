@@ -128,7 +128,7 @@ class FormularioSPP extends Component {
                     editar: _.includes(['NUEVO', 'REGRESADO_NOVEDAD_FORMA'], solicitud.estado),
                     puedeRepetirPrueba: solicitud.puedeRepetirPrueba,
                     cantidadRequeridaProducir: solicitud.cantidadRequeridaProducir,
-                    unidadRequeridaProducir: solicitud.unidadRequeridaProducir,
+                    unidadRequeridaProducir: solicitud.unidadRequeridaProducir ? solicitud.unidadRequeridaProducir.id : 0,
                     materialesFormula: solicitud.materialesFormula,
                     mostrarMaterialesFormula: solicitud.area && _.startsWith(solicitud.area.nameArea, 'I+D'),
                     contieneAdjunto: solicitud.contieneAdjuntoDescripcionProducto ? 'SI' : 'NO'
@@ -206,7 +206,7 @@ class FormularioSPP extends Component {
             observacion: this.state.observacion,
             observacionFlujo: this.state.observacionFlujo,
             cantidadRequeridaProducir: this.state.cantidadRequeridaProducir,
-            unidadRequeridaProducir: this.state.unidadRequeridaProducir,
+            unidadRequeridaProducir: { id: this.state.unidadRequeridaProducir },
             contieneAdjuntoDescripcionProducto: _.isEqual(this.state.contieneAdjunto, "SI") ? true : false
         }
     }
@@ -220,7 +220,7 @@ class FormularioSPP extends Component {
             || _.isEmpty(this.state.area))
             valido = false;
         if (this.state.mostrarMaterialesFormula) {
-            if ((this.state.cantidadRequeridaProducir <= 0) || _.isEmpty(this.state.unidadRequeridaProducir))
+            if ((this.state.cantidadRequeridaProducir <= 0) || this.state.unidadRequeridaProducir === 0)
                 valido = false;
         }
         return valido;
@@ -288,6 +288,7 @@ class FormularioSPP extends Component {
     async onSave() {
         if (this.state.materialFormula !== null) {
             let solicitudActualizada;
+            console.log(solicitudActualizada);
             if (this.state.materialFormula.id > 0) {
                 solicitudActualizada = await SolicitudPruebasProcesoService.editarMaterialFomula(this.state.id, this.state.materialFormula);
                 let msg = { severity: 'success', summary: 'Material', detail: 'Modificado con éxito' };
@@ -350,6 +351,11 @@ class FormularioSPP extends Component {
         });
     }
 
+    bodyTemplateCantidad(rowData) {
+        const cantidad = (rowData.cantidad).toFixed(2);
+        return <span>{cantidad}</span>;
+    }
+
     render() {
         let es = {
             firstDayOfWeek: 1,
@@ -387,8 +393,8 @@ class FormularioSPP extends Component {
         let footerGroup = <ColumnGroup>
             <Row>
                 <Column style={{ backgroundColor: '#A5D6A7', fontWeight: 'bold' }} footer="FORMULA TOTAL" />
-                <Column style={{ backgroundColor: '#A5D6A7', fontWeight: 'bold' }} footer={_.sumBy(this.state.materialesFormula, (o) => { return o.porcentaje })} />
-                <Column style={{ backgroundColor: '#A5D6A7', fontWeight: 'bold' }} footer={_.sumBy(this.state.materialesFormula, (o) => { return o.cantidad })} />
+                <Column style={{ backgroundColor: '#A5D6A7', fontWeight: 'bold' }} footer={(_.sumBy(this.state.materialesFormula, (o) => { return o.porcentaje })).toFixed(2)} />
+                <Column style={{ backgroundColor: '#A5D6A7', fontWeight: 'bold' }} footer={(_.sumBy(this.state.materialesFormula, (o) => { return o.cantidad })).toFixed(2)} />
                 <Column style={{ backgroundColor: '#A5D6A7', fontWeight: 'bold' }} footer={_.isEmpty(this.state.materialesFormula) ? '' : this.state.materialesFormula[0].unidad} />
             </Row>
         </ColumnGroup>;
@@ -533,7 +539,7 @@ class FormularioSPP extends Component {
                                         <InputTextarea readOnly={!this.state.editar} value={this.state.descripcionProducto} onChange={(e) => this.setState({ descripcionProducto: e.target.value })} rows={8} placeholder='Descripción' />
                                     </div>
                                     <div className="p-col-12">
-                                        <label style={{ marginRight: '10px', fontWeight:'bold', color:'red' }} htmlFor="rb1" className="p-radiobutton-label">Contiene Adjunto</label>
+                                        <label style={{ marginRight: '10px', fontWeight: 'bold', color: 'red' }} htmlFor="rb1" className="p-radiobutton-label">Contiene Adjunto</label>
                                         <RadioButton inputId="rb1" name="si" value="SI" onChange={(e) => this.setState({ contieneAdjunto: e.value })} checked={this.state.contieneAdjunto === 'SI'} />
                                         <label htmlFor="rb1" className="p-radiobutton-label">SI</label>
                                         <RadioButton style={{ marginLeft: '10px' }} inputId="rb2" name="no" value="NO" onChange={(e) => this.setState({ contieneAdjunto: e.value })} checked={this.state.contieneAdjunto === 'NO'} />
@@ -551,11 +557,11 @@ class FormularioSPP extends Component {
                                         <span style={{ color: '#CB3234' }}>*</span><label style={{ fontWeight: 'bold' }} htmlFor="float-input">Imagen especificaciones y variables</label>
                                         <div style={{ height: '335px', bottom: '0px', top: '0px', display: 'flex', justifyContent: 'center', border: '1px solid #cccccc', borderRadius: '4px' }}>
                                             {this.state.imagen1Id === null &&
-                                                <img style={{ width: 'auto', maxHeight: '100%', display: 'block', margin: 'auto' }} alt="Logo" src="assets/layout/images/icon-img.jpg" />
+                                                <img style={{ width: 'auto', maxHeight: '100%', maxWidth: '100%', display: 'block', margin: 'auto' }} alt="Logo" src="assets/layout/images/icon-img.jpg" />
                                             }
                                             {this.state.imagen1Id > 0 &&
 
-                                                <img style={{ width: 'auto', maxHeight: '100%', display: 'block', margin: 'auto' }} id="ItemPreview" src="" />
+                                                <img style={{ width: 'auto', maxHeight: '100%', maxWidth: '100%', display: 'block', margin: 'auto' }} id="ItemPreview" src="" />
                                             }
                                         </div>
                                         {this.state.id > 0 && _.includes(['NUEVO', 'REGRESADO_NOVEDAD_FORMA'], this.state.estado) &&
@@ -587,8 +593,8 @@ class FormularioSPP extends Component {
                                             onRowSelect={this.onCarSelect}>
                                             <Column field="nombre" header="Material" sortable={true} />
                                             <Column field="porcentaje" header="Porcentaje(%)" sortable={true} style={{ textAlign: 'center' }} />
-                                            <Column field="cantidad" header="Cantidad" sortable={true} style={{ textAlign: 'center' }} />
-                                            <Column field="unidad" header="Unidad" style={{ textAlign: 'center' }} />
+                                            <Column field="cantidad" body={this.bodyTemplateCantidad} header="Cantidad" sortable={true} style={{ textAlign: 'center' }} />
+                                            <Column field="unidad.abreviatura" header="Unidad" style={{ textAlign: 'center' }} />
                                         </DataTable>
                                     </div>
                                 }

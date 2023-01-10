@@ -108,10 +108,10 @@ class InformeSPP extends Component {
                 cantidadProductoNoConforme: informe.cantidadProductoNoConforme,
                 cantidadDesperdicio: informe.cantidadDesperdicio,
                 cantidadProductoPrueba: informe.cantidadProductoPrueba,
-                unidadProductoTerminado: informe.unidadProductoTerminado,
-                unidadProductoNoConforme: informe.unidadProductoNoConforme,
-                unidadDesperdicio: informe.unidadDesperdicio,
-                unidadProductoPrueba: informe.unidadProductoPrueba,
+                unidadProductoTerminado: informe.unidadProductoTerminado ? informe.unidadProductoTerminado.id : 0,
+                unidadProductoNoConforme: informe.unidadProductoNoConforme ? informe.unidadProductoNoConforme.id : 0,
+                unidadDesperdicio: informe.unidadDesperdicio ? informe.unidadDesperdicio.id : 0,
+                unidadProductoPrueba: informe.unidadProductoPrueba ? informe.unidadProductoPrueba.id : 0,
                 observacionProduccion: informe.observacionProduccion,
                 observacionMantenimiento: informe.observacionMantenimiento,
                 observacionCalidad: informe.observacionCalidad
@@ -130,7 +130,7 @@ class InformeSPP extends Component {
                         onSelectionChange={e => this.setState({ seleccionadoCondicion: e.value })}>
                         <Column field="nombre" header="Condición" sortable={true} />
                         <Column field="valor" header="Valor" style={{ textAlign: 'center' }} />
-                        <Column field="unidad" header="Unidad" sortable={true} style={{ textAlign: 'center' }} />
+                        <Column field="unidad.abreviatura" header="Unidad" sortable={true} style={{ textAlign: 'center' }} />
                         <Column body={(e) => this.actionTemplateCondicion(e, data.id)} style={{ textAlign: 'center', width: '8em' }} />
                     </DataTable>
                 </div>
@@ -191,7 +191,7 @@ class InformeSPP extends Component {
     }
 
     crearObj() {
-        return {
+        const informe =  {
             id: this.state.id,
             fechaPrueba: this.state.fechaPrueba,
             cantidadProducida: this.state.cantidadProducida,
@@ -207,11 +207,13 @@ class InformeSPP extends Component {
             observacionProduccion: this.state.observacionProduccion,
             observacionMantenimiento: this.state.observacionMantenimiento,
             observacionCalidad: this.state.observacionCalidad,
-            unidadProductoTerminado: this.state.unidadProductoTerminado,
-            unidadProductoNoConforme: this.state.unidadProductoNoConforme,
-            unidadDesperdicio: this.state.unidadDesperdicio,
-            unidadProductoPrueba: this.state.unidadProductoPrueba
+            unidadProductoTerminado: this.state.unidadProductoTerminado ? { id: this.state.unidadProductoTerminado } : null,
+            unidadProductoNoConforme: this.state.unidadProductoNoConforme ? { id: this.state.unidadProductoNoConforme } : null,
+            unidadDesperdicio: this.state.unidadDesperdicio ? { id: this.state.unidadDesperdicio } : null,
+            unidadProductoPrueba: this.state.unidadProductoPrueba ? { id: this.state.unidadProductoPrueba } : null
         }
+        console.log(informe);
+        return informe;
     }
 
     crearObjMantenimiento() {
@@ -343,7 +345,7 @@ class InformeSPP extends Component {
                                     selectionMode="single" selection={this.state.seleccionadoMaterial} onSelectionChange={e => this.setState({ seleccionadoMaterial: e.value })}
                                 >
                                     <Column field="nombre" header="Material" sortable={true} />
-                                    <Column field="unidad" header="Unidad" style={{ textAlign: 'center' }} />
+                                    <Column field="unidad.abreviatura" header="Unidad" style={{ textAlign: 'center' }} />
                                     <Column field="cantidadSolicitada" header="Cantidad Solicitada" sortable={true} style={{ textAlign: 'center' }} />
                                     <Column field="cantidadUtilizada" header="Cantidad Utilizada" sortable={true} style={{ textAlign: 'center' }} />
                                     <Column field="porcentajeVariacion" header="Variación (%)" sortable={true} style={{ textAlign: 'center' }} />
@@ -380,7 +382,7 @@ class InformeSPP extends Component {
                                 <div className="p-inputgroup">
                                     <InputText keyfilter="num" value={this.state.cantidadProductoTerminado} onChange={(e) => this.setState({ cantidadProductoTerminado: e.target.value })} />
                                     {/* <span className="p-inputgroup-addon">{this.state.lineaFabricacionUnidad}</span> */}
-                                    <Dropdown style={{ width: 'auto', minWidth: 'auto' }} value={this.state.unidadProductoTerminado} editable={true} options={this.state.unidadesCatalogo}
+                                    <Dropdown style={{ width: 'auto', minWidth: 'auto' }} value={this.state.unidadProductoTerminado} editable={false} options={this.state.unidadesCatalogo}
                                         onChange={(e) => { this.setState({ unidadProductoTerminado: e.value }) }} placeholder='Seleccione...' />
                                 </div>
                             </div>
@@ -389,7 +391,7 @@ class InformeSPP extends Component {
                                 <div className="p-inputgroup">
                                     <InputText keyfilter="num" value={this.state.cantidadProductoNoConforme} onChange={(e) => this.setState({ cantidadProductoNoConforme: e.target.value })} />
                                     {/* <span className="p-inputgroup-addon">{this.state.lineaFabricacionUnidad}</span> */}
-                                    <Dropdown style={{ width: 'auto', minWidth: 'auto' }} value={this.state.unidadProductoNoConforme} editable={true} options={this.state.unidadesCatalogo}
+                                    <Dropdown style={{ width: 'auto', minWidth: 'auto' }} value={this.state.unidadProductoNoConforme} editable={false} options={this.state.unidadesCatalogo}
                                         onChange={(e) => { this.setState({ unidadProductoNoConforme: e.value }) }} placeholder='Seleccione...' />
                                 </div>
                             </div>
@@ -398,7 +400,7 @@ class InformeSPP extends Component {
                                 <div className="p-inputgroup">
                                     <InputText keyfilter="num" value={this.state.cantidadDesperdicio} onChange={(e) => this.setState({ cantidadDesperdicio: e.target.value })} />
                                     {/* <span className="p-inputgroup-addon">{this.state.lineaFabricacionUnidad}</span> */}
-                                    <Dropdown style={{ width: 'auto', minWidth: 'auto' }} value={this.state.unidadDesperdicio} editable={true} options={this.state.unidadesCatalogo}
+                                    <Dropdown style={{ width: 'auto', minWidth: 'auto' }} value={this.state.unidadDesperdicio} editable={false} options={this.state.unidadesCatalogo}
                                         onChange={(e) => { this.setState({ unidadDesperdicio: e.value }) }} placeholder='Seleccione...' />
                                 </div>
                             </div>
@@ -407,7 +409,7 @@ class InformeSPP extends Component {
                                 <div className="p-inputgroup">
                                     <InputText keyfilter="num" value={this.state.cantidadProductoPrueba} onChange={(e) => this.setState({ cantidadProductoPrueba: e.target.value })} />
                                     {/* <span className="p-inputgroup-addon">{this.state.lineaFabricacionUnidad}</span> */}
-                                    <Dropdown style={{ width: 'auto', minWidth: 'auto' }} value={this.state.unidadProductoPrueba} editable={true} options={this.state.unidadesCatalogo}
+                                    <Dropdown style={{ width: 'auto', minWidth: 'auto' }} value={this.state.unidadProductoPrueba} editable={false} options={this.state.unidadesCatalogo}
                                         onChange={(e) => { this.setState({ unidadProductoPrueba: e.value }) }} placeholder='Seleccione...' />
                                 </div>
                             </div>

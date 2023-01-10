@@ -51,7 +51,7 @@ class FormCondicion extends Component {
                 display: mostrar,
                 id: itemSeleccionado.id,
                 nombre: itemSeleccionado.nombre,
-                unidad: itemSeleccionado.unidad,
+                unidad: itemSeleccionado.unidad ? itemSeleccionado.unidad.id : 0,
                 valor: itemSeleccionado.valor,
                 maquinaria: itemSeleccionado.maquinaria,
                 tipo: tipo
@@ -113,7 +113,7 @@ class FormCondicion extends Component {
             id: this.state.id,
             nombre: this.state.nombre,
             valor: this.state.valor,
-            unidad: this.state.unidad,
+            unidad: this.state.unidad ? { id: this.state.unidad } : null,
             maquinaria: this.state.maquinaria,
             condicionOperacionId: this.state.condicionOperacionId,
             tipo: this.state.tipo
@@ -144,7 +144,7 @@ class FormCondicion extends Component {
                         </div>
                         <div className='p-col-12 p-lg-12'>
                             <label htmlFor="float-input">Unidad</label>
-                            <Dropdown appendTo={document.body} value={this.state.unidad} editable={true} options={this.state.unidadesCatalogo}
+                            <Dropdown appendTo={document.body} value={this.state.unidad} editable={false} options={this.state.unidadesCatalogo}
                                 onChange={(e) => { this.setState({ unidad: e.value }) }} />
                         </div>
                         <div className='p-col-12 p-lg-12'>

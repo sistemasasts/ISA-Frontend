@@ -86,7 +86,7 @@ class FormularioSPPLectura extends Component {
                     requiereInforme: solicitud.requiereInforme,
                     imagen1Id: solicitud.imagen1Id,
                     cantidadRequeridaProducir: solicitud.cantidadRequeridaProducir,
-                    unidadRequeridaProducir: solicitud.unidadRequeridaProducir,
+                    unidadRequeridaProducir: solicitud.unidadRequeridaProducir ? solicitud.unidadRequeridaProducir.abreviatura : "",
                     materialesFormula: solicitud.materialesFormula,
                     mostrarMaterialesFormula: solicitud.area && _.startsWith(solicitud.area.nameArea, 'I+D'),
                     contieneAdjunto: solicitud.contieneAdjuntoDescripcionProducto ? 'SI' : 'NO'
@@ -298,7 +298,7 @@ class FormularioSPPLectura extends Component {
                                         <InputTextarea readOnly value={this.state.descripcionProducto} onChange={(e) => this.setState({ descripcionProducto: e.target.value })} rows={8} placeholder='Descripción' />
                                     </div>
                                     <div className="p-col-12">
-                                        <label style={{ marginRight: '10px', fontWeight:'bold', color:'red' }} htmlFor="rb1" className="p-radiobutton-label">Contiene Adjunto</label>
+                                        <label style={{ marginRight: '10px', fontWeight: 'bold', color: 'red' }} htmlFor="rb1" className="p-radiobutton-label">Contiene Adjunto</label>
                                         <RadioButton inputId="rb1" name="si" value="SI" checked={this.state.contieneAdjunto === 'SI'} />
                                         <label htmlFor="rb1" className="p-radiobutton-label">SI</label>
                                         <RadioButton style={{ marginLeft: '10px' }} inputId="rb2" name="no" value="NO" checked={this.state.contieneAdjunto === 'NO'} />
@@ -316,7 +316,7 @@ class FormularioSPPLectura extends Component {
                                         <span style={{ color: '#CB3234' }}>*</span><label style={{ fontWeight: 'bold' }} htmlFor="float-input">Imagen especificaciones y variables</label>
                                         <div style={{ height: '365px', bottom: '0px', top: '0px', display: 'flex', justifyContent: 'center', border: '1px solid #cccccc', borderRadius: '4px' }}>
                                             {this.state.imagen1Id > 0 &&
-                                                <img style={{ width: 'auto', maxHeight: '100%', display: 'block', margin: 'auto' }} id="ItemPreview1" src="" />
+                                                <img style={{ width: 'auto', maxHeight: '100%',maxWidth: '100%', display: 'block', margin: 'auto' }} id="ItemPreview1" src="" />
                                             }
                                         </div>
                                     </div>
@@ -343,7 +343,7 @@ class FormularioSPPLectura extends Component {
                                         <Column field="nombre" header="Material" sortable={true} />
                                         <Column field="porcentaje" header="Porcentaje(%)" sortable={true} style={{ textAlign: 'center' }} />
                                         <Column field="cantidad" header="Cantidad" sortable={true} style={{ textAlign: 'center' }} />
-                                        <Column field="unidad" header="Unidad" style={{ textAlign: 'center' }} />
+                                        <Column field="unidad.abreviatura" header="Unidad" style={{ textAlign: 'center' }} />
                                     </DataTable>
                                 </div>
                             </div>

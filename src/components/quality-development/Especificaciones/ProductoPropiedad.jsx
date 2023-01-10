@@ -78,9 +78,16 @@ class ProductoPropiedad extends Component {
         </div>;
     }
 
+    templateUnidad(rowData, column) {
+        return <div>
+            {rowData.unitProperty}
+        </div>;
+    }
+
 
     /* Row Editing */
     onEditorValueChangeForRowEditing = (props, value) => {
+        console.log(props, value);
         let updatedCars = [...props.value];
         updatedCars[props.rowIndex][props.field] = value;
         this.setState({ especificaciones2: updatedCars });
@@ -91,7 +98,9 @@ class ProductoPropiedad extends Component {
     }
 
     editorForRowEditingUnit(props, field) {
-        return <Dropdown value={props.rowData[field]} options={this.state.unidadesMedida} onChange={(e) => this.onEditorValueChangeForRowEditing(props, e.value)} autoWidth={false} />;
+        console.log(props.rowData, field);
+        const valor = props.rowData[field] !== null? props.rowData[field] : 0;
+        return <Dropdown value={valor} options={this.state.unidadesMedida} onChange={(e) => this.onEditorValueChangeForRowEditing(props, e.value)} autoWidth={false} />;
     }
 
     onRowEditorValidator(rowData) { /* VALIDAR LAS OPCIONES INGRESADAS*/
@@ -107,6 +116,7 @@ class ProductoPropiedad extends Component {
         if (this.onRowEditorValidator(event.data)) {
             await this.actualizarEspecificacion(event.data);
             delete this.clonedCars[event.data.idPropertyList];
+            this.refrescarLista();
             this.growl.show({ severity: 'success', summary: 'Especificación', detail: event.data.nameProperty + ' actualizada.' });
         }
         else {
@@ -148,7 +158,7 @@ class ProductoPropiedad extends Component {
                         <Column field="nameProperty" header="Propiedad" sortable={true} filter={true} style={{ width: '30%' }} />
                         <Column field="propertyNorm" header="Norma" sortable={true} filter={true} style={{ width: '15%' }} />
                         <Column field="typeProperty" header="Tipo" sortable={true} filter={true} />
-                        <Column field="unitProperty" header="Unidad" sortable={true} filter={true} editor={(props) => this.editorForRowEditingUnit(props, 'unitProperty')} />
+                        <Column field="unitId" body={this.templateUnidad} header="Unidad" sortable={true} filter={true} editor={(props) => this.editorForRowEditingUnit(props, 'unitId')} />
                         <Column field="minProperty" header="Min" sortable={true} filter={true} editor={(props) => this.editorForRowEditing(props, 'minProperty')} />
                         <Column field="maxProperty" header="Max" sortable={true} filter={true} editor={(props) => this.editorForRowEditing(props, 'maxProperty')} />
                         <Column field="viewProperty" header="Visible" sortable={true} filter={true} editor={(props) => this.editorForRowEditing(props, 'viewProperty')} />

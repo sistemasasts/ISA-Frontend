@@ -56,6 +56,7 @@ class FormularioSELectura extends Component {
             const solicitud = await SolicitudEnsayoService.listarPorId(idSolicitud);
             if (solicitud) {
                 let objetivosValor = _.split(solicitud.objetivo, ',');
+                debugger
                 if (solicitud.muestraImagenId)
                     this.leerImagenMuestra(solicitud.muestraImagenId);
                 this.setState({
@@ -63,7 +64,7 @@ class FormularioSELectura extends Component {
                     codigo: solicitud.codigo,
                     proveedorSeleccionado: solicitud.proveedorNombre,
                     cantidad: solicitud.cantidad,
-                    unidad: solicitud.unidad,
+                    unidad: solicitud.unidad ? solicitud.unidad.abreviatura : "",
                     materialEntregado: solicitud.detalleMaterial,
                     lineaAplicacion: solicitud.lineaAplicacion,
                     uso: solicitud.uso,
@@ -202,7 +203,8 @@ class FormularioSELectura extends Component {
                             </div>
                             <div className='p-col-12 p-lg-6'>
                                 <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Unidad</label>
-                                <Dropdown disabled options={unidadesMedida} value={this.state.unidad} autoWidth={false} onChange={(e) => this.setState({ unidad: e.value })} placeholder="Selecione" />
+                                {/* <Dropdown disabled options={unidadesMedida} value={this.state.unidad} autoWidth={false} onChange={(e) => this.setState({ unidad: e.value })} placeholder="Selecione" /> */}
+                                <InputText readOnly value={this.state.unidad} />
                             </div>
                             <div className='p-col-12 p-lg-6'>
                                 <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Línea de Aplicación</label>
@@ -224,7 +226,7 @@ class FormularioSELectura extends Component {
                             <span style={{ color: '#CB3234' }}>*</span><label style={{ fontWeight: 'bold' }} htmlFor="float-input">Imagen de la Muestra</label>
                             <div style={{ height: '335px', bottom: '0px', top: '0px', display: 'flex', justifyContent: 'center', border: '1px solid #cccccc', borderRadius: '4px' }}>
                                 {this.state.muestraImagenId > 0 &&
-                                    <img style={{ width: 'auto', maxHeight: '100%', display: 'block', margin: 'auto' }} id="ItemPreview" src="" />
+                                    <img style={{ width: 'auto', maxHeight: '100%', maxWidth: '100%', display: 'block', margin: 'auto' }} id="ItemPreview" src="" />
                                 }
                             </div>
                         </div>

@@ -23,7 +23,7 @@ import { Email, setParamsSendEmail } from '../Email/cemail';
 import { PW, show_msgPW, hide_msgPW } from '../../global/SubComponents/PleaseWait'; //Sub-Componente "Espere Por favor..."
 
 /* ============  D A T A    C A T A L O G O  S =============== */
-import { placesRMP, unidadesMedida } from '../../global/catalogs';
+import { placesRMP } from '../../global/catalogs';
 
 /* ====================  T R A N S A C T I O N S ======== */
 import { GetAllComplaintsRMP, SaveComplaintRMP, GenerateReportComplaint, GetAllProducts } from '../../utils/TransactionsCalidad';
@@ -33,6 +33,7 @@ import { formattedDate, formattedDateAndHour } from '../../utils/FormatDate';
 import { openModal, closeModal } from '../../store/actions/modalWaitAction';
 import { connect } from 'react-redux';
 import ReclamoMPService from '../../service/ReclamoMPService';
+import UnidadesMedidaService from '../../service/UnidadMedidaService';
 
 var that;
 var nameProducts = []; // Variable para fomrar el Array de nombre de productos.
@@ -80,6 +81,7 @@ class Complaint extends Component {
             optionDisplayC: 'none',
             idProductC: null,
             viewModalStateEdit: false,
+            unidadesMedida: [],
         };
         that = this;
         this.carservice = new CarService();
@@ -315,7 +317,7 @@ class Complaint extends Component {
 
     /* Método para añadir Reclamo */
     addComplaint() {
-        this.setState({ visibleMRMPEditar: true, optionDisplayC: '', selectedComplaint: {}, selectedComplaint2: {}, listProblemsC:[], listPAPC:[], listExecutedActionsC:[]});
+        this.setState({ visibleMRMPEditar: true, optionDisplayC: '', selectedComplaint: {}, selectedComplaint2: {}, listProblemsC: [], listPAPC: [], listExecutedActionsC: [] });
     }
 
     /* Metodo para editar el Complaint(Reclamo)  */
@@ -337,7 +339,7 @@ class Complaint extends Component {
                 console.log(this.state.selectedComplaint);
                 this.setState({
                     visibleMRMPEditar: true, nameProductC: x.product.nameProduct, batchProviderC: x.batchProvider, palletC: x.palletNumber,
-                    dateC: d, unitC: x.unitP, affectedProductC: x.affectedProduct, placeC: x.place, listProvidersC: listProviders,
+                    dateC: d, unitC: x.unit.id, affectedProductC: x.affectedProduct, placeC: x.place, listProvidersC: listProviders,
                     totalAmountC: x.totalAmount, affectAmountC: x.affectedAmount, percentC: x.porcentComplaint, returnApplyC: ap, providerC: x.idProvider, providerOtro: x.otherProvider,
                     detailNCPC: x.detailNCP, listProblemsC: x.listProblems, listPAPC: x.listActionsPlanProvider, listExecutedActionsC: x.listExecutedActons, idProductC: x.idProduct
                 });
@@ -585,7 +587,8 @@ class Complaint extends Component {
             complaint.otherProvider = this.state.providerOtro;
             complaint.batchProvider = this.state.batchProviderC;
             complaint.palletNumber = this.state.palletC;
-            complaint.unitP = this.state.unitC;
+            //complaint.unitP = this.state.unitC;
+            complaint.unit = { id: this.state.unitC };
             complaint.affectedProduct = this.state.affectedProductC;
             complaint.place = this.state.placeC;
             complaint.totalAmount = this.state.totalAmountC;
@@ -681,7 +684,7 @@ class Complaint extends Component {
         const reclamo = await ReclamoMPService.cerrar(com.idComplaint);
         this.props.closeModal();
         that.showMessage('Reclamo cerrado', 'success');
-        that.setState({viewModalStateEdit: false });
+        that.setState({ viewModalStateEdit: false });
         this.actualizarTabla();
     }
 
@@ -757,6 +760,12 @@ class Complaint extends Component {
         });
         var sesion = this.props.currentUser
         this.setState({ userLogin: sesion });
+        this.obtenerCatalogo();
+    }
+
+    async obtenerCatalogo() {
+        const unidades = await UnidadesMedidaService.listarActivos();
+        this.setState({ unidadesMedida: unidades });
     }
 
     render() {
@@ -907,7 +916,7 @@ class Complaint extends Component {
                                         <strong style={{ marginRight: '2%' }}>Producto Afectado:</strong>{Object.keys(this.state.selectedComplaint2).length === 0 ? '' : this.state.selectedComplaint2.affectedProduct}
                                     </div>
                                     <div className="p-col-12 p-lg-3">
-                                        <strong style={{ marginRight: '2%' }}>Proveedor:</strong>{Object.keys(this.state.selectedComplaint2).length === 0 ? '' : this.state.selectedComplaint2.provider?this.state.selectedComplaint2.provider.nameProvider: this.state.selectedComplaint2.otherProvider}
+                                        <strong style={{ marginRight: '2%' }}>Proveedor:</strong>{Object.keys(this.state.selectedComplaint2).length === 0 ? '' : this.state.selectedComplaint2.provider ? this.state.selectedComplaint2.provider.nameProvider : this.state.selectedComplaint2.otherProvider}
                                     </div>
 
                                 </div>
@@ -1000,7 +1009,7 @@ class Complaint extends Component {
                                         </div>
                                         <div className="p-col-12 p-md-3">
                                             <label htmlFor="float-input">Unidad</label>
-                                            <Dropdown value={this.state.unitC} options={unidadesMedida} autoWidth={false} onChange={this.onUnitChange} placeholder="Seleccione" />
+                                            <Dropdown value={this.state.unitC} options={this.state.unidadesMedida} autoWidth={false} onChange={this.onUnitChange} placeholder="Seleccione" />
                                         </div>
                                         <div className="p-col-12 p-md-3">
                                             <label htmlFor="float-input">Producto Afectado</label>

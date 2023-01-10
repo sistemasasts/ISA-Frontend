@@ -45,7 +45,7 @@ class FormMaterialUtilizado extends Component {
                 display: mostrar,
                 id: itemSeleccionado.id,
                 nombre: itemSeleccionado.nombre,
-                unidad: itemSeleccionado.unidad,
+                unidad: itemSeleccionado.unidad ? itemSeleccionado.unidad.id : 0,
                 cantidadSolicitada: itemSeleccionado.cantidadSolicitada,
                 cantidadUtilizada: itemSeleccionado.cantidadUtilizada
             });
@@ -106,7 +106,7 @@ class FormMaterialUtilizado extends Component {
         return {
             id: this.state.id,
             nombre: this.state.nombre,
-            unidad: this.state.unidad,
+            unidad: this.state.unidad ? { id: this.state.unidad } : null,
             cantidadSolicitada: this.state.cantidadSolicitada,
             cantidadUtilizada: this.state.cantidadUtilizada
         }
@@ -129,7 +129,7 @@ class FormMaterialUtilizado extends Component {
                         </div>
                         <div className='p-col-12 p-lg-12'>
                             <label htmlFor="float-input">Unidad</label>
-                            <Dropdown appendTo={document.body} value={this.state.unidad} editable={true} options={this.state.unidadesCatalogo}
+                            <Dropdown appendTo={document.body} value={this.state.unidad} editable={false} options={this.state.unidadesCatalogo}
                                 onChange={(e) => { this.setState({ unidad: e.value }) }} filter={true} />
                         </div>
                         <div className='p-col-12 p-lg-12'>
