@@ -78,7 +78,7 @@ class Usuario extends Component {
                 <DataTable value={this.state.usuarios} paginator={true} rows={15} header={header} responsive={true} scrollable={true}
                     selectionMode="single" selection={this.state.usuarioSeleccionado} onSelectionChange={e => this.setState({ usuarioSeleccionado: e.value })}
                     onRowSelect={this.onCarSelect} >
-                    <Column field="nickName" header="Usuario" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
+                    <Column field="nickName" header="Usuario" sortable={true} filter={true} filterMatchMode="contains"  style={{ textAlign: 'center', width: '10em' }} />
                     <Column field="employee.ciEmployee" header="Identificación" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
                     <Column field="employee.completeName" header="Nombre" sortable={true} style={{ textAlign: 'center', width: '16em' }} />
                     <Column field="employee.email" header="Correo" style={{ textAlign: 'center', width: '12em' }} />

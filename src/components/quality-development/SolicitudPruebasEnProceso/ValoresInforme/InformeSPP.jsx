@@ -191,7 +191,7 @@ class InformeSPP extends Component {
     }
 
     crearObj() {
-        const informe =  {
+        const informe = {
             id: this.state.id,
             fechaPrueba: this.state.fechaPrueba,
             cantidadProducida: this.state.cantidadProducida,
@@ -382,7 +382,7 @@ class InformeSPP extends Component {
                                 <div className="p-inputgroup">
                                     <InputText keyfilter="num" value={this.state.cantidadProductoTerminado} onChange={(e) => this.setState({ cantidadProductoTerminado: e.target.value })} />
                                     {/* <span className="p-inputgroup-addon">{this.state.lineaFabricacionUnidad}</span> */}
-                                    <Dropdown style={{ width: 'auto', minWidth: 'auto' }} value={this.state.unidadProductoTerminado} editable={false} options={this.state.unidadesCatalogo}
+                                    <Dropdown style={{ minWidth: '3%', maxWidth: '40%' }} value={this.state.unidadProductoTerminado} editable={false} options={this.state.unidadesCatalogo}
                                         onChange={(e) => { this.setState({ unidadProductoTerminado: e.value }) }} placeholder='Seleccione...' />
                                 </div>
                             </div>
@@ -391,7 +391,7 @@ class InformeSPP extends Component {
                                 <div className="p-inputgroup">
                                     <InputText keyfilter="num" value={this.state.cantidadProductoNoConforme} onChange={(e) => this.setState({ cantidadProductoNoConforme: e.target.value })} />
                                     {/* <span className="p-inputgroup-addon">{this.state.lineaFabricacionUnidad}</span> */}
-                                    <Dropdown style={{ width: 'auto', minWidth: 'auto' }} value={this.state.unidadProductoNoConforme} editable={false} options={this.state.unidadesCatalogo}
+                                    <Dropdown style={{ minWidth: '3%', maxWidth: '40%' }} value={this.state.unidadProductoNoConforme} editable={false} options={this.state.unidadesCatalogo}
                                         onChange={(e) => { this.setState({ unidadProductoNoConforme: e.value }) }} placeholder='Seleccione...' />
                                 </div>
                             </div>
@@ -400,7 +400,7 @@ class InformeSPP extends Component {
                                 <div className="p-inputgroup">
                                     <InputText keyfilter="num" value={this.state.cantidadDesperdicio} onChange={(e) => this.setState({ cantidadDesperdicio: e.target.value })} />
                                     {/* <span className="p-inputgroup-addon">{this.state.lineaFabricacionUnidad}</span> */}
-                                    <Dropdown style={{ width: 'auto', minWidth: 'auto' }} value={this.state.unidadDesperdicio} editable={false} options={this.state.unidadesCatalogo}
+                                    <Dropdown style={{ minWidth: '3%', maxWidth: '40%' }} value={this.state.unidadDesperdicio} editable={false} options={this.state.unidadesCatalogo}
                                         onChange={(e) => { this.setState({ unidadDesperdicio: e.value }) }} placeholder='Seleccione...' />
                                 </div>
                             </div>
@@ -409,7 +409,7 @@ class InformeSPP extends Component {
                                 <div className="p-inputgroup">
                                     <InputText keyfilter="num" value={this.state.cantidadProductoPrueba} onChange={(e) => this.setState({ cantidadProductoPrueba: e.target.value })} />
                                     {/* <span className="p-inputgroup-addon">{this.state.lineaFabricacionUnidad}</span> */}
-                                    <Dropdown style={{ width: 'auto', minWidth: 'auto' }} value={this.state.unidadProductoPrueba} editable={false} options={this.state.unidadesCatalogo}
+                                    <Dropdown style={{ minWidth: '3%', maxWidth: '40%' }} value={this.state.unidadProductoPrueba} editable={false} options={this.state.unidadesCatalogo}
                                         onChange={(e) => { this.setState({ unidadProductoPrueba: e.value }) }} placeholder='Seleccione...' />
                                 </div>
                             </div>

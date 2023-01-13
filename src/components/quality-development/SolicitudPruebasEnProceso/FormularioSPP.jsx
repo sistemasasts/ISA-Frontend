@@ -438,16 +438,16 @@ class FormularioSPP extends Component {
                                 <label htmlFor="cb1" style={{ paddingLeft: '8px' }} className="p-checkbox-label">Desarrollo Proveedores</label>
                             </div>
                             <div className="p-col-12 p-lg-3">
-                                <Checkbox disabled={!this.state.editar} inputId="cb2" value="Desarrollo Materias Primas" onChange={this.onObjectiveChange} checked={this.state.objectivos.indexOf('Desarrollo Materias Primas') !== -1}></Checkbox>
-                                <label htmlFor="cb2" style={{ paddingLeft: '8px' }} className="p-checkbox-label">Desarrollo Materias Primas</label>
+                                <Checkbox disabled={!this.state.editar} inputId="cb2" value="Disponibilidad Materias Primas" onChange={this.onObjectiveChange} checked={this.state.objectivos.indexOf('Disponibilidad Materias Primas') !== -1}></Checkbox>
+                                <label htmlFor="cb2" style={{ paddingLeft: '8px' }} className="p-checkbox-label">Disponibilidad Materias Primas</label>
                             </div>
                             <div className="p-col-12 p-lg-3">
-                                <Checkbox disabled={!this.state.editar} inputId="cb3" value="Desarrollo Productos" onChange={this.onObjectiveChange} checked={this.state.objectivos.indexOf('Desarrollo Productos') !== -1}></Checkbox>
-                                <label htmlFor="cb3" style={{ paddingLeft: '8px' }} className="p-checkbox-label">Desarrollo Productos</label>
+                                <Checkbox disabled={!this.state.editar} inputId="cb3" value="Ampliación Portafolio" onChange={this.onObjectiveChange} checked={this.state.objectivos.indexOf('Ampliación Portafolio') !== -1}></Checkbox>
+                                <label htmlFor="cb3" style={{ paddingLeft: '8px' }} className="p-checkbox-label">Ampliación Portafolio</label>
                             </div>
                             <div className="p-col-12 p-lg-3">
-                                <Checkbox disabled={!this.state.editar} inputId="cb4" value="Reingeniería" onChange={this.onObjectiveChange} checked={this.state.objectivos.indexOf('Reingeniería') !== -1}></Checkbox>
-                                <label htmlFor="cb4" style={{ paddingLeft: '8px' }} className="p-checkbox-label">Reingeniería</label>
+                                <Checkbox disabled={!this.state.editar} inputId="cb4" value="Rotura de Inventario" onChange={this.onObjectiveChange} checked={this.state.objectivos.indexOf('Rotura de Inventario') !== -1}></Checkbox>
+                                <label htmlFor="cb4" style={{ paddingLeft: '8px' }} className="p-checkbox-label">Rotura de Inventario</label>
                             </div>
                             <div className="p-col-12 p-lg-3">
                                 <Checkbox disabled={!this.state.editar} inputId="cb5" value="Reclamos Clientes" onChange={this.onObjectiveChange} checked={this.state.objectivos.indexOf('Reclamos Clientes') !== -1}></Checkbox>
@@ -466,8 +466,16 @@ class FormularioSPP extends Component {
                                 <label htmlFor="cb6" style={{ paddingLeft: '8px' }} className="p-checkbox-label">Mejora del Proceso</label>
                             </div>
                             <div className="p-col-12 p-lg-3">
-                                <Checkbox disabled={!this.state.editar} inputId="cb6" value="Verificación de Equipos" onChange={this.onObjectiveChange} checked={this.state.objectivos.indexOf('Verificación de Equipos') !== -1}></Checkbox>
-                                <label htmlFor="cb6" style={{ paddingLeft: '8px' }} className="p-checkbox-label">Verificación de Equipos</label>
+                                <Checkbox disabled={!this.state.editar} inputId="cb6" value="Nueva Línea de Negocio" onChange={this.onObjectiveChange} checked={this.state.objectivos.indexOf('Nueva Línea de Negocio') !== -1}></Checkbox>
+                                <label htmlFor="cb6" style={{ paddingLeft: '8px' }} className="p-checkbox-label">Nueva Línea de Negocio</label>
+                            </div>
+                            <div className="p-col-12 p-lg-3">
+                                <Checkbox disabled={!this.state.editar} inputId="cb6" value="Puesta a Punto Maquinaria Nueva" onChange={this.onObjectiveChange} checked={this.state.objectivos.indexOf('Puesta a Punto Maquinaria Nueva') !== -1}></Checkbox>
+                                <label htmlFor="cb6" style={{ paddingLeft: '8px' }} className="p-checkbox-label">Puesta a Punto Maquinaria Nueva</label>
+                            </div>
+                            <div className="p-col-12 p-lg-3">
+                                <Checkbox disabled={!this.state.editar} inputId="cb6" value="Puesta a Punto Maquinaria Posterior al Mantenimiento" onChange={this.onObjectiveChange} checked={this.state.objectivos.indexOf('Puesta a Punto Maquinaria Posterior al Mantenimiento') !== -1}></Checkbox>
+                                <label htmlFor="cb6" style={{ paddingLeft: '8px' }} className="p-checkbox-label">Puesta a Punto Maquinaria Posterior al Mantenimiento</label>
                             </div>
                             <div className="p-col-12 p-lg-12">
                                 <label htmlFor="float-input">Otro (Describa)</label>
