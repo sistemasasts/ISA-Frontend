@@ -206,7 +206,7 @@ class FormularioSPP extends Component {
             observacion: this.state.observacion,
             observacionFlujo: this.state.observacionFlujo,
             cantidadRequeridaProducir: this.state.cantidadRequeridaProducir,
-            unidadRequeridaProducir: { id: this.state.unidadRequeridaProducir },
+            unidadRequeridaProducir: this.state.unidadRequeridaProducir ? { id: this.state.unidadRequeridaProducir } : null,
             contieneAdjuntoDescripcionProducto: _.isEqual(this.state.contieneAdjunto, "SI") ? true : false
         }
     }
