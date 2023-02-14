@@ -110,7 +110,7 @@ class UnidadMedida extends Component {
 
     async guardarNuevo() {
         const unidad = await UnidadMedidaService.create({
-            id: this.state.codigoUnidad,
+            abreviatura: this.state.codigoUnidad,
             nombre: this.state.nombreUnidad
         })
         this.growl.show({ severity: 'success', detail: 'Unidad de medida registrada.' });
