@@ -196,9 +196,9 @@ class ConsultaPrincipal extends Component {
                 >
                     <Column body={this.actionTemplate} style={{ textAlign: 'center', width: '4em' }} />
                     <Column field="codigo" header="Código" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
-                    <Column field="fechaCreacion" header="Fecha Solicitud" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
+                    <Column field="fechaCreacion2" header="Fecha Solicitud" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
                     <Column field="proveedorNombre" header="Proveedor" sortable={true} style={{ width: '15em' }} />
-                    <Column field="fechaEntrega" header="Fecha Entrega" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
+                    <Column field="fechaEntrega" header="Fecha Entrega Muestra" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
                     {/* <Column field="tipoSolicitud" header="Tipo" sortable style={{ textAlign: 'center', width: '10em' }} /> */}
                     <Column field="tipoAprobacion" body={this.bodyTemplateTipoAprobacion} header="Aprobación" sortable={true} style={{ textAlign: 'center', width: '12em' }} />
                     <Column field='estado' body={this.bodyTemplateEstado} header="Estado" sortable style={{ textAlign: 'center', width: '12em' }} />

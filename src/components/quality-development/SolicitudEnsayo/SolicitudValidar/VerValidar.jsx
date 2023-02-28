@@ -61,7 +61,7 @@ class VerValidar extends Component {
     }
 
     async validarSolicitud() {
-        if(_.isEmpty(this.state.responsable)){
+        if (_.isEmpty(this.state.responsable)) {
             this.growl.show({ severity: 'error', detail: 'Debe seleccionar el responsable.' });
             return false;
         }
@@ -77,9 +77,9 @@ class VerValidar extends Component {
             this.growl.show({ severity: 'error', detail: 'Favor ingresa una Observación para rechazar la solicitud.' });
             return false;
         }
-        this.props.openModal();
-        await SolicitudEnsayoService.rechazarSolicitud(this.crearObjSolicitud());
-        this.props.closeModal();
+
+        await SolicitudEnsayoService.rechazarSolicitud({ id: this.state.id, observacion: this.state.observacion });
+
         this.growl.show({ severity: 'success', detail: 'Solicitud Rechazada!' });
         setTimeout(function () {
             history.push(`/quality-development_solicitudse_validar`);
