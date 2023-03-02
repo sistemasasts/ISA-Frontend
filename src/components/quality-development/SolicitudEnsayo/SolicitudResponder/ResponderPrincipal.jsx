@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import history from '../../../../history';
 import SolicitudEnsayoService from '../../../../service/SolicitudEnsayo/SolicitudEnsayoService';
 import { closeModal, openModal } from '../../../../store/actions/modalWaitAction';
-import { determinarColor, determinarColorVigencia } from '../ClasesUtilidades';
+import { determinarColor, determinarColorPrioridad, determinarColorVigencia } from '../ClasesUtilidades';
 import * as _ from "lodash";
 
 class ResponderPrincipal extends Component {
@@ -47,6 +47,10 @@ class ResponderPrincipal extends Component {
         return <span className={determinarColorVigencia(rowData.vigencia)}>{rowData.vigencia}Día(s)</span>;
     }
 
+    bodyTemplatePrioridad(rowData) {
+        return <span className={determinarColorPrioridad(rowData.prioridad)}>{rowData.prioridad}</span>;
+    }
+
     render() {
 
         return (
@@ -54,16 +58,17 @@ class ResponderPrincipal extends Component {
                 <Growl ref={(el) => this.growl = el} style={{ marginTop: '75px' }} />
                 <h3><strong>SOLICITUD DE ENSAYOS PROCESAR</strong></h3>
 
-                <DataTable value={this.state.solicitudes} paginator={true} rows={15} responsive={true}
+                <DataTable value={this.state.solicitudes} paginator={true} rows={15} responsive={true} scrollable={true}
                     selectionMode="single" selection={this.state.selectedConfiguracion} onSelectionChange={e => this.setState({ selectedConfiguracion: e.value })}
                     onRowSelect={this.onCarSelect} >
                     <Column body={this.actionTemplate} style={{ textAlign: 'center', width: '4em' }} />
                     <Column field="codigo" header="Código" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
-                    <Column field="fechaSolicitud" header="Fecha Solicitud" sortable={true} />
-                    <Column field="proveedorNombre" header="Proveedor" sortable={true} />
+                    <Column field="fechaSolicitud" header="Fecha Solicitud" sortable={true}  style={{ textAlign: 'center', width: '10em' }}/>
                     <Column field="fechaEntrega" header="Fecha Entrega" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
-                    <Column field="detalleMaterial" header="Material" />
-                    <Column field="nombreSolicitante" header="Solicitante" sortable={true} />
+                    <Column field="prioridad" body={this.bodyTemplatePrioridad} header="Prioridad" sortable={true} style={{ textAlign: 'center', width: '8em' }}/>
+                    <Column field="proveedorNombre" header="Proveedor" sortable={true} style={{ textAlign: 'center', width: '10em' }}/>
+                    <Column field="detalleMaterial" header="Material" style={{ textAlign: 'center', width: '10em' }}/>
+                    <Column field="nombreSolicitante" header="Solicitante" sortable={true} style={{ textAlign: 'center', width: '10em' }}/>
                     <Column field="vigencia" body={this.bodyTemplateVigencia} header="Vigencia" sortable={true} style={{ textAlign: 'center', width: '8em' }} />
                     <Column field="estado" body={this.bodyTemplateEstado} header="Estado" sortable={true} style={{ textAlign: 'center', width: '12em' }} />
                 </DataTable>

@@ -59,6 +59,7 @@ class FormularioSE extends Component {
             adjuntosRequeridos: [],
             archivos: [],
             adjuntoSeleccionado: null,
+            nombreComercial: null,
 
             unidadesMedida: [],
             planesAccion: []
@@ -117,8 +118,9 @@ class FormularioSE extends Component {
                     muestraUbicacion: solicitud.muestraUbicacion,
                     muestraImagenId: solicitud.muestraImagenId,
                     adjuntosRequeridos: solicitud.adjuntosRequeridos,
-                    mostrarControles: solicitud.estado === 'NUEVO',
-                    editar: solicitud.estado === 'NUEVO',
+                    nombreComercial: solicitud.nombreComercial,
+                    mostrarControles: _.includes(['NUEVO', 'REGRESADO_NOVEDAD_FORMA'], solicitud.estado),
+                    editar: _.includes(['NUEVO', 'REGRESADO_NOVEDAD_FORMA'], solicitud.estado),
                     planesAccion: planes
                 });
                 this.listarArchivos(idSolicitud);
@@ -200,7 +202,8 @@ class FormularioSE extends Component {
             lineaAplicacion: this.state.lineaAplicacion,
             observacion: this.state.observacion,
             muestraEntrega: moment(this.state.muestraEntrega).format("YYYY-MM-DD"),
-            muestraUbicacion: this.state.muestraUbicacion
+            muestraUbicacion: this.state.muestraUbicacion,
+            nombreComercial: this.state.nombreComercial
         }
     }
 
@@ -420,6 +423,10 @@ class FormularioSE extends Component {
                         </div>
 
                     </div>
+                    <div className="p-col-12 p-lg-12" >
+                        <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Nombre Comercial</label>
+                        <InputText readOnly={!this.state.editar} value={this.state.nombreComercial} onChange={(e) => this.setState({ nombreComercial: e.target.value })} />
+                    </div>
 
                     <div className='p-col-12 p-lg-6'>
                         <div className="p-grid">
@@ -508,7 +515,7 @@ class FormularioSE extends Component {
                                 </div>
                             }
 
-                            {this.state.estado === 'NUEVO' &&
+                            {_.includes(['NUEVO', 'REGRESADO_NOVEDAD_FORMA'], this.state.estado) &&
                                 <div className='p-col-12 p-lg-12'>
                                     <label htmlFor="float-input">OBSERVACIÓN</label>
                                     <InputTextarea value={this.state.observacion} onChange={(e) => this.setState({ observacion: e.target.value })} rows={3} />
@@ -522,7 +529,7 @@ class FormularioSE extends Component {
                     {this.state.id === 0 &&
                         < Button label="GUARDAR" onClick={this.guardar} />
                     }
-                    {this.state.id > 0 && this.state.estado === 'NUEVO' &&
+                    {this.state.id > 0 && _.includes(['NUEVO', 'REGRESADO_NOVEDAD_FORMA'], this.state.estado) &&
                         < div >
                             <Button className="p-button-danger" label="ENVIAR" onClick={this.enviarSolicitud} />
                             <Button className='p-button-secondary' label="ANULAR" onClick={this.anularSolicitud} />

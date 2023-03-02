@@ -20,6 +20,7 @@ const SolicitudEnsayoService = {
     regresarSolicitud: (solicitud) => http.request.post(`${apiEndpoint}/regresarInformeSolicitud/`, solicitud),
     anularSolicitud: (solicitud) => http.request.post(`${apiEndpoint}/anularSolicitud/`, solicitud),
     rechazarSolicitud: (solicitud) => http.request.post(`${apiEndpoint}/rechazarSolicitud/`, solicitud),
+    regresarNovedadSolicitud: (solicitud) => http.request.post(`${apiEndpoint}/regresarNovedadSolicitud/`, solicitud),
     listarTiposAprobacion: () => http.request.get(`${apiEndpoint}/tiposAprobacion`),
     listarEstados: () => http.request.get(`${apiEndpoint}/estados`),
     consultar: (page, size, consulta) => http.request.post(`${apiEndpoint}/consulta/?page=${page}&size=${size}`, consulta),

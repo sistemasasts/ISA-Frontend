@@ -40,6 +40,8 @@ export function determinarColorTipoAprobacion(tipoAprobacion) {
         case 'AJUSTE MAQUINARIA':
         case 'NO_APROBADO':
             return 'customer-badge-danger';
+        case 'GESTIÓN COMPRA':
+            return 'customer-badge-success';
 
         default: return ''
     }
@@ -49,7 +51,7 @@ export function determinarColorTipoSolicitud(tipo) {
     switch (tipo) {
         case 'SOLICITUD_ENSAYOS':
             return 'customer-badge-success';
-        case 'SOLICITUD_PRUEBAS_EN_PROCESO':        
+        case 'SOLICITUD_PRUEBAS_EN_PROCESO':
             return 'customer-badge-default';
 
         default: return ''
@@ -74,4 +76,17 @@ export function determinarColorActivo(estado) {
     else
         return 'customer-badge-danger';
 
+}
+
+export function determinarColorPrioridad(prioridad) {
+    switch (prioridad) {
+        case 'ALTO':
+            return 'customer-badge-danger';
+        case 'MEDIO':
+            return 'customer-badge-warning';
+        case 'BAJO':
+            return 'customer-badge-default';
+
+        default: return ''
+    }
 }

@@ -83,6 +83,7 @@ class ReasignarResponsableMantenimiento extends Component {
                     <Column field="motivo" header="Motivo" sortable={true} style={{ width: '15em' }} />
                     <Column field="nombreSolicitante" header="Solicitante" sortable={true} style={{ textAlign: 'center', width: '12em' }} />                    
                     <Column field='estado' body={this.bodyTemplateEstado} header="Estado" sortable style={{ textAlign: 'center', width: '12em' }} />
+                    <Column field='observacion' header="Secuencial y Motivo Prueba" sortable style={{ textAlign: 'center', width: '30em' }} />
                 </DataTable>
             </div>
         )
