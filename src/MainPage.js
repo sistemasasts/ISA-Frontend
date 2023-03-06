@@ -87,6 +87,7 @@ import UnidadMedida from './components/quality-development/UnidadesMedida/Unidad
 import RevisarPlanAccionPrincipal from './components/quality-development/RevisionPlanAccion/RevisarPlanAccionPrincipal';
 import SEPlanesAccionVer from './components/quality-development/RevisionPlanAccion/SEPlanesAccionVer';
 import SEPlanesAccionRev from './components/quality-development/SolicitudEnsayo/SolicitudPlanesAccion/SEPlanesAccionRev';
+import Defecto from './components/quality-development/Pnc/Defecto';
 
 
 
@@ -660,6 +661,10 @@ class MainPage extends Component {
                         <Route path="/administracion_usuario" component={Usuario} />
                         <Route path="/administracion_usuario_registro/:idUsuario" component={UsuarioFormulario} />
                         <Route path="/quality-development_unidad_medida" component={UnidadMedida} />
+
+						{/* --------- PNC ------------- */}
+						<Route path="/quality-development_pnc_defecto" component={Defecto} />
+						{/* --------- PNC ------------- */}
 
 						<Route path="/home" component={Home} />
 
