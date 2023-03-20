@@ -13,6 +13,7 @@ const ProductoService = {
     registrarApprobationCriteria: (id, criteria) => http.request.post(`${apiEndPoint}/approbationCriteria/${id}`, criteria),
     generarReporte: (id) => httpFiles.request.get(`${apiEndPoint}/report/${id}`),
     generarRevision: (id) => http.request.get(`${apiEndPoint}/generateNextReview/${id}`),
+    listarPorNombreCriterio: (criterio) => http.request.get(`${apiEndPoint}/porNombre/${criterio}`),
 };
 
 export default ProductoService;

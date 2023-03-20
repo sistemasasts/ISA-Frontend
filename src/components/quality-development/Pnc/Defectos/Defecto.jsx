@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { DataTable } from 'primereact/datatable'
 import { Column } from 'primereact/column'
-import DefectoService from '../../../service/Pnc/DefectoService'
+import DefectoService from '../../../../service/Pnc/DefectoService'
 import { Button } from 'primereact/button'
 import { Toolbar } from 'primereact/toolbar'
 import { Growl } from 'primereact/growl'
@@ -9,7 +9,7 @@ import { Dialog } from 'primereact/dialog'
 import { InputText } from 'primereact/inputtext';
 import { Checkbox } from 'primereact/checkbox';
 import * as _ from "lodash";
-import { determinarColorActivo } from '../SolicitudEnsayo/ClasesUtilidades'
+import { determinarColorActivo } from '../../SolicitudEnsayo/ClasesUtilidades'
 
 class Defecto extends Component {
 

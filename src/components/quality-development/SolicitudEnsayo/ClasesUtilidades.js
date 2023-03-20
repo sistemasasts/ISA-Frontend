@@ -49,7 +49,7 @@ export function determinarColorTipoSolicitud(tipo) {
     switch (tipo) {
         case 'SOLICITUD_ENSAYOS':
             return 'customer-badge-success';
-        case 'SOLICITUD_PRUEBAS_EN_PROCESO':        
+        case 'SOLICITUD_PRUEBAS_EN_PROCESO':
             return 'customer-badge-default';
 
         default: return ''
@@ -74,4 +74,19 @@ export function determinarColorActivo(estado) {
     else
         return 'customer-badge-danger';
 
+}
+
+export function determinarColorPNC(estado) {
+    switch (estado) {
+        case 'CREADO': return 'customer-badge-default';
+        case 'EN_PROCESO':
+            case 'PENDIENTE_APROBACION':
+            return 'customer-badge-warning';
+        case 'ANULADO':
+        case 'RECHAZADO':
+            return 'customer-badge-danger';
+        case 'CERRADO':
+            return 'customer-badge-success';
+        default: return 'customer-badge-default'
+    }
 }
