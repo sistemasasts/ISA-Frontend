@@ -93,6 +93,10 @@ import Form from './components/quality-development/Pnc/Form';
 import PncAprobacionPrincipal from './components/quality-development/Pnc/Aprobacion/PncAprobacionPrincipal';
 import PncVerAprobacion from './components/quality-development/Pnc/Aprobacion/PncVerAprobacion';
 import PncSalidaMaterialForm from './components/quality-development/Pnc/SalidaMaterial/PncSalidaMaterialForm';
+import PncPAProcesarPrincipal from './components/quality-development/Pnc/PlanAccion/Procesar/PncPAProcesarPrincipal';
+import PncVerPAProcesar from './components/quality-development/Pnc/PlanAccion/Procesar/PncVerPAProcesar';
+import PncPAValidarPrincipal from './components/quality-development/Pnc/PlanAccion/Validar/PncPAValidarPrincipal';
+import PncVerPAValidar from './components/quality-development/Pnc/PlanAccion/Validar/PncVerPAValidar';
 
 
 
@@ -676,6 +680,10 @@ class MainPage extends Component {
 						<Route path="/quality-development_pnc_salida_material_edit/:idPnc/:idPncSalida" component={PncSalidaMaterialForm} />
 						<Route path="/quality-development_pnc_salida_material_aprobacion" component={PncAprobacionPrincipal} />
 						<Route path="/quality-development_pnc_salida_material_aprobacion_ver/:idPncSalida" component={PncVerAprobacion} />
+						<Route path="/quality-development_pnc_procesarTarea" component={PncPAProcesarPrincipal} />
+						<Route path="/quality-development_pnc_procesarTarea_ver/:idPncSalida/:idPlan" component={PncVerPAProcesar} />
+						<Route path="/quality-development_pnc_validarTarea" component={PncPAValidarPrincipal} />
+						<Route path="/quality-development_pnc_validarTarea_ver/:idPncSalida/:idPlan" component={PncVerPAValidar} />
 						{/* --------- PNC ------------- */}
 
 						<Route path="/home" component={Home} />

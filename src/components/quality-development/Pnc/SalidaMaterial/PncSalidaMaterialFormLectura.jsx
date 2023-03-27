@@ -8,6 +8,7 @@ import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
 import PncSalidaMaterialService from '../../../../service/Pnc/PncSalidaMaterialService';
 import { InputTextarea } from 'primereact/inputtextarea';
+import PncPlanAccion from '../PlanAccion/PncPlanAccion';
 
 
 class PncSalidaMaterialFormLectura extends Component {
@@ -94,6 +95,11 @@ class PncSalidaMaterialFormLectura extends Component {
                         <InputTextarea readOnly value={this.state.observacion} onChange={(e) => this.setState({ observacion: e.target.value })} rows={3} />
                     </div>
                 </div>
+                {((this.state.destinoFinal === 'RETRABAJO') || (this.state.destinoFinal === 'REPROCESO')) && this.state.id > 0 &&
+                    <div className='p-col-12 p-lg-12'>
+                        <PncPlanAccion idSalidaMaterial={this.state.id} mostrarControles={false} />
+                    </div>
+                }
             </div>
         )
     }

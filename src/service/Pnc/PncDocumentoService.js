@@ -5,6 +5,7 @@ const apiEndPoint = '/pncDocumentos';
 
 const PncDocumentoService = {
     listarArchivos: (estado, orden, idSalida) => http.request.get(`${apiEndPoint}/${estado}/${orden}/${idSalida}`),
+    listarArchivosPlanesAccion: (orden, idSalida, idPlanAccion) => http.request.get(`${apiEndPoint}/planAccion/${orden}/${idSalida}/${idPlanAccion}`),
     subirArchivo: (criterio) => http.request.post(`${apiEndPoint}/subir`, criterio),    
     ver: (id) => httpFiles.request.get(`${apiEndPoint}/ver/${id}`),
     /* verImagen: (id) => http.request.get(`${apiEndPoint}/solicitudPruebasProceso/ver/imagen/${id}`), */

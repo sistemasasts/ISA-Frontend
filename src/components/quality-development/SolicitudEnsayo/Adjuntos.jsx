@@ -43,14 +43,20 @@ class Adjuntos extends Component {
 
     async refrescar() {
         if (this.props.solicitud && this.props.estado) {
-
+            console.log(this.props)
             let archivosData;
             if (this.props.tipo === 'SOLICITUD_ENSAYO')
                 archivosData = await SolicitudDocumentoService.listarArchivos(this.props.estado, this.props.orden, this.props.solicitud);
             if (this.props.tipo === 'SOLICITUD_PRUEBAS_PROCESO')
                 archivosData = await SolicitudPruebaProcesoDocumentoService.listarArchivos(this.props.estado, this.props.orden, this.props.solicitud);
-            if (this.props.tipo === 'SALIDA_MATERIAL')
-                archivosData = await PncDocumentoService.listarArchivos(this.props.estado, this.props.orden, this.props.solicitud);
+            if (this.props.tipo === 'SALIDA_MATERIAL') {
+                if (this.props.planAccionId && this.props.planAccionId > 0) {
+                    archivosData = await PncDocumentoService.listarArchivosPlanesAccion(this.props.orden, this.props.solicitud, this.props.planAccionId);
+                } else {
+                    archivosData = await PncDocumentoService.listarArchivos(this.props.estado, this.props.orden, this.props.solicitud);
+                }
+
+            }
             this.setState({ archivos: archivosData });
         }
     }
@@ -73,6 +79,7 @@ class Adjuntos extends Component {
         let formadata = new FormData();
         infoAdicional.salidaMaterialId = this.props.solicitud;
         infoAdicional.orden = this.props.orden;
+        infoAdicional.planAccionId = this.props.planAccionId;
 
         formadata.append('file', archivo);
         formadata.append('info', JSON.stringify(infoAdicional));
@@ -120,12 +127,24 @@ class Adjuntos extends Component {
                 {archivo.nombreArchivo}
                 <div style={{ float: 'right' }}>
                     <span className='boton-archivo pi pi-download' onClick={() => this.descargar(archivo.id, archivo.nombreArchivo)} ></span>
-                    {this.props.controles && archivo.estado === this.props.estado &&
+                    {this.puedeDescargar(archivo) &&
                         < span className='boton-archivo pi pi-times' onClick={() => this.eliminar(archivo.id)} ></span>
                     }
                 </div>
             </div >
         );
+    }
+
+    puedeDescargar(archivo) {
+        switch (this.props.tipo) {
+            case 'SALIDA_MATERIAL':
+                if (this.props.planAccionId && this.props.planAccionId > 0)
+                    return this.props.controles && archivo.estadoPlanAccion === this.props.estado
+                else
+                    return this.props.controles && archivo.estado === this.props.estado;
+            default:
+                return this.props.controles && archivo.estado === this.props.estado;
+        }
     }
 
     render() {

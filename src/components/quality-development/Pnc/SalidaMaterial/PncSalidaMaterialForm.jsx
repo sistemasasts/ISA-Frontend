@@ -15,6 +15,7 @@ import { Button } from 'primereact/button';
 import history from '../../../../history';
 import Adjuntos from '../../SolicitudEnsayo/Adjuntos';
 import PncHistorial from '../PncHistorial';
+import PncPlanAccion from '../PlanAccion/PncPlanAccion';
 
 const ESTADO = 'CREADO';
 const TIPO_SOLICITUD = 'SALIDA_MATERIAL';
@@ -106,11 +107,16 @@ class PncSalidaMaterialForm extends Component {
 
     async guardar() {
         if (this.validarCamposRequeridos()) {
-            const salida = await PncSalidaMaterialService.crear(this.crearObj());
-            this.growl.show({ severity: 'success', detail: 'Salida de materia registrado!' });
-            setTimeout(function () {
-                history.push(`/quality-development_pnc_salida_material_edit/${salida.idPnc}/${salida.id}`);
-            }, 1000);
+            if (this.validarStock()) {
+                const salida = await PncSalidaMaterialService.crear(this.crearObj());
+                this.growl.show({ severity: 'success', detail: 'Salida de materia registrado!' });
+                setTimeout(function () {
+                    history.push(`/quality-development_pnc_salida_material_edit/${salida.idPnc}/${salida.id}`);
+                }, 1000);
+            } else {
+                this.growl.show({ severity: 'error', detail: 'Cantidad excede al stock disponible!' });
+            }
+
         } else {
             this.growl.show({ severity: 'error', detail: 'Ingrese todos los campos obligatorios!' });
         }
@@ -125,6 +131,10 @@ class PncSalidaMaterialForm extends Component {
             history.push(`/quality-development_pnc_edit/${pncId}`);
         }, 1000);
 
+    }
+
+    validarStock() {
+        return this.state.saldo >= this.state.cantidad;
     }
 
     regresar() {
@@ -252,7 +262,7 @@ class PncSalidaMaterialForm extends Component {
                         }
                     </div>
                     <div className='p-col-12 p-lg-12'>
-                        <label htmlFor="float-input">Observación</label>
+                        <label htmlFor="float-input">Observación Adicional</label>
                         <InputTextarea readOnly={!this.state.editar} value={this.state.observacion} onChange={(e) => this.setState({ observacion: e.target.value })} rows={3} />
                         {this.determinarEsCampoRequerido('observacion') &&
                             <div style={{ marginTop: '8px' }}>
@@ -260,8 +270,12 @@ class PncSalidaMaterialForm extends Component {
                             </div>
                         }
                     </div>
-
                 </div>
+                {((this.state.destinoFinal === 'RETRABAJO') || (this.state.destinoFinal === 'REPROCESO')) && this.state.id > 0 &&
+                    <div className='p-col-12 p-lg-12'>
+                        <PncPlanAccion idSalidaMaterial={this.state.id} mostrarControles={this.state.editar} />
+                    </div>
+                }
                 <div className='p-col-12 p-lg-12 boton-opcion' >
                     {this.state.id === 0 &&
                         < div >

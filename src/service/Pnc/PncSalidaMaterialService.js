@@ -11,6 +11,8 @@ const PncSalidaMaterialService = {
     crear: (norma) => http.request.post(apiEndpoint, norma),
     actualizar: (norma) => http.request.put(apiEndpoint, norma),
     listarHistorial: (id) => http.request.get(`${apiEndpoint}/historial/${id}`),
+    listarEstados: () => http.request.get(`${apiEndpoint}/catalogoEstados`),
+    eliminar: (pncId, id) => http.request.delete(`${apiEndpoint}/${pncId}/${id}`),
 
     enviar: (salida) => http.request.post(`${apiEndpoint}/enviarAprobar`, salida),
     aprobar: (norma) => http.request.post(`${apiEndpoint}/aprobar`, norma),

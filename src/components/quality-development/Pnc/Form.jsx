@@ -41,6 +41,7 @@ class Form extends Component {
             defectos: null,
             producto: null,
             fivems: [],
+            nombreCliente: null,
 
             catalogoArea: null,
             unidadesCatalogo: null,
@@ -92,7 +93,8 @@ class Form extends Component {
                     observacionCincoMs: pnc.observacionCincoMs,
                     fivems: cincoMsValor,
                     producto: pnc.producto,
-                    defectos: pnc.defectos
+                    defectos: pnc.defectos,
+                    nombreCliente: pnc.nombreCliente
                 });
             }
         }
@@ -157,6 +159,7 @@ class Form extends Component {
             procedenciaLinea: this.state.procedencia,
             lineaAfecta: this.state.lineaAfectada,
             observacionCincoMs: _.join(this.state.fivems, ','),
+            nombreCliente: this.state.nombreCliente
         }
     }
 
@@ -221,10 +224,10 @@ class Form extends Component {
                         <label htmlFor="float-input">Unidad</label>
                         <Dropdown options={this.state.unidadesCatalogo} value={this.state.unidad} autoWidth={false} onChange={(e) => this.setState({ unidad: e.value })} placeholder="Selecione" />
                     </div>
-                    <div className='p-col-12 p-lg-4'>
+                    {/* <div className='p-col-12 p-lg-4'>
                         <label htmlFor="float-input">Validez Producto(%)</label>
                         <InputText keyfilter="num" value={this.state.validez} onChange={(e) => this.setState({ validez: e.target.value })} />
-                    </div>
+                    </div> */}
                     <div className='p-col-12 p-lg-4'>
                         <label htmlFor="float-input">Peso No Conforme KG</label>
                         <InputText keyfilter="num" value={this.state.pesoNoConforme} onChange={(e) => this.setState({ pesoNoConforme: e.target.value })} />
@@ -244,6 +247,10 @@ class Form extends Component {
                     <div className='p-col-12 p-lg-4'>
                         <label htmlFor="float-input">Procedencia Línea/Cliente</label>
                         <Dropdown options={this.state.catalogoProcedenciaLinea} value={this.state.procedencia} autoWidth={false} onChange={(e) => this.setState({ procedencia: e.value })} placeholder="Selecione" />
+                    </div>
+                    <div className='p-col-12 p-lg-4'>
+                        <label htmlFor="float-input">Nombre Cliente</label>
+                        <InputText value={this.state.nombreCliente} onChange={(e) => this.setState({ nombreCliente: e.target.value })} />
                     </div>
                     <div className='p-col-12 p-lg-4'>
                         <label htmlFor="float-input">Línea Afectada</label>
@@ -299,6 +306,10 @@ class Form extends Component {
                         <PncDefecto idPnc={this.state.id} defectos={this.state.defectos} />
                         <br />
                         <PncSalidaMaterial idPnc={this.state.id} />
+                        <br />
+                        <div className='p-col-12 p-lg-12 boton-opcion' >
+                            <Button className="p-button-secondary" label="ATRÁS" onClick={this.cancelar} />
+                        </div>
                     </div>
                 }
 
