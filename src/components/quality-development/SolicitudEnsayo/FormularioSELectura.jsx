@@ -40,6 +40,7 @@ class FormularioSELectura extends Component {
             muestraEntrega: null,
             muestraUbicacion: null,
             muestraImagenId: null,
+            nombreComercial: null,
         };
 
         this.leerImagenMuestra = this.leerImagenMuestra.bind(this);
@@ -75,7 +76,8 @@ class FormularioSELectura extends Component {
                     muestraEntrega: moment(solicitud.muestraEntrega, 'YYYY-MM-DD').toDate(),
                     muestraUbicacion: solicitud.muestraUbicacion,
                     muestraImagenId: solicitud.muestraImagenId,
-                    estado: solicitud.estado
+                    estado: solicitud.estado,
+                    nombreComercial: solicitud.nombreComercial,
                 });
             }
         }
@@ -170,6 +172,10 @@ class FormularioSELectura extends Component {
                             </div>
                         </div>
 
+                    </div>
+                    <div className="p-col-12 p-lg-12" >
+                        <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Nombre Comercial</label>
+                        <InputText readOnly value={this.state.nombreComercial} onChange={(e) => this.setState({ nombreComercial: e.target.value })} />
                     </div>
                     {/* <div className='p-col-12 p-lg-12'>
                         <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Material Entregado (Descripción)</label>

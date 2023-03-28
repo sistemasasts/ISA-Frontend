@@ -13,7 +13,7 @@ import SolicitudEnsayoService from '../../../service/SolicitudEnsayo/SolicitudEn
 import UsuarioService from '../../../service/UsuarioService';
 import { closeModal, openModal } from '../../../store/actions/modalWaitAction';
 import "../../site.css";
-import { determinarColor, determinarColorTipoAprobacion } from '../SolicitudEnsayo/ClasesUtilidades';
+import { determinarColor, determinarColorPrioridad, determinarColorTipoAprobacion } from '../SolicitudEnsayo/ClasesUtilidades';
 import * as moment from 'moment';
 import { Paginator } from 'primereact/paginator';
 import * as _ from "lodash";
@@ -136,6 +136,10 @@ class ConsultaPrincipal extends Component {
         });
     }
 
+    bodyTemplatePrioridad(rowData) {
+        return <span className={determinarColorPrioridad(rowData.prioridad)}>{rowData.prioridad}</span>;
+    }
+
     render() {
         let es = {
             firstDayOfWeek: 1,
@@ -197,8 +201,9 @@ class ConsultaPrincipal extends Component {
                     <Column body={this.actionTemplate} style={{ textAlign: 'center', width: '4em' }} />
                     <Column field="codigo" header="Código" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
                     <Column field="fechaCreacion2" header="Fecha Solicitud" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
-                    <Column field="proveedorNombre" header="Proveedor" sortable={true} style={{ width: '15em' }} />
                     <Column field="fechaEntrega" header="Fecha Entrega Muestra" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
+                    <Column field="prioridad" body={this.bodyTemplatePrioridad} header="Prioridad" sortable={true} style={{ textAlign: 'center', width: '8em' }}/>
+                    <Column field="proveedorNombre" header="Proveedor" sortable={true} style={{ width: '15em' }} />
                     {/* <Column field="tipoSolicitud" header="Tipo" sortable style={{ textAlign: 'center', width: '10em' }} /> */}
                     <Column field="tipoAprobacion" body={this.bodyTemplateTipoAprobacion} header="Aprobación" sortable={true} style={{ textAlign: 'center', width: '12em' }} />
                     <Column field='estado' body={this.bodyTemplateEstado} header="Estado" sortable style={{ textAlign: 'center', width: '12em' }} />

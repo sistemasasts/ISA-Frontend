@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import history from '../../../../history';
 import SolicitudEnsayoService from '../../../../service/SolicitudEnsayo/SolicitudEnsayoService';
 import { closeModal, openModal } from '../../../../store/actions/modalWaitAction';
-import { determinarColor } from '../ClasesUtilidades';
+import { determinarColor, determinarColorPrioridad } from '../ClasesUtilidades';
 import * as _ from "lodash";
 
 class ValidarPrincipal extends Component {
@@ -42,6 +42,10 @@ class ValidarPrincipal extends Component {
         return <span className={determinarColor(rowData.estado)}>{estado}</span>;
     }
 
+    bodyTemplatePrioridad(rowData) {
+        return <span className={determinarColorPrioridad(rowData.prioridad)}>{rowData.prioridad}</span>;
+    }
+
     render() {
 
         return (
@@ -54,11 +58,12 @@ class ValidarPrincipal extends Component {
                     onRowSelect={this.onCarSelect}>
                     <Column body={this.actionTemplate} style={{ textAlign: 'center', width: '5em' }} />
                     <Column field="codigo" header="Código" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
-                    <Column field="fechaSolicitud" header="Fecha Solicitud" sortable={true} />
-                    <Column field="proveedorNombre" header="Proveedor" sortable={true} />
+                    <Column field="fechaSolicitud" header="Fecha Solicitud" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
                     <Column field="fechaEntrega" header="Fecha Entrega" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
-                    <Column field="detalleMaterial" header="Material" />
-                    <Column field="nombreSolicitante" header="Solicitante" sortable={true} />
+                    <Column field="prioridad" body={this.bodyTemplatePrioridad} header="Prioridad" sortable={true} style={{ textAlign: 'center', width: '8em' }}/>
+                    <Column field="proveedorNombre" header="Proveedor" sortable={true} style={{ textAlign: 'center', width: '10em' }}/>
+                    <Column field="detalleMaterial" header="Material" style={{ textAlign: 'center', width: '10em' }}/>
+                    <Column field="nombreSolicitante" header="Solicitante" sortable={true} style={{ textAlign: 'center', width: '10em' }}/>
                     <Column field="estado" body={this.bodyTemplateEstado} header="Estado" sortable={true} style={{ textAlign: 'center', width: '12em' }} />
                 </DataTable>
             </div>

@@ -29,7 +29,7 @@ class AsignarResponsableCalidad extends Component {
 
     async refrescar() {
         const solicitudes_data = await SolicitudPruebasProcesoService.listarPorAsignarResponsableCM('CALIDAD');
-        this.setState({ solicitudes: solicitudes_data });
+        this.setState({ solicitudes: solicitudes_data, seleccionSolicitud: [] });
     }
 
     asignarResponsable(idUser) {
@@ -80,7 +80,7 @@ class AsignarResponsableCalidad extends Component {
                     <Column field="lineaAplicacion" header="Aplicación" sortable={true} style={{ textAlign: 'center', width: '12em' }} />
                     <Column field="fechaEntrega" header="Fecha Entrega" sortable={true} style={{ textAlign: 'center', width: '11em' }} />
                     <Column field="motivo" header="Motivo" sortable={true} style={{ width: '15em' }} />
-                    <Column field="nombreSolicitante" header="Solicitante" sortable={true} style={{ textAlign: 'center', width: '12em' }} />                    
+                    <Column field="nombreSolicitante" header="Solicitante" sortable={true} style={{ textAlign: 'center', width: '12em' }} />
                     <Column field='estado' body={this.bodyTemplateEstado} header="Estado" sortable style={{ textAlign: 'center', width: '12em' }} />
                 </DataTable>
             </div>
