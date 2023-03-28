@@ -29,7 +29,7 @@ class AsignarResponsableMantenimiento extends Component {
 
     async refrescar() {
         const solicitudes_data = await SolicitudPruebasProcesoService.listarPorAsignarResponsableCM('MANTENIMIENTO');
-        this.setState({ solicitudes: solicitudes_data });
+        this.setState({ solicitudes: solicitudes_data, seleccionSolicitud: [] });
     }
 
     asignarResponsable(idUser) {

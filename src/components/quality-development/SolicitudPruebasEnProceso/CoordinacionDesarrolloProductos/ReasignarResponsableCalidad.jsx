@@ -29,7 +29,7 @@ class ReasignarResponsableCalidad extends Component {
 
     async refrescar() {
         const solicitudes_data = await SolicitudPruebasProcesoService.listarPorReasignarResponsable('CALIDAD');
-        this.setState({ solicitudes: solicitudes_data });
+        this.setState({ solicitudes: solicitudes_data, seleccionSolicitud: [] });
     }
 
     asignarResponsable(idUser) {
