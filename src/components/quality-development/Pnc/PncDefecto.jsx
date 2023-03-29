@@ -20,6 +20,7 @@ class PncDefecto extends Component {
             defectoSeleccionado: null,
             unidadesCatalogo: [],
             imagen: null,
+            mostrarControles: true,
         }
         this.actionTemplate = this.actionTemplate.bind(this);
         this.itemTemplate = this.itemTemplate.bind(this);
@@ -48,7 +49,7 @@ class PncDefecto extends Component {
         const defectos = this.props.defectos;
         console.log(this.props);
         this.setState({
-            unidadesCatalogo: unidades, idPnc: pnc, defectos: defectos
+            unidadesCatalogo: unidades, idPnc: pnc, defectos: defectos, mostrarControles: this.props.mostrarControles
         });
     }
 
@@ -77,17 +78,21 @@ class PncDefecto extends Component {
 
     actionTemplate(rowData, column) {
         return <div>
-            <Button type="button" icon="pi pi-pencil" className="p-button-warning" onClick={() => this.setState({ defectoSeleccionado: rowData, mostrarForm: true })}></Button>
+            {this.state.mostrarControles &&
+                <Button type="button" icon="pi pi-pencil" className="p-button-warning" onClick={() => this.setState({ defectoSeleccionado: rowData, mostrarForm: true })}></Button>}
             {rowData.idImagen > 0 &&
                 <Button type="button" icon="pi pi-image" onClick={() => this.mostrarImagen(rowData)}></Button>
             }
-            <Button type="button" icon="pi pi-trash" className="p-button-danger" onClick={() => this.eliminarDefecto(rowData)}></Button>
+            {this.state.mostrarControles &&
+                <Button type="button" icon="pi pi-trash" className="p-button-danger" onClick={() => this.eliminarDefecto(rowData)}></Button>}
         </div>
     }
 
     render() {
         let header = <div className="p-clearfix" style={{ width: '100%' }}>
-            <Button style={{ float: 'left' }} label="Nuevo" icon="pi pi-plus" onClick={() => this.setState({ mostrarForm: true })} />
+            {this.state.mostrarControles &&
+                <Button style={{ float: 'left' }} label="Nuevo" icon="pi pi-plus" onClick={() => this.setState({ mostrarForm: true })} />
+            }
         </div>;
         return (
             <div>

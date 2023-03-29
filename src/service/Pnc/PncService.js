@@ -8,6 +8,7 @@ const PncService = {
     listarPorId: (id) => http.request.get(`${apiEndpoint}/${id}`),
     crear: (norma) => http.request.post(apiEndpoint, norma),
     actualizar: (norma) => http.request.put(apiEndpoint, norma),
+    anular: (norma) => http.request.post(`${apiEndpoint}/anular`, norma),
     consultarSaldo: (id) => http.request.get(`${apiEndpoint}/consultarSaldo/${id}`),
 
     obtenerProcedenciaLinea: () => http.request.get(`${apiEndpoint}/catalogoProcedencia`),

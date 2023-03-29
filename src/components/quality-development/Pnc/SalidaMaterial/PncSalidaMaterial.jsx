@@ -22,6 +22,7 @@ class PncSalidaMaterial extends Component {
             unidadesCatalogo: [],
             saldo: null,
             estadoSeleccionado: null,
+            mostrarControles: true,
 
             estadosCatalodo: []
         }
@@ -37,7 +38,7 @@ class PncSalidaMaterial extends Component {
         const estados = await PncSalidaMaterialService.listarEstados();
         console.log(salidasMaterial);
         this.setState({
-            idPnc: pnc, salidas: salidasMaterial, saldo: saldo, estadosCatalodo: estados
+            idPnc: pnc, salidas: salidasMaterial, saldo: saldo, estadosCatalodo: estados, mostrarControles: this.props.mostrarControles
         });
     }
 
@@ -54,7 +55,8 @@ class PncSalidaMaterial extends Component {
 
     actionTemplate(rowData, column) {
         return <div>
-            <Button type="button" icon="pi pi-pencil" className="p-button-warning" onClick={() => history.push(`/quality-development_pnc_salida_material_edit/${rowData.idPnc}/${rowData.id}`)}></Button>
+            {this.state.mostrarControles &&
+                <Button type="button" icon="pi pi-pencil" className="p-button-warning" onClick={() => history.push(`/quality-development_pnc_salida_material_edit/${rowData.idPnc}/${rowData.id}`)}></Button>}
             {rowData.estado === 'CREADO' &&
                 <Button type="button" icon="pi pi-trash" className="p-button-danger" onClick={() => this.eliminar(rowData.id)}></Button>
             }
@@ -67,7 +69,8 @@ class PncSalidaMaterial extends Component {
 
     render() {
         let header = <div className="p-clearfix" style={{ width: '100%' }}>
-            <Button style={{ float: 'left' }} label="Nuevo" icon="pi pi-plus" onClick={() => history.push(`/quality-development_pnc_salida_material_nuevo/${this.state.idPnc}`)} />
+            {this.state.mostrarControles &&
+                <Button style={{ float: 'left' }} label="Nuevo" icon="pi pi-plus" onClick={() => history.push(`/quality-development_pnc_salida_material_nuevo/${this.state.idPnc}`)} />}
         </div>;
         const brandFilter = <Dropdown appendTo={document.body} style={{ width: '100%' }} placeholder="Selecione..." value={this.state.estadoSeleccionado} options={this.state.estadosCatalodo} onChange={this.onEstadoChange} showClear />;
         return (
