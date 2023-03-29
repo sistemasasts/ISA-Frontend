@@ -188,6 +188,7 @@ class ConsultaPrincipalPP extends Component {
                     <Column field="codigo" header="Código" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
                     <Column field="fechaCreacion2" header="Fecha Solicitud" sortable={true} style={{ textAlign: 'center', width: '10em'}} />
                     <Column field='estado' body={this.bodyTemplateEstado} header="Estado" sortable style={{ textAlign: 'center', width: '12em' }} />
+                    <Column field='observacion' header="Secuencial y Motivo Prueba" sortable style={{ textAlign: 'center', width: '30em' }} />
                     <Column field="aprobadoTexto" header="Aprobado" sortable={true} style={{ textAlign: 'center', width: '10em'}}/>
                     <Column field="tipoAprobacionTexto" body={this.bodyTemplateTipoAprobacion} header="Aprobación" sortable={true} style={{ textAlign: 'center', width: '12em' }} />
                     <Column field="nombreArea" header="Área" sortable={true} style={{ textAlign: 'center', width: '15em'}}  />
