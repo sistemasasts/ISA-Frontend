@@ -17,7 +17,11 @@ import * as moment from 'moment';
 import PncDefecto from './PncDefecto';
 import PncSalidaMaterial from './SalidaMaterial/PncSalidaMaterial';
 import { determinarColorPNC } from '../SolicitudEnsayo/ClasesUtilidades';
+import Adjuntos from '../SolicitudEnsayo/Adjuntos';
 
+const ESTADO = 'CREADO';
+const TIPO_SOLICITUD = 'PNC';
+const ORDEN = undefined;
 class Form extends Component {
 
     constructor() {
@@ -45,6 +49,8 @@ class Form extends Component {
             nombreCliente: null,
             editar: true,
             estado: null,
+            produccionTotalMes: null,
+            ventaTotalMes: null,
 
 
             catalogoArea: null,
@@ -101,6 +107,8 @@ class Form extends Component {
                     defectos: pnc.defectos,
                     nombreCliente: pnc.nombreCliente,
                     estado: pnc.estado,
+                    produccionTotalMes: pnc.produccionTotalMes,
+                    ventaTotalMes: pnc.ventaTotalMes,
                     editar: _.includes(['CREADO', 'EN_PROCESO', 'FINALIZADO'], pnc.estado),
                 });
             }
@@ -174,7 +182,9 @@ class Form extends Component {
             procedenciaLinea: this.state.procedencia,
             lineaAfecta: this.state.lineaAfectada,
             observacionCincoMs: _.join(this.state.fivems, ','),
-            nombreCliente: this.state.nombreCliente
+            nombreCliente: this.state.nombreCliente,
+            produccionTotalMes: this.state.produccionTotalMes,
+            ventaTotalMes: this.state.ventaTotalMes
         }
     }
 
@@ -311,6 +321,25 @@ class Form extends Component {
                             </div> */}
                         </div>
                     </div>
+                    <div className='p-col-12 p-lg-12' /* style={{ background: '#ffcdd2' }} */>
+                        <div className='p-grid'>
+                            <label className="p-col-12 p-lg-12" htmlFor="float-input"><span style={{ color: '#CB3234' }}>*</span><strong>Datos Generales</strong></label>
+                            <div className='p-col-12 p-lg-4'>
+                                <label htmlFor="float-input">Producción Total en KG/MES</label>
+                                <div className="p-inputgroup">
+                                    <span className="p-inputgroup-addon"><i className="pi pi-sort" /></span>
+                                    <InputText keyfilter="num" readOnly={!this.state.editar} placeholder='cantidad' onChange={(e) => this.setState({ produccionTotalMes: e.target.value })} value={this.state.produccionTotalMes} />
+                                </div>
+                            </div>
+                            <div className='p-col-12 p-lg-4'>
+                                <label htmlFor="float-input">Ventas Totales</label>
+                                <div className="p-inputgroup">
+                                    <span className="p-inputgroup-addon"><i className="pi pi-dollar" /></span>
+                                    <InputText keyfilter="money" readOnly={!this.state.editar} placeholder='monto dólares' onChange={(e) => this.setState({ ventaTotalMes: e.target.value })} value={this.state.ventaTotalMes} />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div className='p-col-12 p-lg-12 boton-opcion' >
                     {this.state.id === 0 &&
@@ -326,6 +355,8 @@ class Form extends Component {
                         <PncDefecto idPnc={this.state.id} defectos={this.state.defectos} mostrarControles={this.state.editar} />
                         <br />
                         <PncSalidaMaterial idPnc={this.state.id} mostrarControles={this.state.editar} />
+                        <br />
+                        <Adjuntos solicitud={this.state.id} orden={ORDEN} controles={this.state.editar} tipo={TIPO_SOLICITUD} estado={ESTADO} />
                         <br />
                         <div className='p-col-12 p-lg-12 boton-opcion' >
                             {this.state.estado !== 'ANULADO' &&

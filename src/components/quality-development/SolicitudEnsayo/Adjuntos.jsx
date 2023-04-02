@@ -35,7 +35,8 @@ class Adjuntos extends Component {
             await SolicitudPruebaProcesoDocumentoService.subirArchivo(this.crearSolicitudDocumento(event.files[0]));
         if (this.props.tipo === 'SALIDA_MATERIAL')
             await PncDocumentoService.subirArchivo(this.crearSolicitudDocumentoPnc(event.files[0]));
-
+        if (this.props.tipo === 'PNC')
+            await PncDocumentoService.subirArchivoPnc(this.crearSolicitudDocumentoPnc(event.files[0]));
         this.refrescar();
         this.fileUploadRef.clear();
         this.props.closeModal();
@@ -55,7 +56,9 @@ class Adjuntos extends Component {
                 } else {
                     archivosData = await PncDocumentoService.listarArchivos(this.props.estado, this.props.orden, this.props.solicitud);
                 }
-
+            }
+            if (this.props.tipo === 'PNC') {
+                archivosData = await PncDocumentoService.listarArchivosPnc(this.props.solicitud);
             }
             this.setState({ archivos: archivosData });
         }
@@ -78,6 +81,7 @@ class Adjuntos extends Component {
         let infoAdicional = {};
         let formadata = new FormData();
         infoAdicional.salidaMaterialId = this.props.solicitud;
+        infoAdicional.productoNoConformeId = this.props.solicitud;
         infoAdicional.orden = this.props.orden;
         infoAdicional.planAccionId = this.props.planAccionId;
 
@@ -93,7 +97,7 @@ class Adjuntos extends Component {
             a = await SolicitudDocumentoService.eliminar(id);
         if (this.props.tipo === 'SOLICITUD_PRUEBAS_PROCESO')
             a = await SolicitudPruebaProcesoDocumentoService.eliminar(id);
-        if (this.props.tipo === 'SALIDA_MATERIAL')
+        if (this.props.tipo === 'SALIDA_MATERIAL' || this.props.tipo === 'PNC')
             a = await PncDocumentoService.eliminar(id);
         this.props.closeModal();
         if (a) {
@@ -110,7 +114,7 @@ class Adjuntos extends Component {
             data = await SolicitudDocumentoService.ver(id);
         if (this.props.tipo === 'SOLICITUD_PRUEBAS_PROCESO')
             data = await SolicitudPruebaProcesoDocumentoService.ver(id);
-        if (this.props.tipo === 'SALIDA_MATERIAL')
+        if (this.props.tipo === 'SALIDA_MATERIAL' || this.props.tipo === 'PNC')
             data = await PncDocumentoService.ver(id);
         this.props.closeModal();
         const ap = window.URL.createObjectURL(data)
@@ -142,6 +146,8 @@ class Adjuntos extends Component {
                     return this.props.controles && archivo.estadoPlanAccion === this.props.estado
                 else
                     return this.props.controles && archivo.estado === this.props.estado;
+            case 'PNC':
+                return this.props.controles;
             default:
                 return this.props.controles && archivo.estado === this.props.estado;
         }

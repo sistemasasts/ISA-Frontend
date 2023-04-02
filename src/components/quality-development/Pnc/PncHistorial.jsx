@@ -4,6 +4,7 @@ import { DataView } from 'primereact/dataview';
 import * as moment from 'moment';
 import "../../site.css";
 import PncSalidaMaterialService from '../../../service/Pnc/PncSalidaMaterialService';
+import PncDocumentoService from '../../../service/Pnc/PncDocumentoService';
 
 class PncHistorial extends Component {
 
@@ -23,12 +24,13 @@ class PncHistorial extends Component {
 
     async descargarDocumentos(historial) {
         if (historial) {
-            var data = null //await SolicitudDocumentoService.descargarComprimido(historial.id);
+            var data = await PncDocumentoService.descargarComprimido(historial.id);
             const ap = window.URL.createObjectURL(data)
             const a = document.createElement('a');
             document.body.appendChild(a);
             a.href = ap;
-            a.download = `${historial.solicitudEnsayo ? historial.solicitudEnsayo.codigo : historial.solicitudPruebasProceso.codigo}.rar`;
+            const fecha = moment().format('yyyy-MM-DD');
+            a.download = `SalidaMaterial-${historial.salidaMaterialId}-${fecha}.rar`;
             a.click();
         }
     }
