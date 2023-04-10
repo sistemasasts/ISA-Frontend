@@ -89,12 +89,12 @@ class PncVerPAProcesar extends Component {
 
                 {this.state.id > 0 &&
                     <div className='p-grid p-grid-responsive p-fluid'>
-                        <FormLectura pnc={this.state.pnc} />
+                        <FormLectura pnc={this.state.pnc} reporte={true}/>
                         <PncSalidaMaterialFormLectura salidaMaterial={this.state.salida} />
                         <div className='p-col-12 p-lg-12 caja'>INFORMACIÓN ADICIONAL</div>
                         <div className='p-col-12 p-lg-12'>
-                            <Adjuntos solicitud={this.props.match.params.idPncSalida} orden={ORDEN} controles={this.state.mostrarControles} 
-                            estado={ESTADO} tipo={TIPO_SOLICITUD} planAccionId={this.state.planEnProceso.id}/>
+                            <Adjuntos solicitud={this.props.match.params.idPncSalida} orden={ORDEN} controles={this.state.mostrarControles}
+                                estado={ESTADO} tipo={TIPO_SOLICITUD} planAccionId={this.state.planEnProceso.id} />
                             <PncHistorial solicitud={this.props.match.params.idPncSalida} />
                         </div>
                         <div className='p-col-12 p-lg-12'>

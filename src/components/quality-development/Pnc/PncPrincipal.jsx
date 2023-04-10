@@ -89,14 +89,25 @@ class PncPrincipal extends Component {
         this.setState({ productosSugeridos: resultados });
     }
 
-    bodyTemplateEstado(rowData) {        
+    async generarReportePNC(pnc) {
+        var data = await PncService.generarReporte(pnc.id);
+        const ap = window.URL.createObjectURL(data)
+        const a = document.createElement('a');
+        document.body.appendChild(a);
+        a.href = ap;
+        a.download = `RepPNC${pnc.numero}_${pnc.productoNombre}.pdf`;
+        a.click();
+        this.growl.show({ severity: 'success', detail: 'Reporte generado!' });
+    }
+
+    bodyTemplateEstado(rowData) {
         return <span className={determinarColorPNC(rowData.estado)}>{rowData.estadoTexto}</span>;
     }
 
     actionTemplate(rowData, column) {
         return <div>
             <Button type="button" icon="pi pi-pencil" className="p-button-warning" onClick={() => history.push(`/quality-development_pnc_edit/${rowData.id}`)}></Button>
-            <Button type="button" icon="pi pi-file-pdf" className="p-button-success" onClick={() => history.push(`/quality-development_pnc_edit/${rowData.id}`)}></Button>
+            <Button type="button" icon="pi pi-file-pdf" className="p-button-success" onClick={() => this.generarReportePNC(rowData)}></Button>
         </div>
     }
 
@@ -167,7 +178,7 @@ class PncPrincipal extends Component {
                     <Column field="fechaProduccion" header="Fecha Producción" style={{ width: '10em', textAlign: 'center' }} />
                     <Column field="fechaDeteccion" header="Fecha Detección" style={{ width: '10em', textAlign: 'center' }} />
                     <Column field="lote" header="Lote" style={{ width: '10em', textAlign: 'center' }} />
-                    
+
 
                 </DataTable>
                 <Paginator first={this.state.first} rows={this.state.size} totalRecords={this.state.totalRecords} onPageChange={this.onPageChange}

@@ -1,4 +1,5 @@
 import http from '../http';
+import httpFiles from '../httpFiles';
 
 const apiEndpoint = '/pncs'
 
@@ -19,6 +20,7 @@ const PncService = {
     actualizarDefecto: (info) => http.request.put(`${apiEndpoint}/actualizarDefecto`, info),
     listarImagenDefecto: (id) => http.request.get(`${apiEndpoint}/defecto/verImagen/${id}`),
     eliminarDefecto: (idPnc, idDefecto) => http.request.delete(`${apiEndpoint}/${idPnc}/${idDefecto}`),
+    generarReporte: (id) => httpFiles.request.get(`${apiEndpoint}/generarReporte/${id}`),
 
 }
 

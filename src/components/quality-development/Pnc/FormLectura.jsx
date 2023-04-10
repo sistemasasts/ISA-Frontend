@@ -47,6 +47,7 @@ class FormLectura extends Component {
             catalogoProcedenciaLinea: null,
             catalogoLineaAfecta: null,
             productosSugeridos: [],
+            habilitarReporte: false,
         }
         this.onFivemsChange = this.onFivemsChange.bind(this);
 
@@ -55,13 +56,13 @@ class FormLectura extends Component {
 
     async componentDidMount() {
         const catalogAreas = await SolicitudPruebasProcesoService.listarAreas();
-        const unidades = await UnidadMedidaService.listarActivos();        
+        const unidades = await UnidadMedidaService.listarActivos();
         const procedenciaLinea = await PncService.obtenerProcedenciaLinea();
         const lineaAfecta = await PncService.obtenerLineaAfecta();
         this.refrescar(this.props.pnc);
         this.setState({
             catalogoArea: catalogAreas, unidadesCatalogo: unidades, catalogoProcedenciaLinea: procedenciaLinea,
-            catalogoLineaAfecta: lineaAfecta
+            catalogoLineaAfecta: lineaAfecta,  habilitarReporte: this.props.reporte
         });
     }
 
@@ -88,13 +89,24 @@ class FormLectura extends Component {
                 observacionCincoMs: pnc.observacionCincoMs,
                 fivems: cincoMsValor,
                 producto: pnc.producto,
-                defectos: pnc.defectos
+                defectos: pnc.defectos,
             });
         }
         /* if (idPnc) {
             const pnc = await PncService.listarPorId(idPnc);
             
         } */
+    }
+
+    async generarReportePNC() {
+        var data = await PncService.generarReporte(this.state.id);
+        const ap = window.URL.createObjectURL(data)
+        const a = document.createElement('a');
+        document.body.appendChild(a);
+        a.href = ap;
+        a.download = `RepPNC${this.state.numero}_${this.state.producto.nameProduct}.pdf`;
+        a.click();
+        this.growl.show({ severity: 'success', detail: 'Reporte generado!' });
     }
 
     /* Metodo inputCheck */
@@ -121,20 +133,31 @@ class FormLectura extends Component {
             <div className="card card-w-title">
                 <Growl ref={(el) => this.growl = el} style={{ marginTop: '75px' }} />
                 <h3 className='text-titulo'><strong>PRODUCTO NO CONFORME</strong></h3>
-                <div className='p-col-12 p-lg-12 caja' >INFORMACIÓN DE LA SOLICITUD</div>
+                <div className='p-col-12 p-lg-12 caja' >INFORMACIÓN DE LA SOLICITUD
+                    <div style={{ float: 'right', padding: '0', marginTop: '-4px' }}>
+                        {this.state.habilitarReporte &&
+                            <Button style={{ fontSize: '13px', fontWeight: 'bold', backgroundColor: '#A5D6A7', color: 'black' }} className=" p-button-rounded p-button-success"
+                                icon="pi pi-download" label="Reporte" tooltip="Descargar" tooltipOptions={{ position: 'bottom' }} onClick={() => this.generarReportePNC()} />
+                        }
+                    </div>
+                </div>
 
                 <div className="p-grid p-grid-responsive p-fluid">
-                    <div className='p-col-12 p-lg-4'>
+                    <div className='p-col-12 p-lg-3'>
+                        <span style={{ color: '#CB3234' }}>*</span><label style={{ fontWeight: 'bold' }} htmlFor="float-input">Número</label>
+                        <InputText readOnly keyfilter="num" value={this.state.numero} />
+                    </div>
+                    <div className='p-col-12 p-lg-3'>
                         <span style={{ color: '#CB3234' }}>*</span><label style={{ fontWeight: 'bold' }} htmlFor="float-input">Fecha de Producción</label>
                         <Calendar disabled dateFormat="yy/mm/dd" value={this.state.fechaProduccion} locale={es} onChange={(e) => this.setState({ fechaProduccion: e.value })} showIcon={true} />
                     </div>
 
-                    <div className='p-col-12 p-lg-4'>
+                    <div className='p-col-12 p-lg-3'>
                         <span style={{ color: '#CB3234' }}>*</span><label style={{ fontWeight: 'bold' }} htmlFor="float-input">Fecha de Detección</label>
                         <Calendar disabled dateFormat="yy/mm/dd" value={this.state.fechaDeteccion} locale={es} onChange={(e) => this.setState({ fechaDeteccion: e.value })} showIcon={true} />
                     </div>
 
-                    <div className='p-col-12 p-lg-4'>
+                    <div className='p-col-12 p-lg-3'>
                         <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Área</label>
                         <Dropdown disabled optionLabel='nameArea' options={this.state.catalogoArea} value={this.state.area} autoWidth={false} onChange={(e) => this.setState({ area: e.value })} placeholder="Selecione" />
                     </div>
