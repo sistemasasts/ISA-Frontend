@@ -97,6 +97,7 @@ import PncPAProcesarPrincipal from './components/quality-development/Pnc/PlanAcc
 import PncVerPAProcesar from './components/quality-development/Pnc/PlanAccion/Procesar/PncVerPAProcesar';
 import PncPAValidarPrincipal from './components/quality-development/Pnc/PlanAccion/Validar/PncPAValidarPrincipal';
 import PncVerPAValidar from './components/quality-development/Pnc/PlanAccion/Validar/PncVerPAValidar';
+import ReporteComercialPrincipal from './components/quality-development/Pnc/ReporteComercial/ReporteComercialPrincipal';
 
 
 
@@ -684,6 +685,7 @@ class MainPage extends Component {
 						<Route path="/quality-development_pnc_procesarTarea_ver/:idPncSalida/:idPlan" component={PncVerPAProcesar} />
 						<Route path="/quality-development_pnc_validarTarea" component={PncPAValidarPrincipal} />
 						<Route path="/quality-development_pnc_validarTarea_ver/:idPncSalida/:idPlan" component={PncVerPAValidar} />
+						<Route path="/quality-development_pnc_reporteComercial" component={ReporteComercialPrincipal} />
 						{/* --------- PNC ------------- */}
 
 						<Route path="/home" component={Home} />

@@ -22,6 +22,9 @@ const PncService = {
     eliminarDefecto: (idPnc, idDefecto) => http.request.delete(`${apiEndpoint}/${idPnc}/${idDefecto}`),
     generarReporte: (id) => httpFiles.request.get(`${apiEndpoint}/generarReporte/${id}`),
 
+    reporteComercial: (page, size, criterios) => http.request.post(`${apiEndpoint}/reporteComercial/?page=${page}&size=${size}`, criterios),
+    listarDefectos: (id) => http.request.get(`${apiEndpoint}/detalleDefectos/${id}`)
+
 }
 
 export default PncService
