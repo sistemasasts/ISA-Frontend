@@ -29,6 +29,8 @@ import { GetAllProducts, GenerateHCC, HCCSave, GetAllHCCs, GenerateCertificate, 
 import { formattedDate, formattedDateStringtoDate } from '../../utils/FormatDate';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import HccService from '../../service/HccService';
+import { FileUpload } from 'primereact/fileupload';
 
 var nameProducts = []; // Variable para fomrar el Array de nombre de productos.
 var that;
@@ -36,7 +38,7 @@ var DataResult = {};
 var DataResultCumple = {};
 var proveedoresMP = [];
 var clientNames = []; // Variable para formar el Array de nombres de los clientes.
-var PRODUCT_TYPES =['PRODUCTO_TERMINADO', 'PRODUCTO_EN_PROCESO', 'PRODUCTO_MAQUILA'];
+var PRODUCT_TYPES = ['PRODUCTO_TERMINADO', 'PRODUCTO_EN_PROCESO', 'PRODUCTO_MAQUILA'];
 class HCC extends Component {
 
     constructor() {
@@ -91,6 +93,8 @@ class HCC extends Component {
             shMsgError: 'none',
             layout: 'list',
 
+            mostrarCargaImagen: false
+
         };
         that = this;
         this.generateHCC = this.generateHCC.bind(this);
@@ -114,6 +118,8 @@ class HCC extends Component {
         this.changeChipsRemove = this.changeChipsRemove.bind(this);
         this.onAbbrevationChange = this.onAbbrevationChange.bind(this);
         this.closeModalCertificate = this.closeModalCertificate.bind(this);
+        this.limpiarUpload = this.limpiarUpload.bind(this);
+        this.myUploader = this.myUploader.bind(this);
 
     }
 
@@ -133,7 +139,7 @@ class HCC extends Component {
         });
         this.setState({ filteredProducts: results });
     }
-    onProductValueChange(e) {        
+    onProductValueChange(e) {
         if (e.value.length !== 1) {
             this.state.products.map(function (obj, index) {
                 if (obj.nameProduct === e.value) {
@@ -210,8 +216,6 @@ class HCC extends Component {
     }
     /* Metodo para onRadioButton hccTYpe */
     onRadioChange(event) {
-        debugger
-        console.log(this.state.hccFilesAll);
         var newData = [];
         this.state.hccFilesAll.map(function (obj, index) {
             switch (event.value) {
@@ -248,12 +252,17 @@ class HCC extends Component {
             GenerateHCC(result.idProduct, this.state.lote, this.state.frecuencia, function (item) {
 
                 that.setData(item.detail);
+                let verCargaImagen = false;
+                if (item.imagenPatron64) {
+                    document.getElementById("ItemPreview").src = item.imagenPatron64;
+                    verCargaImagen = true;
+                }
 
                 if (_.includes(PRODUCT_TYPES, item.product.typeProduct)) {
                     if (item.product.typeProductTxt === 'Emulsiones Asfálticas') {
-                        that.setState({ hCC: item, pnlCabeceraPT: '', pnlCabeceraMP: 'none', specificationPanel: '', specificationList: '', btnGuardarHCC: '', resultsPanel: '', fieldReferralGuide: '' })
+                        that.setState({ hCC: item, pnlCabeceraPT: '', pnlCabeceraMP: 'none', specificationPanel: '', specificationList: '', btnGuardarHCC: '', resultsPanel: '', fieldReferralGuide: '', mostrarCargaImagen: verCargaImagen })
                     } else
-                        that.setState({ hCC: item, pnlCabeceraPT: '', pnlCabeceraMP: 'none', specificationPanel: '', specificationList: '', btnGuardarHCC: '', resultsPanel: '', fieldReferralGuide: 'none' })
+                        that.setState({ hCC: item, pnlCabeceraPT: '', pnlCabeceraMP: 'none', specificationPanel: '', specificationList: '', btnGuardarHCC: '', resultsPanel: '', fieldReferralGuide: 'none', mostrarCargaImagen: verCargaImagen })
                 } else {
                     debugger;
                     item.product.providers.map(function (obj, index) {
@@ -267,7 +276,7 @@ class HCC extends Component {
                     if (item.dateOrder != null)
                         hccHeadDateTests = formattedDateStringtoDate(item.dateOrder);
 
-                    that.setState({ hCC: item, pnlCabeceraMP: '', pnlCabeceraPT: 'none', specificationPanel: '', specificationList: '', btnGuardarHCC: '', resultsPanel: '', proveedor: hccHeadIdProvider, receptDate: hccHeadDateTests })
+                    that.setState({ hCC: item, pnlCabeceraMP: '', pnlCabeceraPT: 'none', specificationPanel: '', specificationList: '', btnGuardarHCC: '', resultsPanel: '', proveedor: hccHeadIdProvider, receptDate: hccHeadDateTests, mostrarCargaImagen: verCargaImagen })
 
                 }
             })
@@ -332,9 +341,7 @@ class HCC extends Component {
 
 
     /* Function for property delete of specifications test hcc */
-    propertyDelete(codeProperty) {
-        debugger;
-        console.log(codeProperty);
+    propertyDelete(codeProperty) {        
         var detailTMP = [];
         this.state.hCC.detail.map(function (i) {
             if (i.idProperty !== codeProperty)
@@ -382,7 +389,7 @@ class HCC extends Component {
         );
     }
     /* Método para guardar HCC Final y Genera archivo */
-    saveHCC() {
+    async saveHCC() {
         debugger;
         var detailAUX = [];
         var sesion = this.props.currentUser;/* JSON.parse(localStorage.getItem('dataSession')); */
@@ -402,7 +409,7 @@ class HCC extends Component {
                     }
                     detailAUX.push(item);
                 })
-                if (_.includes(PRODUCT_TYPES,this.state.hCC.product.typeProduct)) {
+                if (_.includes(PRODUCT_TYPES, this.state.hCC.product.typeProduct)) {
                     this.state.hCC.sapCode = this.state.hccPT;
                     this.state.hCC.of = this.state.hccOF;
                     this.state.hCC.dateOrder = formattedDate(this.state.productionDate);
@@ -426,41 +433,74 @@ class HCC extends Component {
                 this.state.hCC.comment = this.state.observation;
                 this.state.hCC.analysis = this.state.analysis;
                 this.state.hCC.asUser = sesion.nickName;
-                console.log(this.state.hCC);
-                this.setState({ waitModalView: true })
-                HCCSave(this.state.hCC, function (data, status, msg) {
-                    that.setState({ waitModalView: false })
-                    switch (status) {
-                        case 'OK':
-                            that.showSuccess(msg);
-                            if (that.state.hCC.product.typeProduct == 'MATERIA_PRIMA') {
-                                var se = that.state.sendSubject + ' ' + that.state.productName;
-                                var ms = that.state.sendMessage + ' ' + that.state.productName;
-                                that.setState({ visibleModalEmail: true, pathFile: data.filePath, sendSubject: se, sendMessage: ms })
-                            } else {
-                                DataResult = {};
-                                DataResultCumple = {};
-                                that.setState({
-                                    pnlCabeceraMP: 'none', pnlCabeceraPT: 'none', specificationPanel: 'none', specificationList: 'none', fieldReferralGuide: 'none',
-                                    resultsPanel: 'none',
-                                    btnGuardarHCC: 'none',
-                                    productName: '',
-                                    lote: '', observation: '', analysis: '', hccPT: '', hccOF: '', referralGuide: '', reloadTextInput: false, hCC: {}, productionDate: undefined, dateOrder: undefined,
-                                });
-                            }
 
-                            GetAllHCCs(function (items) {
+                let infoAditional = {};
+                let formadata = new FormData();
+                infoAditional = this.state.hCC;
+                if (this.state.imagenSubir)
+                    formadata.append('file', this.state.imagenSubir);
+                else
+                    formadata.append('file', new File([], ''));
+                formadata.append('info', JSON.stringify(infoAditional));
 
-                                that.setState({ hccFiles: items })
-                            })
-
-                            break;
-                        case 'ERROR':
-                            that.showError(msg);
-                            break;
-                        default: break;
-                    }
+                const resultado = await HccService.registrar(formadata);
+                this.showSuccess(resultado.mensaje);
+                this.limpiarUpload();
+                if (that.state.hCC.product.typeProduct === 'MATERIA_PRIMA') {
+                    var se = that.state.sendSubject + ' ' + that.state.productName;
+                    var ms = that.state.sendMessage + ' ' + that.state.productName;
+                    this.setState({ visibleModalEmail: true, pathFile: resultado.rutaArchivo, sendSubject: se, sendMessage: ms, })
+                } else {
+                    DataResult = {};
+                    DataResultCumple = {};
+                    this.setState({
+                        pnlCabeceraMP: 'none', pnlCabeceraPT: 'none', specificationPanel: 'none', specificationList: 'none', fieldReferralGuide: 'none',
+                        resultsPanel: 'none',
+                        btnGuardarHCC: 'none',
+                        productName: '',
+                        lote: '', observation: '', analysis: '', hccPT: '', hccOF: '', referralGuide: '', reloadTextInput: false, hCC: {}, productionDate: undefined, dateOrder: undefined,
+                    });
+                }
+                GetAllHCCs(function (items) {
+                    that.setState({ hccFiles: items })
                 })
+
+
+
+
+                /*  HCCSave(this.state.hCC, function (data, status, msg) {
+                     that.setState({ waitModalView: false })
+                     switch (status) {
+                         case 'OK':
+                             that.showSuccess(msg);
+                             if (that.state.hCC.product.typeProduct == 'MATERIA_PRIMA') {
+                                 var se = that.state.sendSubject + ' ' + that.state.productName;
+                                 var ms = that.state.sendMessage + ' ' + that.state.productName;
+                                 that.setState({ visibleModalEmail: true, pathFile: data.filePath, sendSubject: se, sendMessage: ms })
+                             } else {
+                                 DataResult = {};
+                                 DataResultCumple = {};
+                                 that.setState({
+                                     pnlCabeceraMP: 'none', pnlCabeceraPT: 'none', specificationPanel: 'none', specificationList: 'none', fieldReferralGuide: 'none',
+                                     resultsPanel: 'none',
+                                     btnGuardarHCC: 'none',
+                                     productName: '',
+                                     lote: '', observation: '', analysis: '', hccPT: '', hccOF: '', referralGuide: '', reloadTextInput: false, hCC: {}, productionDate: undefined, dateOrder: undefined,
+                                 });
+                             }
+ 
+                             GetAllHCCs(function (items) {
+ 
+                                 that.setState({ hccFiles: items })
+                             })
+ 
+                             break;
+                         case 'ERROR':
+                             that.showError(msg);
+                             break;
+                         default: break;
+                     }
+                 }) */
 
             } else {
                 this.showError('Contacte al administrador');
@@ -583,6 +623,14 @@ class HCC extends Component {
         return idclienteTMP;
     }
 
+    limpiarUpload() {
+        this.fileUploadRef.clear();
+        this.setState({ descripcionImagen: '', imagenSubir: '', mostrarCargaImagen: false })
+    }
+
+    myUploader(event) {
+        this.setState({ imagenSubir: event.files[0] })
+    }
 
 
     /* ================= F I N   F U N C I O N E S ======================= */
@@ -861,6 +909,17 @@ class HCC extends Component {
                                 <DataView ref={el => this.dv = el} style={{ display: this.state.specificationList }} value={this.state.hCC.detail} itemTemplate={this.propertyTemplate.bind(this)} layout={this.state.layout}
                                     header={dataviewHeader} emptyMessage='Propiedades no encontradas' />
 
+
+                                <div className="p-grid p-fluid " style={{ display: this.state.mostrarCargaImagen ? '' : 'none', marginTop: '10px' }}>
+                                    <div className='p-col-12 p-lg-6'>
+                                        <label htmlFor="float-input">Patron</label>
+                                        <img style={{ width: 'auto', maxHeight: '70%', maxWidth: '70%', display: 'block', margin: 'auto' }} id="ItemPreview" src="" />
+                                    </div>
+                                    <div className='p-col-12 p-lg-6'>
+                                        <label htmlFor="float-input">Muestra Lote</label>
+                                        <FileUpload ref={(el) => this.fileUploadRef = el} name="demo[]" customUpload={true} chooseLabel="Seleccione" auto={true} uploadHandler={this.myUploader} accept="image/*" />
+                                    </div>
+                                </div>
                                 <div className="p-grid p-fluid " style={{ display: this.state.resultsPanel, marginTop: '10px' }}>
                                     <div className='p-col-12 p-lg-6'>
                                         <label htmlFor="float-input">Observaciones</label>
