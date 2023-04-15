@@ -99,6 +99,7 @@ import PncPAValidarPrincipal from './components/quality-development/Pnc/PlanAcci
 import PncVerPAValidar from './components/quality-development/Pnc/PlanAccion/Validar/PncVerPAValidar';
 import ReporteComercialPrincipal from './components/quality-development/Pnc/ReporteComercial/ReporteComercialPrincipal';
 import InventarioPrincipal from './components/quality-development/Inventario/InventarioPrincipal';
+import MovimientoPrincipal from './components/quality-development/Inventario/MovimientoPrincipal';
 
 
 
@@ -691,6 +692,7 @@ class MainPage extends Component {
 
                         {/* --------- INVENTARIO ------------- */}
 						<Route path="/quality-development_inventario" component={InventarioPrincipal} />
+						<Route path="/quality-development_inventario_detalle/:idInventario" component={MovimientoPrincipal} />
                         {/* --------- INVENTARIO ------------- */}
 						<Route path="/home" component={Home} />
 

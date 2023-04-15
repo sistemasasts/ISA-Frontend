@@ -48,7 +48,6 @@ class InventarioForm extends Component {
     fetchData(data) {
         const mostrar = data.state.mostrarForm;
         const itemSeleccionado = data.state.productoSeleccionado;
-        console.log(itemSeleccionado);
 
         if (itemSeleccionado) {
             const prodcuto = { productId: itemSeleccionado.prodcutoId, nameProduct: itemSeleccionado.productoNombre }
@@ -113,7 +112,7 @@ class InventarioForm extends Component {
 
 
     async buscarProductos(event) {
-        const resultados = await ProductoService.listarPorNombreCriterio(event.query);
+        const resultados = await ProductoService.listarReactivosPorNombreCriterio(event.query);
         this.setState({ productosSugeridos: resultados });
     }
 
@@ -165,7 +164,7 @@ class InventarioForm extends Component {
                     <div className="p-grid p-fluid">
                         <div className='p-col-12 p-lg-12'>
                             <label htmlFor="float-input">Producto</label>
-                            <AutoComplete field="nameProduct" minLength={3} placeholder="Ingrese criterio de búsqueda..." suggestions={this.state.productosSugeridos}
+                            <AutoComplete field="nameProduct" disabled={this.state.id > 0} minLength={3} placeholder="Ingrese criterio de búsqueda..." suggestions={this.state.productosSugeridos}
                                 completeMethod={(e) => this.buscarProductos(e)} value={this.state.producto} onChange={(e) => this.setState({ producto: e.value })}
                             />
                             {this.determinarEsCampoRequerido('producto') &&

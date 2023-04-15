@@ -107,3 +107,13 @@ export function determinarColorPrioridad(prioridad) {
         default: return ''
     }
 }
+
+export function determinarTipoMovimiento(prioridad) {
+    switch (prioridad) {
+        case 'EGRESO':
+            return 'customer-badge-danger';
+        case 'INGRESO':
+            return 'customer-badge-success';
+        default: return 'customer-badge-default';
+    }
+}
