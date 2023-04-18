@@ -100,7 +100,7 @@ import PncVerPAValidar from './components/quality-development/Pnc/PlanAccion/Val
 import ReporteComercialPrincipal from './components/quality-development/Pnc/ReporteComercial/ReporteComercialPrincipal';
 import InventarioPrincipal from './components/quality-development/Inventario/InventarioPrincipal';
 import MovimientoPrincipal from './components/quality-development/Inventario/MovimientoPrincipal';
-
+import ListaBitacora from "./components/quality-development/Bitacora/ListaBitacora";
 
 
 class MainPage extends Component {
@@ -688,6 +688,7 @@ class MainPage extends Component {
 						<Route path="/quality-development_pnc_validarTarea" component={PncPAValidarPrincipal} />
 						<Route path="/quality-development_pnc_validarTarea_ver/:idPncSalida/:idPlan" component={PncVerPAValidar} />
 						<Route path="/quality-development_pnc_reporteComercial" component={ReporteComercialPrincipal} />
+						<Route path="/quality-development_pnc_bitacora" component={ListaBitacora} />
 						{/* --------- PNC ------------- */}
 
                         {/* --------- INVENTARIO ------------- */}
