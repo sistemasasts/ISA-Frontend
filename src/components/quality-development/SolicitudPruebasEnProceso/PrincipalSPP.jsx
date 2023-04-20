@@ -80,10 +80,11 @@ class PrincipalSPP extends Component {
                     <Column field="fechaSolicitud" header="Fecha Solicitud" sortable={true} style={{ textAlign: 'center', width: '12em' }} />
                     <Column field="lineaAplicacion" header="Aplicación" sortable={true} style={{ textAlign: 'center', width: '12em' }} />
                     <Column field="fechaEntrega" header="Fecha Entrega" sortable={true} style={{ textAlign: 'center', width: '11em' }} />
-                    <Column field="motivo" header="Motivo" style={{ width: '20em' }} />
+                    <Column field='observacion' header="Secuencial y Motivo Prueba" sortable style={{ textAlign: 'center', width: '30em' }} />
                     <Column field='estado' body={this.bodyTemplateEstado} header="Estado" sortable style={{ textAlign: 'center', width: '12em' }} />
                     <Column field="aprobadoTexto" body={this.bodyTemplateActivo} header="Aprobado" sortable style={{ width: '6em', textAlign: 'center' }} />
                     <Column field="tipoAprobacionTexto" body={this.bodyTemplateTipoAprobacion} header="Tipo Aprobación" sortable style={{ textAlign: 'center', width: '15em' }} />
+                    <Column field="motivo" header="Motivo" style={{ width: '20em' }} />
                 </DataTable>
             </div>
         )
