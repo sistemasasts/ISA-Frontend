@@ -16,6 +16,7 @@ import FormCondicion from './FormCondicion';
 import { InputTextarea } from 'primereact/inputtextarea';
 import SeccionMantenimiento from './SeccionMatenimiento';
 import history from '../../../../history';
+import { getDecodedToken } from '../../../../config/auth/credentialConfiguration';
 
 var lineaFabricacionCatalogo = [];
 class InformeSPPLectura extends Component {
@@ -102,6 +103,11 @@ class InformeSPPLectura extends Component {
         }
     }
 
+    puedeEditar() {
+        const user = getDecodedToken();
+        return _.includes(user.authorities, 'ADMIN')
+    }
+
     rowExpansionTemplate(data) {
         return (
             <div className="p-grid p-fluid" style={{ padding: '1em 1em 1em 2em' }}>
@@ -135,7 +141,17 @@ class InformeSPPLectura extends Component {
 
 
     async guardar() {
+        await InformeSPPService.actualizarAdministrador(this.crearObj2());
         this.growl.show({ severity: 'success', detail: 'Datos Informe Actualizado!' });
+    }
+
+    crearObj2() {
+        return {
+            id: this.state.id,
+            observacionProduccion: this.state.observacionProduccion,
+            observacionMantenimiento: this.state.observacionMantenimiento,
+            observacionCalidad: this.state.observacionCalidad
+        }
     }
 
     regresar() {
@@ -293,7 +309,7 @@ class InformeSPPLectura extends Component {
                         <div className="p-grid p-grid-responsive p-fluid">
                             <div className='p-col-12 p-lg-12 caja'>CONCLUSIONES Y RECOMENDACIONES</div>
                             <div className='p-col-12 p-lg-12'>
-                                <InputTextarea readOnly value={this.state.observacionProduccion} onChange={(e) => this.setState({ observacionProduccion: e.target.value })} rows={3} placeholder='Conclusiones' />
+                                <InputTextarea readOnly={this.puedeEditar} value={this.state.observacionProduccion} onChange={(e) => this.setState({ observacionProduccion: e.target.value })} rows={3} placeholder='Conclusiones' />
                             </div>
                         </div>
                     </div>
@@ -321,7 +337,7 @@ class InformeSPPLectura extends Component {
                         <div className="p-grid p-grid-responsive p-fluid">
                             <div className='p-col-12 p-lg-12 caja'>CONCLUSIONES Y RECOMENDACIONES</div>
                             <div className='p-col-12 p-lg-12'>
-                                <InputTextarea readOnly value={this.state.observacionMantenimiento} onChange={(e) => this.setState({ observacionMantenimiento: e.target.value })} rows={3} placeholder='Conclusiones' />
+                                <InputTextarea readOnly={this.puedeEditar} value={this.state.observacionMantenimiento} onChange={(e) => this.setState({ observacionMantenimiento: e.target.value })} rows={3} placeholder='Conclusiones' />
                             </div>
                         </div>
                     </div>
@@ -331,17 +347,16 @@ class InformeSPPLectura extends Component {
                         <div className="p-grid p-grid-responsive p-fluid">
                             <div className='p-col-12 p-lg-12 caja'>INVESTIGACIÓN Y DESARROLLO</div>
                             <div className='p-col-12 p-lg-12'>
-                                <InputTextarea readOnly value={this.state.observacionCalidad} onChange={(e) => this.setState({ observacionCalidad: e.target.value })} rows={3} placeholder='Conclusiones' />
+                                <InputTextarea readOnly={this.puedeEditar} value={this.state.observacionCalidad} onChange={(e) => this.setState({ observacionCalidad: e.target.value })} rows={3} placeholder='Conclusiones' />
                             </div>
                         </div>
+                        {this.puedeEditar &&
+                            <div className='p-col-12 p-lg-12 boton-opcion' >
+                                <Button className='p-button-success' label="ACTUALIZAR DATOS" onClick={this.guardar} />
+                            </div>
+                        }
                     </div>
                 }
-                {/* {this.state.tipo === 'APROBACION' &&
-                    <div className='p-col-12 p-lg-12 boton-opcion' >
-                        <Button className='p-button-success' label="GUARDAR" onClick={this.guardar} />
-                        <Button className='p-button-secondary' label="ATRÁS" onClick={() => this.regresar()} />
-                    </div>
-                } */}
             </div>
         )
     }

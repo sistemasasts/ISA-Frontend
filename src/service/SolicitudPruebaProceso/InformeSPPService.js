@@ -8,6 +8,7 @@ const InformeSPPService = {
     actualizar: (informe) => http.request.put(`${apiEndpoint}/produccion`, informe),
     actualizarMantenimiento: (informe) => http.request.put(`${apiEndpoint}/mantenimiento`, informe),
     actualizarCalidad: (informe) => http.request.put(`${apiEndpoint}/calidad`, informe),
+    actualizarAdministrador: (informe) => http.request.put(`${apiEndpoint}/administrador`, informe),
     agregarMaterialUtilizado: (material, informeId) => http.request.post(`${apiEndpoint}/agregarMaterialUtilizado/${informeId}`, material),
     editarMaterialUtilizado: (material, informeId) => http.request.post(`${apiEndpoint}/editarMaterialUtilizado/${informeId}`, material),
     eliminarMaterialUtilizado: (materialId, informeId) => http.request.delete(`${apiEndpoint}/eliminarMaterialUtilizado/${informeId}/${materialId}`),

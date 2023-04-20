@@ -7,6 +7,7 @@ import Historial from '../SolicitudEnsayo/Historial';
 import { closeModal, openModal } from '../../../store/actions/modalWaitAction';
 import FormularioSPPLectura from '../SolicitudPruebasEnProceso/FormularioSPPLectura';
 import SolicitudPruebasProcesoService from '../../../service/SolicitudPruebaProceso/SolicitudPruebasProcesoService';
+import { Button } from 'primereact/button';
 
 const TIPO_SOLICITUD = 'SOLICITUD_PRUEBAS_PROCESO';
 let ESTADO = '';
@@ -20,6 +21,7 @@ class VerPP extends Component {
             estado: null,
             mostrarControles: false
         };
+        this.abrirInformeDatos = this.abrirInformeDatos.bind(this);
 
     }
 
@@ -40,6 +42,10 @@ class VerPP extends Component {
         }
     }
 
+    abrirInformeDatos() {
+        window.open(`${window.location.origin}/#quality-development_solicitudpp_informe_final/${this.state.id}/APROBADOR_FINAL`)
+    }
+
     render() {
         return (
 
@@ -55,7 +61,9 @@ class VerPP extends Component {
                         </div>
                     </div>
                 }
-
+                <div className='p-col-12 p-lg-12 boton-opcion' >
+                    <Button className="p-button-danger" label="EDITAR INFORME DDP05" onClick={this.abrirInformeDatos} />
+                </div>
             </div >
         )
     }

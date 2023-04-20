@@ -27,6 +27,7 @@ import { Toolbar } from 'primereact/toolbar';
 import SolicitudDocumentoService from '../../../service/SolicitudEnsayo/SolicitudDocumentoService';
 import SolicitudPlanAccionService from '../../../service/SolicitudPlanAccion/SolicitudPlanAccionService';
 import UnidadMedidaService from '../../../service/UnidadMedidaService';
+import Confirmacion from '../Shared/Confirmacion';
 
 const TIPO_SOLICITUD = 'SOLICITUD_ENSAYO';
 class FormularioSE extends Component {
@@ -62,7 +63,11 @@ class FormularioSE extends Component {
             nombreComercial: null,
 
             unidadesMedida: [],
-            planesAccion: []
+            planesAccion: [],
+            
+            mostrarConfirmacion: false,
+            contenidoConfirmacion: null,
+            identificadorConfirmacion: null,
 
         };
         this.filterProveedorSingle = this.filterProveedorSingle.bind(this);
@@ -77,6 +82,8 @@ class FormularioSE extends Component {
         this.myUploaderImagenMuestra = this.myUploaderImagenMuestra.bind(this);
         this.leerImagenMuestra = this.leerImagenMuestra.bind(this);
         this.actionTemplateCumplido = this.actionTemplateCumplido.bind(this);
+        this.confirmarEnviarNuevaSolicitud = this.confirmarEnviarNuevaSolicitud.bind(this);
+        this.respuestaConfirmacion = this.respuestaConfirmacion.bind(this);
     }
 
     async componentDidMount() {
@@ -331,6 +338,27 @@ class FormularioSE extends Component {
         }
     }
 
+    confirmarEnviarNuevaSolicitud() {
+        this.setState({ mostrarConfirmacion: true, contenidoConfirmacion: '¿Está seguro de enviar una nueva solicitud?', identificadorConfirmacion: 'nuevaSolicitud' });
+    }
+
+    async respuestaConfirmacion(identificador) {
+        console.log(identificador)
+        switch (identificador) {            
+            case 'nuevaSolicitud':
+                const nuevaSolicitud = await SolicitudEnsayoService.crearAPartirSolicitudPadre(this.state.id);
+                this.growl.show({ severity: 'success', detail: 'Solicitud creada.' });
+                setTimeout(() => {
+                    history.push(`/quality-development_solicitudse_edit/${nuevaSolicitud.id}`);
+                    window.location.reload();
+                }, 400);
+                break;
+
+            default:
+                break;
+        }
+    }
+
     actionTemplateCumplido(rowData) {
         if (rowData.cumplido === null)
             return "";
@@ -535,8 +563,13 @@ class FormularioSE extends Component {
                             <Button className='p-button-secondary' label="ANULAR" onClick={this.anularSolicitud} />
                         </div>
                     }
+                    {this.state.id > 0 && _.includes(['GESTIONAR_COMPRA'], this.state.estado) &&
+                        < div >
+                            <Button className="p-button-danger" label="ENVIAR NUEVA SOLICITUD HIJA" onClick={this.confirmarEnviarNuevaSolicitud} />
+                        </div>
+                    }
                 </div>
-
+                <Confirmacion mostrar={this.state.mostrarConfirmacion} contenido={this.state.contenidoConfirmacion} origen={this} identificador={this.state.identificadorConfirmacion} />
             </div >
         )
     }
