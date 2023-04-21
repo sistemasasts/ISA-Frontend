@@ -11,7 +11,6 @@ import {Dialog} from "primereact/dialog";
 import {ActionButton, ActionFooter} from "./ListaDesviacionReq";
 import {Column} from "primereact/column";
 import {DataTable} from "primereact/datatable";
-import * as _ from "lodash";
 
 export const FormDesviacionReq = () => {
     const {
@@ -27,8 +26,6 @@ export const FormDesviacionReq = () => {
         lote,
         actions
     } = useHookFormDesviacionReq();
-
-    console.log(Boolean(nuevaDesviacionReq.id))
 
     return (
         <div className="card card-w-title">
