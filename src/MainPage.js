@@ -100,7 +100,8 @@ import PncVerPAValidar from './components/quality-development/Pnc/PlanAccion/Val
 import ReporteComercialPrincipal from './components/quality-development/Pnc/ReporteComercial/ReporteComercialPrincipal';
 import InventarioPrincipal from './components/quality-development/Inventario/InventarioPrincipal';
 import MovimientoPrincipal from './components/quality-development/Inventario/MovimientoPrincipal';
-import ListaBitacora from "./components/quality-development/Bitacora/ListaBitacora";
+import ListaDesviacionReq from "./components/quality-development/DesviacionRequisitos/ListaDesviacionReq";
+import FormDesviacionReq from "./components/quality-development/DesviacionRequisitos/FormDesviacionReq";
 
 
 class MainPage extends Component {
@@ -688,7 +689,9 @@ class MainPage extends Component {
 						<Route path="/quality-development_pnc_validarTarea" component={PncPAValidarPrincipal} />
 						<Route path="/quality-development_pnc_validarTarea_ver/:idPncSalida/:idPlan" component={PncVerPAValidar} />
 						<Route path="/quality-development_pnc_reporteComercial" component={ReporteComercialPrincipal} />
-						<Route path="/quality-development_pnc_bitacora" component={ListaBitacora} />
+						<Route path="/quality-development_pnc_desviacion_req" component={ListaDesviacionReq} />
+						<Route path="/quality-development_pnc_desviacion_req_edit/:idDesvReq" component={FormDesviacionReq} />
+						<Route path="/quality-development_pnc_desviacion_req_nuevo" component={FormDesviacionReq} />
 						{/* --------- PNC ------------- */}
 
                         {/* --------- INVENTARIO ------------- */}
