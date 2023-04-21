@@ -7,7 +7,7 @@ import PncService from "../../../../service/Pnc/PncService";
 import history from '../../../../history';
 import { useParams } from "react-router-dom";
 import * as _ from "lodash";
-import {formattedDate, formattedStringtoDate} from "../../../../utils/FormatDate";
+import {formattedStringtoDate} from "../../../../utils/FormatDate";
 import LoteService from "../../../../service/DesviacionRequisitos/LoteService";
 import moment from "moment";
 
@@ -89,7 +89,6 @@ export const useHookFormDesviacionReq = () => {
         if (idDesvReq) {
             const lotesResp = await LoteService.listarPorDesviacionId(idDesvReq);
             const n = lotesResp.map((desv) => ({ ...desv, fechaLote: moment(desv.fecha).format("yyyy-MM-DD")}));
-            console.log(n)
 
             setListaLote(n);
         }
@@ -107,22 +106,23 @@ export const useHookFormDesviacionReq = () => {
             return;
         }
 
-        if (!isEdit) {
-            await DesviacionRequisitoService.crear({...nuevaDesviacionReq, lotes: listaLote, responsable: _.get(user, "user_name") });
+        if (!isEdit && !nuevaDesviacionReq.id) {
+            const response = await DesviacionRequisitoService.crear({...nuevaDesviacionReq, responsable: _.get(user, "user_name") });
+
+            setNuevaDesviacionReq(response);
 
             growl.current.show({ severity: 'success', detail: 'Desviacion de Requisitos registrada exitosamente'});
         } else {
-            await DesviacionRequisitoService.actualizar({...nuevaDesviacionReq, lotes: listaLote, responsable: _.get(user, "user_name") });
+            await DesviacionRequisitoService.actualizar({...nuevaDesviacionReq, responsable: _.get(user, "user_name") });
 
             growl.current.show({ severity: 'success', detail: 'Desviacion de Requisitos modificada exitosamente'});
         }
 
         setDisplayForm(false);
-        setProductoSel(undefined);
-        setNuevaDesviacionReq(defaultObjDesviacionReq);
         setLote(defaultLote)
         setListaLote([]);
-        history.push("/quality-development_pnc_desviacion_req");
+        if (listaLote.length > 0)
+            history.push("/quality-development_pnc_desviacion_req");
     }
 
     const handleChangeNewDesviacionReq = (field, value) => {
@@ -174,9 +174,9 @@ export const useHookFormDesviacionReq = () => {
             await LoteService.crear({...lote, desviacionRequisito: nuevaDesviacionReq});
         else await LoteService.actualizar(lote);
 
-        const lotesResp = await LoteService.listarPorDesviacionId(idDesvReq);
-
-        setListaLote(lotesResp);
+        const lotesResp = await LoteService.listarPorDesviacionId(_.defaultTo(idDesvReq, nuevaDesviacionReq.id));
+        const n = lotesResp.map((desv) => ({ ...desv, fechaLote: moment(desv.fecha).format("yyyy-MM-DD")}));
+        setListaLote(n);
 
         setDisplayForm(false);
     }

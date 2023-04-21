@@ -11,6 +11,7 @@ import {Dialog} from "primereact/dialog";
 import {ActionButton, ActionFooter} from "./ListaDesviacionReq";
 import {Column} from "primereact/column";
 import {DataTable} from "primereact/datatable";
+import * as _ from "lodash";
 
 export const FormDesviacionReq = () => {
     const {
@@ -26,6 +27,8 @@ export const FormDesviacionReq = () => {
         lote,
         actions
     } = useHookFormDesviacionReq();
+
+    console.log(Boolean(nuevaDesviacionReq.id))
 
     return (
         <div className="card card-w-title">
@@ -79,67 +82,69 @@ export const FormDesviacionReq = () => {
                 {/*        </div>*/}
                 {/*    </div>*/}
                 {/*}*/}
-                <div className='p-col-12 p-lg-12'>
-                    <div>
-                        <h1><strong>Lotes</strong></h1>
-                        <DataTable
-                            header={<div><Button onClick={() => actions.clickFormLote(false)} label={"Agregar Lote"} icon={"pi pi-plus"} iconPos={"right"} /> </div>}
-                            value={listaLote}
-                            paginator={true}
-                            rows={10}
-                            autoLayout={true}
-                            scrollable={true}
-                            responsive={true}
-                            selectionMode={"single"}
-                        >
-                            <Column
-                                body={(row) =>
-                                    <ActionButton
-                                    edit={() => actions.clickFormLote(true, row)}
-                                    remove={() => actions.eliminarPorId(row)}
-                                    rowData={row}
-                                    />}
-                                style={{ width: '20em', textAlign: 'center' }} />
-                            <Column field={"fechaLote"} header={"Fecha"}  />
-                            <Column field={"lote"} header={"Lote/Orden de fabricación"} />
-                            <Column field={"cantidad"} header={"Cantidad"} />
-                            <Column field={"unidad"} header={"Unidad"} />
-                        </DataTable>
-                        <Dialog header={"Nuevo"} visible={displayForm} modal={true} style={{ width: "50vw" }} onHide={actions.closeForm} footer={<ActionFooter save={actions.saveLocalLote} cancel={actions.closeForm} />}>
-                        <div className="p-grid p-fluid">
-                            <div className='p-col-12 p-lg-12'>
-                                <label htmlFor="float-input">Lote/Orden de fabricación</label>
-                                <InputText value={lote.lote} onChange={(e) => actions.handleChangeLote("lote", e.target.value)} />
+                {(nuevaDesviacionReq && nuevaDesviacionReq.id) && (
+                    <div className='p-col-12 p-lg-12'>
+                        <div>
+                            <h1><strong>Lotes</strong></h1>
+                            <DataTable
+                                header={<div><Button onClick={() => actions.clickFormLote(false)} label={"Agregar Lote"} icon={"pi pi-plus"} iconPos={"right"} /> </div>}
+                                value={listaLote}
+                                paginator={true}
+                                rows={10}
+                                autoLayout={true}
+                                scrollable={true}
+                                responsive={true}
+                                selectionMode={"single"}
+                            >
+                                <Column
+                                    body={(row) =>
+                                        <ActionButton
+                                        edit={() => actions.clickFormLote(true, row)}
+                                        remove={() => actions.eliminarPorId(row)}
+                                        rowData={row}
+                                        />}
+                                    style={{ width: '20em', textAlign: 'center' }} />
+                                <Column field={"fechaLote"} header={"Fecha"}  />
+                                <Column field={"lote"} header={"Lote/Orden de fabricación"} />
+                                <Column field={"cantidad"} header={"Cantidad"} />
+                                <Column field={"unidad"} header={"Unidad"} />
+                            </DataTable>
+                            <Dialog header={"Nuevo"} visible={displayForm} modal={true} style={{ width: "50vw" }} onHide={actions.closeForm} footer={<ActionFooter save={actions.saveLocalLote} cancel={actions.closeForm} />}>
+                            <div className="p-grid p-fluid">
+                                <div className='p-col-12 p-lg-12'>
+                                    <label htmlFor="float-input">Lote/Orden de fabricación</label>
+                                    <InputText value={lote.lote} onChange={(e) => actions.handleChangeLote("lote", e.target.value)} />
+                                </div>
+                                <div className='p-col-12 p-lg-12'>
+                                    <label htmlFor="float-input">Cantidad</label>
+                                    <InputText type={"number"} value={lote.cantidad} onChange={(e) => actions.handleChangeLote("cantidad", e.target.value)} />
+                                </div>
+                                <div className='p-col-12 p-lg-12'>
+                                    <label htmlFor="float-input">Unidad</label>
+                                    <Dropdown value={lote.unidad} options={unidadesMedida} placeholder="Seleccione una unidad" onChange={(e) => actions.handleChangeLote("unidad", e.value)} autoWidth={false} />
+                                </div>
+                                <div className='p-col-12 p-lg-12'>
+                                    <label htmlFor="float-input">Fecha</label>
+                                    <Calendar
+                                        showIcon={true}
+                                        dateFormat="yy-mm-dd"
+                                        value={lote.fecha}
+                                        locale={es}
+                                        onChange={(e) => actions.handleChangeLote("fecha", e.value)}
+                                    />
+                                </div>
+                                {/*{_.isEmpty(this.state.codigoUnidad) && _.isEmpty(this.state.defectoSeleccionado) &&*/}
+                                {/*    <div className='p-col-12 p-lg-12'>*/}
+                                {/*        <div className="alert alert-danger" role="alert">*/}
+                                {/*            Los campos son obligatorios...*/}
+                                {/*        </div>*/}
+                                {/*    </div>*/}
+                                {/*}*/}
                             </div>
-                            <div className='p-col-12 p-lg-12'>
-                                <label htmlFor="float-input">Cantidad</label>
-                                <InputText type={"number"} value={lote.cantidad} onChange={(e) => actions.handleChangeLote("cantidad", e.target.value)} />
-                            </div>
-                            <div className='p-col-12 p-lg-12'>
-                                <label htmlFor="float-input">Unidad</label>
-                                <Dropdown value={lote.unidad} options={unidadesMedida} placeholder="Seleccione una unidad" onChange={(e) => actions.handleChangeLote("unidad", e.value)} autoWidth={false} />
-                            </div>
-                            <div className='p-col-12 p-lg-12'>
-                                <label htmlFor="float-input">Fecha</label>
-                                <Calendar
-                                    showIcon={true}
-                                    dateFormat="yy-mm-dd"
-                                    value={lote.fecha}
-                                    locale={es}
-                                    onChange={(e) => actions.handleChangeLote("fecha", e.value)}
-                                />
-                            </div>
-                            {/*{_.isEmpty(this.state.codigoUnidad) && _.isEmpty(this.state.defectoSeleccionado) &&*/}
-                            {/*    <div className='p-col-12 p-lg-12'>*/}
-                            {/*        <div className="alert alert-danger" role="alert">*/}
-                            {/*            Los campos son obligatorios...*/}
-                            {/*        </div>*/}
-                            {/*    </div>*/}
-                            {/*}*/}
+                        </Dialog>
                         </div>
-                    </Dialog>
                     </div>
-                </div>
+                )}
                 <div className='p-col-12 p-lg-12' style={{ justifyContent: 'center', textAlign: 'center' }}>
                     <Button label='Guardar' icon='pi pi-save' style={{ width: '10%' }} onClick={actions.createItem} />
                     <Button label='Cancelar' icon='pi pi-times' style={{ width: '10%' }} className='p-button-danger' onClick={actions.cancelar} />
