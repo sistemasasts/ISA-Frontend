@@ -20,7 +20,6 @@ class PncPAValidarPrincipal extends Component {
 
     async componentDidMount() {
         const solicitudes_data = await PncPlanAccionService.listarPorEstado("PENDIENTE_REVISION");
-        console.log(solicitudes_data);
         this.setState({ solicitudes: solicitudes_data });
     }
 

@@ -63,9 +63,10 @@ class ValidarPrincipalSPP extends Component {
                     <Column field="vigenciaValidarSolicitud" body={this.bodyTemplateVigencia} header="Vigencia" sortable={true} style={{ textAlign: 'center', width: '8em' }} />
                     <Column field="lineaAplicacion" header="Aplicación" sortable={true} style={{ textAlign: 'center', width: '12em' }} />
                     <Column field="fechaEntrega" header="Fecha Entrega" sortable={true} style={{ textAlign: 'center', width: '11em' }} />
-                    <Column field="motivo" header="Motivo" sortable={true} style={{ width: '20em' }} />
+                    <Column field='observacion' header="Secuencial y Motivo Prueba" sortable style={{ textAlign: 'center', width: '30em' }} />
                     <Column field="nombreSolicitante" header="Solicitante" sortable={true} style={{ textAlign: 'center', width: '15em' }} />
                     <Column field='estado' body={this.bodyTemplateEstado} header="Estado" sortable style={{ textAlign: 'center', width: '12em' }} />
+                    <Column field="motivo" header="Motivo" sortable={true} style={{ width: '20em' }} />
                 </DataTable>
             </div>
         )
