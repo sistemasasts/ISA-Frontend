@@ -31,6 +31,7 @@ class PncSalidaMaterialForm extends Component {
             fecha: new Date(),
             cantidad: null,
             destinoFinal: null,
+            destinoFinalAux: null,
             observacion: null,
             observacion2: null,
             mostrarControles: true,
@@ -48,6 +49,7 @@ class PncSalidaMaterialForm extends Component {
 
         this.validarCamposRequeridos = this.validarCamposRequeridos.bind(this);
         this.guardar = this.guardar.bind(this);
+        this.actualizar = this.actualizar.bind(this);
         this.regresar = this.regresar.bind(this);
         this.enviar = this.enviar.bind(this);
     }
@@ -76,6 +78,7 @@ class PncSalidaMaterialForm extends Component {
                         fecha: moment(salida.fecha, 'YYYY-MM-DD').toDate(),
                         cantidad: salida.cantidad,
                         destinoFinal: salida.destino,
+                        destinoFinalAux: salida.destino,
                         observacion: salida.observacion,
 
                         pnc: pnc,
@@ -117,6 +120,20 @@ class PncSalidaMaterialForm extends Component {
                 this.growl.show({ severity: 'error', detail: 'Cantidad excede al stock disponible!' });
             }
 
+        } else {
+            this.growl.show({ severity: 'error', detail: 'Ingrese todos los campos obligatorios!' });
+        }
+    }
+
+    async actualizar() {
+        if (this.validarCamposRequeridos()) {
+            if (this.validarStock()) {
+                const salida = await PncSalidaMaterialService.actualizar(this.crearObj());
+                this.growl.show({ severity: 'success', detail: 'Salida de materia actualizado!' });
+                this.setState({ destinoFinalAux: salida.destino });
+            } else {
+                this.growl.show({ severity: 'error', detail: 'Cantidad excede al stock disponible!' });
+            }
         } else {
             this.growl.show({ severity: 'error', detail: 'Ingrese todos los campos obligatorios!' });
         }
@@ -271,7 +288,7 @@ class PncSalidaMaterialForm extends Component {
                         }
                     </div>
                 </div>
-                {((this.state.destinoFinal === 'RETRABAJO') || (this.state.destinoFinal === 'REPROCESO')) && this.state.id > 0 &&
+                {((this.state.destinoFinalAux === 'RETRABAJO') || (this.state.destinoFinalAux === 'REPROCESO')) && this.state.id > 0 &&
                     <div className='p-col-12 p-lg-12'>
                         <PncPlanAccion idSalidaMaterial={this.state.id} mostrarControles={this.state.editar} />
                     </div>
@@ -307,6 +324,7 @@ class PncSalidaMaterialForm extends Component {
                 <div className='p-col-12 p-lg-12 boton-opcion' >
                     {this.state.id > 0 &&
                         < div >
+                            {this.state.mostrarControles && <Button style={{ marginRight: '15px' }} className="p-button" label="ACTUALIZAR" onClick={this.actualizar} />}
                             {this.state.mostrarControles && <Button style={{ marginRight: '15px' }} className="p-button" label="ENVIAR" onClick={this.enviar} />}
                             {this.state.mostrarControles && <Button style={{ marginRight: '15px' }} className="p-button-danger" label="ANULAR" onClick={this.regresar} />}
                             <Button className="p-button-secondary" label="ATRÁS" onClick={this.regresar} />

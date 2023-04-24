@@ -16,6 +16,7 @@ const PncSalidaMaterialService = {
 
     enviar: (salida) => http.request.post(`${apiEndpoint}/enviarAprobar`, salida),
     aprobar: (norma) => http.request.post(`${apiEndpoint}/aprobar`, norma),
+    regresar: (salida) => http.request.post(`${apiEndpoint}/regresar`, salida),
 
 }
 

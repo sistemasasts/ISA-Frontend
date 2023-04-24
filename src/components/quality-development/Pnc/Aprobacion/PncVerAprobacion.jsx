@@ -33,6 +33,7 @@ class PncVerAprobacion extends Component {
         };
         this.aprobarSolicitud = this.aprobarSolicitud.bind(this);
         this.redirigirInicio = this.redirigirInicio.bind(this);
+        this.regresarSolicitud = this.regresarSolicitud.bind(this);
 
     }
 
@@ -67,6 +68,21 @@ class PncVerAprobacion extends Component {
         if (continuar) {
             await PncSalidaMaterialService.aprobar(this.crearObjSolicitud(aprobado));
             this.growl.show({ severity: 'success', detail: 'Salida de Material Procesada!' });
+            setTimeout(function () {
+                history.push(`/quality-development_pnc_salida_material_aprobacion`);
+            }, 1000);
+        }
+    }
+
+    async regresarSolicitud() {
+        let continuar = true;
+        if (_.isEmpty(this.state.observacion)) {
+            this.growl.show({ severity: 'error', detail: 'Debe ingresar una observación' });
+            continuar = false;
+        }
+        if (continuar) {
+            await PncSalidaMaterialService.regresar(this.crearObjSolicitud(false));
+            this.growl.show({ severity: 'success', detail: 'Salida de Material Regresada!' });
             setTimeout(function () {
                 history.push(`/quality-development_pnc_salida_material_aprobacion`);
             }, 1000);
@@ -113,6 +129,7 @@ class PncVerAprobacion extends Component {
                         < div >
                             <Button className="p-button" label="APROBAR" onClick={() => this.aprobarSolicitud(true)} />
                             <Button className="p-button-danger" label="RECHAZAR" onClick={() => this.aprobarSolicitud(false)} />
+                            <Button className="p-button-danger" label="REGRESAR" onClick={() => this.regresarSolicitud()} />
                             <Button className='p-button-secondary' label="ATRÁS" onClick={this.redirigirInicio} />
                         </div>
                     }
