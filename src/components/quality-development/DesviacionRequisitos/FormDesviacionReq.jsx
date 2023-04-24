@@ -8,7 +8,7 @@ import {useHookFormDesviacionReq} from "./hooks/useHookFormDesviacionReq";
 import {InputTextarea} from "primereact/inputtextarea";
 import {Button} from "primereact/button";
 import {Dialog} from "primereact/dialog";
-import {ActionButton, ActionFooter} from "./ListaDesviacionReq";
+import {ActionButton, ActionFooter, Header} from "./ListaDesviacionReq";
 import {Column} from "primereact/column";
 import {DataTable} from "primereact/datatable";
 
@@ -32,11 +32,7 @@ export const FormDesviacionReq = () => {
             <Growl ref={growl} style={{ marginTop: '75px' }} />
             <h3 className={'text-titulo'}><strong>BITÁCORA DESVIACIÓN A LOS REQUISITOS</strong></h3>
             <div className="p-grid p-grid-responsive p-fluid">
-                <div className='p-col-12 p-lg-4'>
-                    <label htmlFor="float-input">Origen</label>
-                    <InputText value={nuevaDesviacionReq.origen} readOnly={true} />
-                </div>
-                <div className='p-col-12 p-lg-8'>
+                <div className='p-col-12 p-lg-12'>
                     <label htmlFor="float-input">Material</label>
                     <AutoComplete
                         field="nameProduct"
@@ -50,7 +46,7 @@ export const FormDesviacionReq = () => {
                 </div>
                 <div className='p-col-12 p-lg-6'>
                     <label htmlFor="float-input">Resp. Seguimiento</label>
-                    <InputTextarea value={nuevaDesviacionReq.seguimiento} onChange={(e) => actions.handleChangeNewDesviacionReq("seguimiento", e.target.value)} />
+                    <InputTextarea autoResize={true} value={nuevaDesviacionReq.seguimiento} onChange={(e) => actions.handleChangeNewDesviacionReq("seguimiento", e.target.value)} />
                 </div>
                 <div className='p-col-12 p-lg-6'>
                     <label htmlFor="float-input">Línea Afectada</label>
@@ -58,19 +54,19 @@ export const FormDesviacionReq = () => {
                 </div>
                 <div className='p-col-12 p-lg-6'>
                     <label htmlFor="float-input">Motivo de la desviación</label>
-                    <InputTextarea value={nuevaDesviacionReq.motivo} onChange={(e) => actions.handleChangeNewDesviacionReq("motivo", e.target.value)} />
+                    <InputTextarea autoResize={true} value={nuevaDesviacionReq.motivo} onChange={(e) => actions.handleChangeNewDesviacionReq("motivo", e.target.value)} />
                 </div>
                 <div className='p-col-12 p-lg-6'>
                     <label htmlFor="float-input">Descripción de la desviación</label>
-                    <InputTextarea value={nuevaDesviacionReq.descripcion} onChange={(e) => actions.handleChangeNewDesviacionReq("descripcion", e.target.value)} />
+                    <InputTextarea autoResize={true} value={nuevaDesviacionReq.descripcion} onChange={(e) => actions.handleChangeNewDesviacionReq("descripcion", e.target.value)} />
                 </div>
                 <div className='p-col-12 p-lg-6'>
                     <label htmlFor="float-input">Controles requeridos</label>
-                    <InputTextarea value={nuevaDesviacionReq.control} onChange={(e) => actions.handleChangeNewDesviacionReq("control", e.target.value)} />
+                    <InputTextarea autoResize={true} value={nuevaDesviacionReq.control} onChange={(e) => actions.handleChangeNewDesviacionReq("control", e.target.value)} />
                 </div>
                 <div className='p-col-12 p-lg-6'>
                     <label htmlFor="float-input">Alcance y tiempo de la desviación</label>
-                    <InputTextarea value={nuevaDesviacionReq.alcance} onChange={(e) => actions.handleChangeNewDesviacionReq("alcance", e.target.value)} />
+                    <InputTextarea autoResize={true} value={nuevaDesviacionReq.alcance} onChange={(e) => actions.handleChangeNewDesviacionReq("alcance", e.target.value)} />
                 </div>
                 {/*{_.isEmpty(this.state.codigoUnidad) && _.isEmpty(this.state.defectoSeleccionado) &&*/}
                 {/*    <div className='p-col-12 p-lg-12'>*/}
@@ -84,7 +80,7 @@ export const FormDesviacionReq = () => {
                         <div>
                             <h1><strong>Lotes</strong></h1>
                             <DataTable
-                                header={<div><Button onClick={() => actions.clickFormLote(false)} label={"Agregar Lote"} icon={"pi pi-plus"} iconPos={"right"} /> </div>}
+                                header={<Header clickDisplayForm={() => actions.clickFormLote(false)} label={"Agregar Lote"} edit={false} icon={"pi pi-plus"} />}
                                 value={listaLote}
                                 paginator={true}
                                 rows={10}
@@ -118,11 +114,12 @@ export const FormDesviacionReq = () => {
                                 </div>
                                 <div className='p-col-12 p-lg-12'>
                                     <label htmlFor="float-input">Unidad</label>
-                                    <Dropdown value={lote.unidad} options={unidadesMedida} placeholder="Seleccione una unidad" onChange={(e) => actions.handleChangeLote("unidad", e.value)} autoWidth={false} />
+                                    <Dropdown appendTo={document.body} value={lote.unidad} options={unidadesMedida} placeholder="Seleccione una unidad" onChange={(e) => actions.handleChangeLote("unidad", e.value)} autoWidth={false} />
                                 </div>
                                 <div className='p-col-12 p-lg-12'>
                                     <label htmlFor="float-input">Fecha</label>
                                     <Calendar
+                                        appendTo={document.body}
                                         showIcon={true}
                                         dateFormat="yy-mm-dd"
                                         value={lote.fecha}

@@ -30,7 +30,7 @@ const defaultLote = {
     lote: ""
 }
 
-const defaultEs = {
+export const defaultEs = {
     firstDayOfWeek: 1,
     dayNames: ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"],
     dayNamesShort: ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"],
@@ -121,8 +121,8 @@ export const useHookFormDesviacionReq = () => {
         setDisplayForm(false);
         setLote(defaultLote)
         setListaLote([]);
-        if (listaLote.length > 0)
-            history.push("/quality-development_pnc_desviacion_req");
+        // if (listaLote.length > 0)
+        //     history.push("/quality-development_pnc_desviacion_req");
     }
 
     const handleChangeNewDesviacionReq = (field, value) => {
