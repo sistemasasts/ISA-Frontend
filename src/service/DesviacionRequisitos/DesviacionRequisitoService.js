@@ -1,4 +1,5 @@
 import http from "../http";
+import httpFiles from "../httpFiles";
 
 const apiEndpoint = "/desviacion-requisito";
 
@@ -8,7 +9,7 @@ const DesviacionRequisitoService = {
     crear: (desviacionRequisito) => http.request.post(apiEndpoint, desviacionRequisito),
     actualizar: (desviacionRequisito) => http.request.put(apiEndpoint, desviacionRequisito),
     obtenerPorId: (desviacionId) => http.request.get(`${apiEndpoint}/${desviacionId}`),
-    obtenerReporte: (desviacionId) => http.request.get(`${apiEndpoint}/reporte/${desviacionId}`)
+    obtenerReporte: (desviacionId) => httpFiles.request.get(`${apiEndpoint}/reporte/${desviacionId}`)
 }
 
 export default DesviacionRequisitoService

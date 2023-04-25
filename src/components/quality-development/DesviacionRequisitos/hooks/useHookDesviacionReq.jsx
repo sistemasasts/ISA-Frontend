@@ -129,7 +129,7 @@ export const useHookDesviacionReq = () => {
 
         document.body.appendChild(a);
         a.href = ap;
-        a.download = `DesviacionRequisto_${rowData.product.productName}.pdf`;
+        a.download = `DesviacionRequisto_${rowData.secuencial}_${rowData.product.nameProduct}.pdf`;
         a.click();
         this.growl.show({ severity: 'success', detail: 'Reporte generado!' });
     }
