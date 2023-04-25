@@ -14,12 +14,11 @@ const criteriosDefault = {
     consulta: {}
 }
 const paginadorDefault = {
-    size: SIZE,
     page: 0,
     totalRecords: 0,
-    currenPage: 0,
+    currenPage: "0",
     first: 0,
-    rows: 0
+    rows: SIZE
 }
 export const useHookDesviacionReq = () => {
     let growl = useRef(null);
@@ -46,13 +45,22 @@ export const useHookDesviacionReq = () => {
     }, []);
 
     const obtenerListaDesviacionReq = async () => {
-        const requestListaDesviacionReq = await DesviacionRequisitoService.listarPorCriterios(criterios);
+        consultaDesviacionesPorPagina();
+    }
+
+    const consultaDesviacionesPorPagina = async (page, event) => {
+        const criteriosTmp = { ...criterios };
+        if(page) _.set(criteriosTmp, "page", page);
+
+        const requestListaDesviacionReq = await DesviacionRequisitoService.listarPorCriterios(criteriosTmp);
 
         setListaDesviacionReq(requestListaDesviacionReq.content.map((c) => {
             return { ...c, fechaCreacionTrans: moment(c.fechaCreacion).format("yyyy-MM-DD") }
         }));
         const currentPage = `( pág. ${requestListaDesviacionReq.number + 1} de ${requestListaDesviacionReq.totalPages} )  Total ítems  ${requestListaDesviacionReq.totalElements}`;
-        setPagination({ ...pagination, totalRecords: requestListaDesviacionReq.totalRecords, currenPage: currentPage  });
+
+        if (event) setPagination({ ...pagination, totalRecords: requestListaDesviacionReq.totalElements, currenPage: currentPage, first: event.first, rows: event.rows  });
+        else setPagination({ ...pagination, totalRecords: requestListaDesviacionReq.totalElements, currenPage: currentPage });
     }
 
     const clickNuevaDesviacionReq = () => {
@@ -110,8 +118,8 @@ export const useHookDesviacionReq = () => {
         setListaProductos([]);
     }
 
-    const onPageChange = (event) => {
-        setPagination({ ...pagination, first: event.first, rows: event.rows });
+    const onPageChange = async (event) => {
+        consultaDesviacionesPorPagina(event.page, event);
     };
 
     const generarReporte = async (rowData) => {

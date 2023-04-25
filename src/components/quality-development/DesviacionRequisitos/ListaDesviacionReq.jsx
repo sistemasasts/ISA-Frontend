@@ -10,7 +10,6 @@ import {Accordion, AccordionTab} from "primereact/accordion";
 import {InputText} from "primereact/inputtext";
 import {AutoComplete} from "primereact/autocomplete";
 import {Calendar} from "primereact/calendar";
-import {MultiSelect} from "primereact/multiselect";
 import {Dropdown} from "primereact/components/dropdown/Dropdown";
 
 export const Header = ({ clickDisplayForm, icon, label }) => {
@@ -105,8 +104,6 @@ export const ListaDesviacionReq = () => {
                     <DataTable
                         header={<Header label={"Nuevo"} icon={"pi pi-plus"} clickDisplayForm={actions.clickNuevaDesviacionReq}  />}
                         value={listaDesviacionReq}
-                        // paginator={true}
-                        // rows={20}
                         autoLayout={true}
                         scrollable={true}
                         responsive={true}
@@ -127,11 +124,12 @@ export const ListaDesviacionReq = () => {
                     </DataTable>
                     <Paginator
                         first={pagination.first}
-                        rows={pagination.size}
+                        rows={pagination.rows}
                         totalRecords={pagination.totalRecords}
                         onPageChange={actions.onPageChange}
-                        template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
-                        currentPageReportTemplate={pagination.currenPage}></Paginator>
+                        currentPageReportTemplate={pagination.currenPage}
+                        template="FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
+                    ></Paginator>
                 </div>
             </div>
         </div>
