@@ -7,7 +7,7 @@ import PncService from "../../../../service/Pnc/PncService";
 import * as _ from "lodash";
 import * as moment from "moment/moment";
 
-const SIZE = 1;
+const SIZE = 10;
 const criteriosDefault = {
     size: SIZE,
     page: 0,
@@ -131,7 +131,7 @@ export const useHookDesviacionReq = () => {
         a.href = ap;
         a.download = `DesviacionRequisto_${rowData.secuencial}_${rowData.product.nameProduct}.pdf`;
         a.click();
-        this.growl.show({ severity: 'success', detail: 'Reporte generado!' });
+        growl.current.show({ severity: 'success', detail: 'Reporte generado!' });
     }
 
     return {

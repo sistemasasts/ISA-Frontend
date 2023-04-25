@@ -58,7 +58,7 @@ export const useHookFormDesviacionReq = () => {
         async function obtenerUnidadesMedida() {
             const responseUnidadesMedidas = await UnidadMedidaService.listarActivos();
             const remappingUnits = responseUnidadesMedidas.map((unit) => ({ label: unit.label, value: unit.label }));
-            setUnidadesMedida(remappingUnits);
+            setUnidadesMedida(responseUnidadesMedidas);
         }
         async function obtenerCatalogoLineaAfectacion() {
             const responseCatalogoLineaAfecta = await PncService.obtenerLineaAfecta();
@@ -115,14 +115,14 @@ export const useHookFormDesviacionReq = () => {
         } else {
             await DesviacionRequisitoService.actualizar({...nuevaDesviacionReq, responsable: _.get(user, "user_name") });
 
+            checkLotes();
+
             growl.current.show({ severity: 'success', detail: 'Desviacion de Requisitos modificada exitosamente'});
         }
 
         setDisplayForm(false);
         setLote(defaultLote)
         setListaLote([]);
-        // if (listaLote.length > 0)
-        //     history.push("/quality-development_pnc_desviacion_req");
     }
 
     const handleChangeNewDesviacionReq = (field, value) => {
@@ -144,7 +144,10 @@ export const useHookFormDesviacionReq = () => {
     const handleChangeLote = (field, value) => {
         const loteTmp = { ...lote };
 
-        loteTmp[field] = value;
+        if (field === "unidad")
+            loteTmp[field] = { id: value };
+        else loteTmp[field] = value;
+
         setLote(loteTmp);
     }
 

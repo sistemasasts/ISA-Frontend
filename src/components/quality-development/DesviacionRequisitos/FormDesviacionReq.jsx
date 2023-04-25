@@ -100,7 +100,7 @@ export const FormDesviacionReq = () => {
                                 <Column field={"fechaLote"} header={"Fecha"}  />
                                 <Column field={"lote"} header={"Lote/Orden de fabricación"} />
                                 <Column field={"cantidad"} header={"Cantidad"} />
-                                <Column field={"unidad"} header={"Unidad"} />
+                                <Column field={"unidad.nombre"} header={"Unidad"} />
                             </DataTable>
                             <Dialog header={"Nuevo"} visible={displayForm} modal={true} style={{ width: "50vw" }} onHide={actions.closeForm} footer={<ActionFooter save={actions.saveLocalLote} cancel={actions.closeForm} />}>
                             <div className="p-grid p-fluid">
@@ -114,7 +114,7 @@ export const FormDesviacionReq = () => {
                                 </div>
                                 <div className='p-col-12 p-lg-12'>
                                     <label htmlFor="float-input">Unidad</label>
-                                    <Dropdown appendTo={document.body} value={lote.unidad} options={unidadesMedida} placeholder="Seleccione una unidad" onChange={(e) => actions.handleChangeLote("unidad", e.value)} autoWidth={false} />
+                                    <Dropdown appendTo={document.body} value={lote.unidad.id} options={unidadesMedida} placeholder="Seleccione una unidad" onChange={(e) => actions.handleChangeLote("unidad", e.value)} autoWidth={false} />
                                 </div>
                                 <div className='p-col-12 p-lg-12'>
                                     <label htmlFor="float-input">Fecha</label>
