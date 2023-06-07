@@ -49,6 +49,7 @@ class Form extends Component {
             nombreCliente: null,
             editar: true,
             estado: null,
+            origen: null,
             produccionTotalMes: null,
             ventaTotalMes: null,
 
@@ -57,6 +58,7 @@ class Form extends Component {
             unidadesCatalogo: null,
             catalogoProcedenciaLinea: null,
             catalogoLineaAfecta: null,
+            catalogoOrigen: null,
             productosSugeridos: [],
         }
         this.onFivemsChange = this.onFivemsChange.bind(this);
@@ -72,10 +74,11 @@ class Form extends Component {
         const unidades = await UnidadMedidaService.listarActivos();
         const procedenciaLinea = await PncService.obtenerProcedenciaLinea();
         const lineaAfecta = await PncService.obtenerLineaAfecta();
+        const origenes = await PncService.listarOrigen();
         this.refrescar(this.props.match.params.idPnc);
         this.setState({
             catalogoArea: catalogAreas, unidadesCatalogo: unidades, catalogoProcedenciaLinea: procedenciaLinea,
-            catalogoLineaAfecta: lineaAfecta
+            catalogoLineaAfecta: lineaAfecta, catalogoOrigen: origenes
         });
     }
 
@@ -107,6 +110,7 @@ class Form extends Component {
                     defectos: pnc.defectos,
                     nombreCliente: pnc.nombreCliente,
                     estado: pnc.estado,
+                    origen: pnc.origen,
                     produccionTotalMes: pnc.produccionTotalMes,
                     ventaTotalMes: pnc.ventaTotalMes,
                     editar: _.includes(['CREADO', 'EN_PROCESO', 'FINALIZADO'], pnc.estado),
@@ -184,7 +188,8 @@ class Form extends Component {
             observacionCincoMs: _.join(this.state.fivems, ','),
             nombreCliente: this.state.nombreCliente,
             produccionTotalMes: this.state.produccionTotalMes,
-            ventaTotalMes: this.state.ventaTotalMes
+            ventaTotalMes: this.state.ventaTotalMes,
+            origen: this.state.origen
         }
     }
 
@@ -285,6 +290,10 @@ class Form extends Component {
                         <label htmlFor="float-input">Línea Afectada</label>
                         <Dropdown disabled={!this.state.editar} options={this.state.catalogoLineaAfecta} value={this.state.lineaAfectada} autoWidth={false} onChange={(e) => this.setState({ lineaAfectada: e.value })} placeholder="Selecione" />
                     </div>
+                    <div className='p-col-12 p-lg-4'>
+                        <label htmlFor="float-input">Origen</label>
+                        <Dropdown disabled={!this.state.editar} options={this.state.catalogoOrigen} value={this.state.origen} autoWidth={false} onChange={(e) => this.setState({ origen: e.value })} placeholder="Selecione" />
+                    </div>
 
                     <label className="p-col-12 p-lg-12" htmlFor="float-input"><span style={{ color: '#CB3234' }}>*</span><strong>Observaciones 5 M's</strong></label>
                     <div className='p-col-12 p-lg-12' style={{ paddingLeft: '10%', paddingRight: '10%' }}>
@@ -321,7 +330,7 @@ class Form extends Component {
                             </div> */}
                         </div>
                     </div>
-                    <div className='p-col-12 p-lg-12' /* style={{ background: '#ffcdd2' }} */>
+                   {/*  <div className='p-col-12 p-lg-12'>
                         <div className='p-grid'>
                             <label className="p-col-12 p-lg-12" htmlFor="float-input"><span style={{ color: '#CB3234' }}>*</span><strong>Datos Generales</strong></label>
                             <div className='p-col-12 p-lg-4'>
@@ -339,7 +348,7 @@ class Form extends Component {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
                 <div className='p-col-12 p-lg-12 boton-opcion' >
                     {this.state.id === 0 &&

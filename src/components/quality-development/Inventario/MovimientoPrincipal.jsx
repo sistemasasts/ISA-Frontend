@@ -93,6 +93,8 @@ class MovimientoPrincipal extends Component {
     }
 
     async obtenerDatosConsulta(page, size) {
+        const a = this.crearObj();
+        console.log(a)
         const solicitudesData = await InventarioService.listarDetallePorCriterios(page, size, this.crearObj());
         const currentReportAUX = `( pág. ${solicitudesData.number + 1} de ${solicitudesData.totalPages} )  Total ítems  ${solicitudesData.totalElements}`;
         this.setState({ movimientos: solicitudesData.content, totalRecords: solicitudesData.totalElements, currenPage: currentReportAUX });
@@ -101,8 +103,8 @@ class MovimientoPrincipal extends Component {
     crearObj() {
         return {
             inventarioId: this.state.inventarioId,
-            fechaInicio: this.state.fechaInicio && moment(this.state.fechaInicio).format("YYYY-MM-DD"),
-            fechaFin: this.state.fechaFin && moment(this.state.fechaFin).format("YYYY-MM-DD"),
+            fechaInicio: this.state.fechaInicio && moment(this.state.fechaInicio).format("YYYY-MM-DD hh:mm:ss.SSS"),
+            fechaFin: this.state.fechaFin && moment(this.state.fechaFin).format("YYYY-MM-DD hh:mm:ss.SSS"),
         }
     }
 

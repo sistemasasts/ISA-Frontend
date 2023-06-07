@@ -1,14 +1,15 @@
-import {useEffect, useState, useRef} from "react";
+import { useEffect, useState, useRef } from "react";
 import DesviacionRequisitoService from "../../../../service/DesviacionRequisitos/DesviacionRequisitoService";
 import ProductoService from "../../../../service/productoService";
-import {getDecodedToken} from "../../../../config/auth/credentialConfiguration";
+import { getDecodedToken } from "../../../../config/auth/credentialConfiguration";
 import UnidadMedidaService from "../../../../service/UnidadMedidaService";
 import PncService from "../../../../service/Pnc/PncService";
 import history from '../../../../history';
 import { useParams } from "react-router-dom";
 import * as _ from "lodash";
-import {formattedStringtoDate} from "../../../../utils/FormatDate";
+import { formattedStringtoDate } from "../../../../utils/FormatDate";
 import LoteService from "../../../../service/DesviacionRequisitos/LoteService";
+import RecursoRecuperarMaterialService from "../../../../service/DesviacionRequisitos/RecursoRecuperarMaterialService";
 import moment from "moment";
 
 const defaultObjDesviacionReq = {
@@ -21,6 +22,12 @@ const defaultObjDesviacionReq = {
     alcance: "",
     lotes: [],
     product: {},
+    productoAfectado: {},
+    productoReplanificado: {},
+    cantidadAfectada: 0,
+    cantidadRecuperada: 0,
+    desperdicioGenerado: 0,
+    replanificacion: false
 }
 
 const defaultLote = {
@@ -28,6 +35,13 @@ const defaultLote = {
     cantidad: 0,
     unidad: "",
     lote: ""
+}
+
+const defaultRecurso = {
+    cantidad: 0,
+    descripcion: "",
+    materialId: 0,
+    costo: 0,
 }
 
 export const defaultEs = {
@@ -43,18 +57,25 @@ export const useHookFormDesviacionReq = () => {
     const user = getDecodedToken();
     const { idDesvReq } = useParams();
     const [displayForm, setDisplayForm] = useState(false);
-    const [nuevaDesviacionReq, setNuevaDesviacionReq] = useState({...defaultObjDesviacionReq})
+    const [displayFormRecurso, setDisplayFormRecurso] = useState(false);
+    const [nuevaDesviacionReq, setNuevaDesviacionReq] = useState({ ...defaultObjDesviacionReq })
     const [listaProductos, setListaProductos] = useState([]);
     const [productoSel, setProductoSel] = useState();
+    const [productoAfectadoSel, setProductoAfectadoSel] = useState();
+    const [productoReplanificadoSel, setProductoReplanificadoSel] = useState();
     const [es, setEs] = useState(defaultEs)
     const [unidadesMedida, setUnidadesMedida] = useState([]);
     const [catalogoLineaAfectacion, setCatalogoLineaAfectacion] = useState([]);
     const [lote, setLote] = useState(defaultLote);
     const [listaLote, setListaLote] = useState([]);
+    const [recurso, setRecurso] = useState(defaultRecurso);
+    const [totalRecurso, setTotalRecurso] = useState(0);
+    const [listaRecurso, setListaRecurso] = useState([]);
+    const [materialSel, setMaterialSel] = useState();
     const [isEdit, setIsEdit] = useState(false);
     const [isEditLocal, setIsEditLocal] = useState(false);
 
-    useEffect( () => {
+    useEffect(() => {
         async function obtenerUnidadesMedida() {
             const responseUnidadesMedidas = await UnidadMedidaService.listarActivos();
             const remappingUnits = responseUnidadesMedidas.map((unit) => ({ label: unit.label, value: unit.label }));
@@ -68,6 +89,7 @@ export const useHookFormDesviacionReq = () => {
         async function obtenerDesviacionRePorId() {
             checkIsEditOrNew();
             checkLotes();
+            checkRecursos();
         }
         obtenerUnidadesMedida();
         obtenerCatalogoLineaAfectacion();
@@ -81,6 +103,8 @@ export const useHookFormDesviacionReq = () => {
             setNuevaDesviacionReq(desvResp);
 
             setProductoSel(desvResp.product);
+            setProductoAfectadoSel(desvResp.productoAfectado);
+            setProductoReplanificadoSel(desvResp.productoReplanificado);
             setIsEdit(true);
         }
     }
@@ -88,11 +112,22 @@ export const useHookFormDesviacionReq = () => {
     const checkLotes = async () => {
         if (idDesvReq) {
             const lotesResp = await LoteService.listarPorDesviacionId(idDesvReq);
-            const n = lotesResp.map((desv) => ({ ...desv, fechaLote: moment(desv.fecha).format("yyyy-MM-DD")}));
+            const n = lotesResp.map((desv) => ({ ...desv, fechaLote: moment(desv.fecha).format("yyyy-MM-DD") }));
 
             setListaLote(n);
         }
     }
+
+    const checkRecursos = async () => {
+        if (idDesvReq) {
+            const recursosResp = await RecursoRecuperarMaterialService.listarPorDesviacionId(idDesvReq);
+            //const n = lotesResp.map((desv) => ({ ...desv, fechaLote: moment(desv.fecha).format("yyyy-MM-DD") }));
+
+            setListaRecurso(recursosResp);
+            setTotalRecurso(_.sumBy(recursosResp, (o) => {return o.costo}));
+        }
+    }
+
     const obtenerListaProductos = async (value) => {
         const responseListaProductos = await ProductoService.listarPorNombreCriterio(value);
 
@@ -101,28 +136,30 @@ export const useHookFormDesviacionReq = () => {
 
     const saveItem = async () => {
         if (_.isEmpty(nuevaDesviacionReq)) {
-            growl.current.show({severity: 'error', summary: "Error", detail: 'Todos los campos deben estar llenos'});
+            growl.current.show({ severity: 'error', summary: "Error", detail: 'Todos los campos deben estar llenos' });
 
             return;
         }
 
         if (!isEdit && !nuevaDesviacionReq.id) {
-            const response = await DesviacionRequisitoService.crear({...nuevaDesviacionReq, responsable: _.get(user, "user_name") });
-
+            const response = await DesviacionRequisitoService.crear({ ...nuevaDesviacionReq, responsable: _.get(user, "user_name") });
             setNuevaDesviacionReq(response);
 
-            growl.current.show({ severity: 'success', detail: 'Desviacion de Requisitos registrada exitosamente'});
+            growl.current.show({ severity: 'success', detail: 'Desviacion de Requisitos registrada exitosamente' });
         } else {
-            await DesviacionRequisitoService.actualizar({...nuevaDesviacionReq, responsable: _.get(user, "user_name") });
+            await DesviacionRequisitoService.actualizar({ ...nuevaDesviacionReq, responsable: _.get(user, "user_name") });
 
             checkLotes();
+            checkRecursos();
 
-            growl.current.show({ severity: 'success', detail: 'Desviacion de Requisitos modificada exitosamente'});
+            growl.current.show({ severity: 'success', detail: 'Desviacion de Requisitos modificada exitosamente' });
         }
 
         setDisplayForm(false);
         setLote(defaultLote)
         setListaLote([]);
+        setRecurso(defaultRecurso);
+        setListaRecurso([]);
     }
 
     const handleChangeNewDesviacionReq = (field, value) => {
@@ -131,6 +168,18 @@ export const useHookFormDesviacionReq = () => {
         switch (field) {
             case "product":
                 setProductoSel(value);
+                if (typeof value === 'object') {
+                    desviacionReq[field] = value;
+                }
+                break;
+            case "productoAfectado":
+                setProductoAfectadoSel(value);
+                if (typeof value === 'object') {
+                    desviacionReq[field] = value;
+                }
+                break;
+            case "productoReplanificado":
+                setProductoReplanificadoSel(value);
                 if (typeof value === 'object') {
                     desviacionReq[field] = value;
                 }
@@ -151,6 +200,25 @@ export const useHookFormDesviacionReq = () => {
         setLote(loteTmp);
     }
 
+    const handleChangeRecurso = (field, value) => {
+        const loteTmp = { ...recurso };
+        switch (field) {
+            case "material":
+                setMaterialSel(value);
+                if (typeof value === 'object') {
+                    loteTmp.materialId = value.idProduct;
+                    loteTmp.descripcion = value.nameProduct;
+                } else {
+                    loteTmp.descripcion = value;
+                }
+                break;
+            default:
+                loteTmp[field] = value;
+        }
+
+        setRecurso(loteTmp);
+    }
+
     const buscarProductos = (value) => {
         obtenerListaProductos(value)
     }
@@ -166,7 +234,6 @@ export const useHookFormDesviacionReq = () => {
         setIsEditLocal(editLote);
         if (editLote && rowData) {
             const busc = await LoteService.listarPorLoteId(rowData.id);
-            console.log(busc);
             _.set(rowData, "fecha", formattedStringtoDate(rowData.fecha));
             setLote(rowData);
         }
@@ -174,11 +241,11 @@ export const useHookFormDesviacionReq = () => {
 
     const saveLocalLote = async () => {
         if (!isEditLocal)
-            await LoteService.crear({...lote, desviacionRequisito: nuevaDesviacionReq});
+            await LoteService.crear({ ...lote, desviacionRequisito: nuevaDesviacionReq });
         else await LoteService.actualizar(lote);
 
         const lotesResp = await LoteService.listarPorDesviacionId(_.defaultTo(idDesvReq, nuevaDesviacionReq.id));
-        const n = lotesResp.map((desv) => ({ ...desv, fechaLote: moment(desv.fecha).format("yyyy-MM-DD")}));
+        const n = lotesResp.map((desv) => ({ ...desv, fechaLote: moment(desv.fecha).format("yyyy-MM-DD") }));
         setListaLote(n);
 
         setDisplayForm(false);
@@ -191,7 +258,7 @@ export const useHookFormDesviacionReq = () => {
     const eliminarPorId = async (rowData) => {
         if (rowData) {
             await LoteService.eliminarPorId(rowData.id);
-            growl.current.show({ severity: 'success', detail: 'Lote eliminado exitosamente'});
+            growl.current.show({ severity: 'success', detail: 'Lote eliminado exitosamente' });
 
             const lotesResp = await LoteService.listarPorDesviacionId(idDesvReq);
 
@@ -199,17 +266,70 @@ export const useHookFormDesviacionReq = () => {
         }
     }
 
+    /* RECURSOS RECUPERAR MATERIA */
+    const closeFormRecurso = () => {
+        setMaterialSel(null);
+        setDisplayFormRecurso(false);
+        setRecurso(defaultRecurso);
+        setIsEditLocal(false);
+    }
+
+    const clickFormRecurso = async (editRecurso, rowData) => {
+        setDisplayFormRecurso(true);
+        setIsEditLocal(editRecurso);
+        if (editRecurso && rowData) {
+            /* const busc = await RecursoRecuperarMaterialService.listarPorLoteId(rowData.id);
+            console.log(busc); */
+            if (rowData.materialId > 0) {
+                setMaterialSel({ idProduct: rowData.materialId, nameProduct: rowData.descripcion })
+            } else {
+                setMaterialSel(rowData.descripcion);
+            }
+            setRecurso(rowData);
+        }
+    }
+
+    const saveRecurso = async () => {
+        if (!isEditLocal)
+            await RecursoRecuperarMaterialService.crear({ ...recurso, desviacionRequisito: nuevaDesviacionReq });
+        else await RecursoRecuperarMaterialService.actualizar(recurso);
+
+        const recursosResp = await RecursoRecuperarMaterialService.listarPorDesviacionId(_.defaultTo(idDesvReq, nuevaDesviacionReq.id));
+
+        setListaRecurso(recursosResp);
+        setTotalRecurso(_.sumBy(recursosResp, (o) => {return o.costo}));
+        setDisplayFormRecurso(false);
+    }
+
+    const eliminarRecursoPorId = async (rowData) => {
+        if (rowData) {
+            await RecursoRecuperarMaterialService.eliminarPorId(rowData.id);
+            growl.current.show({ severity: 'success', detail: 'Recurso eliminado exitosamente' });
+
+            const recursosResp = await RecursoRecuperarMaterialService.listarPorDesviacionId(idDesvReq);
+
+            setListaRecurso(recursosResp);
+        }
+    }
+
     return {
         growl,
         displayForm,
+        displayFormRecurso,
         nuevaDesviacionReq,
         listaProductos,
         productoSel,
+        productoAfectadoSel,
+        productoReplanificadoSel,
         es,
         unidadesMedida,
         catalogoLineaAfectacion,
         listaLote,
         lote,
+        listaRecurso,
+        totalRecurso,
+        recurso,
+        materialSel,
         actions: {
             closeForm,
             createItem: saveItem,
@@ -219,7 +339,12 @@ export const useHookFormDesviacionReq = () => {
             handleChangeLote,
             saveLocalLote,
             cancelar,
-            eliminarPorId
+            eliminarPorId,
+            closeFormRecurso,
+            handleChangeRecurso,
+            clickFormRecurso,
+            saveRecurso,
+            eliminarRecursoPorId
         }
     };
 }
