@@ -24,9 +24,12 @@ const defaultObjDesviacionReq = {
     product: {},
     productoAfectado: {},
     productoReplanificado: {},
-    cantidadAfectada: 0,
-    cantidadRecuperada: 0,
-    desperdicioGenerado: 0,
+    cantidadAfectada: null,
+    unidadAfectada: null,
+    cantidadRecuperada: null,
+    unidadRecuperada: null,
+    desperdicioGenerado: null,
+    unidadDesperdicio: null,
     replanificacion: false
 }
 
@@ -42,6 +45,8 @@ const defaultRecurso = {
     descripcion: "",
     materialId: 0,
     costo: 0,
+    unidad: null,
+    costoTotal: 0
 }
 
 export const defaultEs = {
@@ -78,7 +83,6 @@ export const useHookFormDesviacionReq = () => {
     useEffect(() => {
         async function obtenerUnidadesMedida() {
             const responseUnidadesMedidas = await UnidadMedidaService.listarActivos();
-            const remappingUnits = responseUnidadesMedidas.map((unit) => ({ label: unit.label, value: unit.label }));
             setUnidadesMedida(responseUnidadesMedidas);
         }
         async function obtenerCatalogoLineaAfectacion() {
@@ -121,10 +125,9 @@ export const useHookFormDesviacionReq = () => {
     const checkRecursos = async () => {
         if (idDesvReq) {
             const recursosResp = await RecursoRecuperarMaterialService.listarPorDesviacionId(idDesvReq);
-            //const n = lotesResp.map((desv) => ({ ...desv, fechaLote: moment(desv.fecha).format("yyyy-MM-DD") }));
 
             setListaRecurso(recursosResp);
-            setTotalRecurso(_.sumBy(recursosResp, (o) => {return o.costo}));
+            setTotalRecurso(_.sumBy(recursosResp, (o) => {return o.costoTotal}));
         }
     }
 
@@ -184,6 +187,11 @@ export const useHookFormDesviacionReq = () => {
                     desviacionReq[field] = value;
                 }
                 break;
+            case "unidadAfectada":
+            case "unidadDesperdicio":
+            case "unidadRecuperada":
+                desviacionReq[field] = { id: value };
+                break;
             default:
                 desviacionReq[field] = value;
         }
@@ -201,22 +209,25 @@ export const useHookFormDesviacionReq = () => {
     }
 
     const handleChangeRecurso = (field, value) => {
-        const loteTmp = { ...recurso };
+        const recursoTmp = { ...recurso };
         switch (field) {
             case "material":
                 setMaterialSel(value);
                 if (typeof value === 'object') {
-                    loteTmp.materialId = value.idProduct;
-                    loteTmp.descripcion = value.nameProduct;
+                    recursoTmp.materialId = value.idProduct;
+                    recursoTmp.descripcion = value.nameProduct;
                 } else {
-                    loteTmp.descripcion = value;
+                    recursoTmp.descripcion = value;
                 }
                 break;
+            case "unidad":
+                recursoTmp.unidad = { id: value };
+                break;
             default:
-                loteTmp[field] = value;
+                recursoTmp[field] = value;
         }
 
-        setRecurso(loteTmp);
+        setRecurso(recursoTmp);
     }
 
     const buscarProductos = (value) => {
@@ -278,8 +289,6 @@ export const useHookFormDesviacionReq = () => {
         setDisplayFormRecurso(true);
         setIsEditLocal(editRecurso);
         if (editRecurso && rowData) {
-            /* const busc = await RecursoRecuperarMaterialService.listarPorLoteId(rowData.id);
-            console.log(busc); */
             if (rowData.materialId > 0) {
                 setMaterialSel({ idProduct: rowData.materialId, nameProduct: rowData.descripcion })
             } else {

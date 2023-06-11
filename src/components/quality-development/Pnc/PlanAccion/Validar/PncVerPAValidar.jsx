@@ -116,7 +116,7 @@ class PncVerPAValidar extends Component {
                 <div className='p-col-12 p-lg-12 boton-opcion' >
                     {this.state.id > 0 && this.state.estado === ESTADO &&
                         < div >
-                            <Button className="p-button" label="APORBAR" onClick={() => this.validarPlan(true)} />
+                            <Button className="p-button" label="APROBAR" onClick={() => this.validarPlan(true)} />
                             <Button className="p-button-danger" label="RECHAZAR" onClick={() => this.validarPlan(false)} />
                             <Button className='p-button-secondary' label="ATRÁS" onClick={this.redirigirInicio} />
                         </div>

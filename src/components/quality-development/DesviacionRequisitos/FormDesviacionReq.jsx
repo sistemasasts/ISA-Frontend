@@ -12,6 +12,7 @@ import { ActionButton, ActionFooter, Header } from "./ListaDesviacionReq";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { InputSwitch } from 'primereact/inputswitch';
+import * as _ from "lodash";
 
 export const FormDesviacionReq = () => {
     const {
@@ -77,62 +78,7 @@ export const FormDesviacionReq = () => {
                     <label htmlFor="float-input">Alcance y tiempo de la desviación</label>
                     <InputTextarea autoResize={true} value={nuevaDesviacionReq.alcance} onChange={(e) => actions.handleChangeNewDesviacionReq("alcance", e.target.value)} />
                 </div>
-                <div className='p-col-12 p-lg-6'>
-                    <label htmlFor="float-input">Replanificación</label> <br />
-                    <InputSwitch checked={nuevaDesviacionReq.replanificacion} onChange={(e) => actions.handleChangeNewDesviacionReq("replanificacion", e.target.value)} />
-                </div>
-                <div className='p-col-12 p-lg-6'></div>
-                {(nuevaDesviacionReq && nuevaDesviacionReq.id && nuevaDesviacionReq.replanificacion) && (
-                    <div className='p-col-12 p-lg-12  p-grid'>
-                        <div className='p-col-12 p-lg-4'>
-                            <label htmlFor="float-input">Producto Afectado</label>
-                            <AutoComplete
-                                field="nameProduct"
-                                minLength={3}
-                                placeholder="Ingrese criterio de búsqueda..."
-                                suggestions={listaProductos}
-                                completeMethod={(e) => actions.buscarProductos(e.query)}
-                                value={productoAfectadoSel}
-                                onChange={(e) => actions.handleChangeNewDesviacionReq("productoAfectado", e.value)}
-                            />
-                        </div>
-                        <div className='p-col-12 p-lg-4'>
-                            <label htmlFor="float-input">Cantidad Afectada</label>
-                            <InputText type={"number"} value={nuevaDesviacionReq.cantidadAfectada} onChange={(e) => actions.handleChangeNewDesviacionReq("cantidadAfectada", e.target.value)} />
-                        </div>
-                        <div className='p-col-12 p-lg-4'>
-                            <label htmlFor="float-input">Desperdicio Generado</label>
-                            <InputText type={"number"} value={nuevaDesviacionReq.desperdicioGenerado} onChange={(e) => actions.handleChangeNewDesviacionReq("desperdicioGenerado", e.target.value)} />
-                        </div>
-
-                        <div className='p-col-12 p-lg-4'>
-                            <label htmlFor="float-input">Producto Replanificado</label>
-                            <AutoComplete
-                                field="nameProduct"
-                                minLength={3}
-                                placeholder="Ingrese criterio de búsqueda..."
-                                suggestions={listaProductos}
-                                completeMethod={(e) => actions.buscarProductos(e.query)}
-                                value={productoReplanificadoSel}
-                                onChange={(e) => actions.handleChangeNewDesviacionReq("productoReplanificado", e.value)}
-                            />
-                        </div>
-                        <div className='p-col-12 p-lg-4'>
-                            <label htmlFor="float-input">Cantidad Recuperada</label>
-                            <InputText type={"number"} value={nuevaDesviacionReq.cantidadRecuperada} onChange={(e) => actions.handleChangeNewDesviacionReq("cantidadRecuperada", e.target.value)} />
-                        </div>
-                    </div>
-                )}
-
-
-                {/*{_.isEmpty(this.state.codigoUnidad) && _.isEmpty(this.state.defectoSeleccionado) &&*/}
-                {/*    <div className='p-col-12 p-lg-12'>*/}
-                {/*        <div className="alert alert-danger" role="alert">*/}
-                {/*            Los campos son obligatorios...*/}
-                {/*        </div>*/}
-                {/*    </div>*/}
-                {/*}*/}
-                {(nuevaDesviacionReq && nuevaDesviacionReq.id && nuevaDesviacionReq.replanificacion) && (
+                {(nuevaDesviacionReq && nuevaDesviacionReq.id) && (
                     <div className='p-col-12 p-lg-12'>
                         <div>
                             <h1><strong>Lotes</strong></h1>
@@ -196,7 +142,61 @@ export const FormDesviacionReq = () => {
                         </div>
                     </div>
                 )}
-                {(nuevaDesviacionReq && nuevaDesviacionReq.id) && (
+                <div className='p-col-12 p-lg-6'>
+                    <label htmlFor="float-input">Replanificación</label> <br />
+                    <InputSwitch checked={nuevaDesviacionReq.replanificacion} onChange={(e) => actions.handleChangeNewDesviacionReq("replanificacion", e.target.value)} />
+                </div>
+                <div className='p-col-12 p-lg-6'></div>
+                {(nuevaDesviacionReq && nuevaDesviacionReq.id && nuevaDesviacionReq.replanificacion) && (
+                    <div className='p-col-12 p-lg-12  p-grid'>
+                        <div className='p-col-12 p-lg-4'>
+                            <label htmlFor="float-input">Producto Afectado</label>
+                            <AutoComplete
+                                field="nameProduct"
+                                minLength={3}
+                                placeholder="Ingrese criterio de búsqueda..."
+                                suggestions={listaProductos}
+                                completeMethod={(e) => actions.buscarProductos(e.query)}
+                                value={productoAfectadoSel}
+                                onChange={(e) => actions.handleChangeNewDesviacionReq("productoAfectado", e.value)}
+                            />
+                        </div>
+                        <div className='p-col-12 p-lg-4'>
+                            <label htmlFor="float-input">Cantidad Afectada</label>
+                            <div className="p-inputgroup">
+                                <InputText keyfilter={"num"} type={"number"} value={nuevaDesviacionReq.cantidadAfectada} onChange={(e) => actions.handleChangeNewDesviacionReq("cantidadAfectada", e.target.value)} />
+                                <Dropdown style={{ minWidth: '3%', maxWidth: '40%' }} appendTo={document.body} value={_.get(nuevaDesviacionReq, "unidadAfectada.id")} options={unidadesMedida} placeholder="Seleccione una unidad" onChange={(e) => actions.handleChangeNewDesviacionReq("unidadAfectada", e.value)} autoWidth={false} />
+                            </div>
+                        </div>
+                        <div className='p-col-12 p-lg-4'>
+                            <label htmlFor="float-input">Desperdicio Generado</label>
+                            <div className="p-inputgroup">
+                                <InputText type={"number"} value={nuevaDesviacionReq.desperdicioGenerado} onChange={(e) => actions.handleChangeNewDesviacionReq("desperdicioGenerado", e.target.value)} />
+                                <Dropdown style={{ minWidth: '3%', maxWidth: '40%' }} appendTo={document.body} value={_.get(nuevaDesviacionReq,"unidadDesperdicio.id")} options={unidadesMedida} placeholder="Seleccione una unidad" onChange={(e) => actions.handleChangeNewDesviacionReq("unidadDesperdicio", e.value)} autoWidth={false} />
+                            </div>
+                        </div>
+                        <div className='p-col-12 p-lg-4'>
+                            <label htmlFor="float-input">Producto Replanificado</label>
+                            <AutoComplete
+                                field="nameProduct"
+                                minLength={3}
+                                placeholder="Ingrese criterio de búsqueda..."
+                                suggestions={listaProductos}
+                                completeMethod={(e) => actions.buscarProductos(e.query)}
+                                value={productoReplanificadoSel}
+                                onChange={(e) => actions.handleChangeNewDesviacionReq("productoReplanificado", e.value)}
+                            />
+                        </div>
+                        <div className='p-col-12 p-lg-4'>
+                            <label htmlFor="float-input">Cantidad Recuperada</label>
+                            <div className="p-inputgroup">
+                                <InputText type={"number"} value={nuevaDesviacionReq.cantidadRecuperada} onChange={(e) => actions.handleChangeNewDesviacionReq("cantidadRecuperada", e.target.value)} />
+                                <Dropdown style={{ minWidth: '3%', maxWidth: '40%' }} appendTo={document.body} value={_.get(nuevaDesviacionReq, "unidadRecuperada.id")} options={unidadesMedida} placeholder="Seleccione una unidad" onChange={(e) => actions.handleChangeNewDesviacionReq("unidadRecuperada", e.value)} autoWidth={false} />
+                            </div>
+                        </div>
+                    </div>
+                )}
+                {(nuevaDesviacionReq && nuevaDesviacionReq.id && nuevaDesviacionReq.replanificacion) && (
                     <div className='p-col-12 p-lg-12'>
                         <div>
                             <h1><strong>Materia Prima y/o Mano  de obra de empleados</strong></h1>
@@ -220,7 +220,9 @@ export const FormDesviacionReq = () => {
                                     style={{ width: '20em', textAlign: 'center' }} />
                                 <Column field={"descripcion"} header={"Material"} />
                                 <Column field={"cantidad"} header={"Cantidad"} style={{ textAlign: 'right' }}/>
+                                <Column field={"unidad.nombre"} header={"Unidad"} style={{ textAlign: 'right' }}/>
                                 <Column field={"costo"} header={"Costo"} style={{ textAlign: 'right' }} />
+                                <Column field={"costoTotal"} header={"Costo total"} style={{ textAlign: 'right' }} />
                             </DataTable>
                             <Dialog header={"Nuevo"} visible={displayFormRecurso} modal={true} style={{ width: "50vw" }} onHide={actions.closeFormRecurso} footer={<ActionFooter save={actions.saveRecurso} cancel={actions.closeFormRecurso} />}>
                                 <div className="p-grid p-fluid">
@@ -239,6 +241,10 @@ export const FormDesviacionReq = () => {
                                     <div className='p-col-12 p-lg-12'>
                                         <label htmlFor="float-input">Cantidad</label>
                                         <InputText type={"number"} value={recurso.cantidad} onChange={(e) => actions.handleChangeRecurso("cantidad", e.target.value)} />
+                                    </div>
+                                    <div className='p-col-12 p-lg-12'>
+                                        <label htmlFor="float-input">Unidad</label>
+                                        <Dropdown appendTo={document.body} value={_.get(recurso, "unidad.id")} options={unidadesMedida} placeholder="Seleccione una unidad" onChange={(e) => actions.handleChangeRecurso("unidad", e.value)} autoWidth={false} />
                                     </div>
                                     <div className='p-col-12 p-lg-12'>
                                         <label htmlFor="float-input">Costo</label>
