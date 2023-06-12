@@ -45,6 +45,8 @@ class PncSalidaMaterialForm extends Component {
             unidad: null,
             cantidadNoConforme: null,
             tipoProducto: null,
+            defectos: [],
+            idPncDefecto: null
         }
 
         this.validarCamposRequeridos = this.validarCamposRequeridos.bind(this);
@@ -69,6 +71,9 @@ class PncSalidaMaterialForm extends Component {
             const pnc = await PncService.listarPorId(idPnc);
             if (pnc) {
                 console.log(pnc)
+                const defectosTmp = [ ...pnc.defectos ];
+                const defectos = defectosTmp.map((x) => ({label: x.descripcionCompleta, value: x.id}));
+
                 if (idPncSalida) {
                     const salida = await PncSalidaMaterialService.listarPorId(idPncSalida);
                     console.log(salida);
@@ -89,7 +94,9 @@ class PncSalidaMaterialForm extends Component {
                         cantidadNoConforme: pnc.cantidadNoConforme,
                         tipoProducto: pnc.producto.typeProduct,
                         editar: salida.estado === 'CREADO',
-                        mostrarControles: salida.estado === 'CREADO'
+                        mostrarControles: salida.estado === 'CREADO',
+                        idPncDefecto: salida.idPncDefecto,
+                        defectos: defectos
                     });
 
                 } else {
@@ -101,7 +108,8 @@ class PncSalidaMaterialForm extends Component {
                         saldo: pnc.saldo,
                         unidad: pnc.unidad.abreviatura,
                         cantidadNoConforme: pnc.cantidadNoConforme,
-                        tipoProducto: pnc.producto.typeProduct
+                        tipoProducto: pnc.producto.typeProduct,
+                        defectos: defectos
                     });
                 }
             }
@@ -165,7 +173,8 @@ class PncSalidaMaterialForm extends Component {
             cantidad: this.state.cantidad,
             destino: this.state.destinoFinal,
             idPnc: this.state.idPnc,
-            observacion: this.state.observacion
+            observacion: this.state.observacion,
+            idPncDefecto: this.state.idPncDefecto
         }
     }
 
@@ -263,6 +272,16 @@ class PncSalidaMaterialForm extends Component {
                         <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Cantidad</label>
                         <InputText readOnly={!this.state.editar} keyfilter="num" value={this.state.cantidad} onChange={(e) => this.setState({ cantidad: e.target.value })} />
                         {this.determinarEsCampoRequerido('cantidad') &&
+                            <div style={{ marginTop: '8px' }}>
+                                <Message severity="error" text="Campo Obligatorio" />
+                            </div>
+                        }
+                    </div>
+                    <div className='p-col-12 p-lg-4'>
+                        <label htmlFor="float-input">Bodega</label>
+                        <Dropdown key={"defecto-id"} disabled={!this.state.editar} options={this.state.defectos} autoWidth={false} value={this.state.idPncDefecto} onChange={(e) => this.setState({ idPncDefecto: e.value })}
+                                  placeholder="Selecione" />
+                        {this.determinarEsCampoRequerido('idPncDefecto') &&
                             <div style={{ marginTop: '8px' }}>
                                 <Message severity="error" text="Campo Obligatorio" />
                             </div>
