@@ -102,6 +102,7 @@ class PncDefecto extends Component {
                 <DataTable value={this.state.defectos} header={header}>
                     <Column body={this.actionTemplate} style={{ width: '13%', textAlign: 'center' }} />
                     <Column field="cantidad" header="Cantidad" style={{ width: '10%', textAlign: 'center' }} sortable />
+                    <Column field="saldo" header="Saldo" style={{ width: '10%', textAlign: 'center' }} sortable />
                     <Column field="unidad.nombre" header="Unidad" style={{ width: '10%', textAlign: 'center' }} sortable />
                     <Column field="ubicacion" header="Ubicación" style={{ width: '25%', textAlign: 'center' }} sortable />
                     <Column field="defecto.nombre" header="Defecto" style={{ width: '35%', textAlign: 'center' }} sortable />
