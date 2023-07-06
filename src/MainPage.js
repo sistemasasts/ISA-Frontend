@@ -87,7 +87,21 @@ import UnidadMedida from './components/quality-development/UnidadesMedida/Unidad
 import RevisarPlanAccionPrincipal from './components/quality-development/RevisionPlanAccion/RevisarPlanAccionPrincipal';
 import SEPlanesAccionVer from './components/quality-development/RevisionPlanAccion/SEPlanesAccionVer';
 import SEPlanesAccionRev from './components/quality-development/SolicitudEnsayo/SolicitudPlanesAccion/SEPlanesAccionRev';
-
+import Defecto from './components/quality-development/Pnc/Defectos/Defecto';
+import PncPrincipal from './components/quality-development/Pnc/PncPrincipal';
+import Form from './components/quality-development/Pnc/Form';
+import PncAprobacionPrincipal from './components/quality-development/Pnc/Aprobacion/PncAprobacionPrincipal';
+import PncVerAprobacion from './components/quality-development/Pnc/Aprobacion/PncVerAprobacion';
+import PncSalidaMaterialForm from './components/quality-development/Pnc/SalidaMaterial/PncSalidaMaterialForm';
+import PncPAProcesarPrincipal from './components/quality-development/Pnc/PlanAccion/Procesar/PncPAProcesarPrincipal';
+import PncVerPAProcesar from './components/quality-development/Pnc/PlanAccion/Procesar/PncVerPAProcesar';
+import PncPAValidarPrincipal from './components/quality-development/Pnc/PlanAccion/Validar/PncPAValidarPrincipal';
+import PncVerPAValidar from './components/quality-development/Pnc/PlanAccion/Validar/PncVerPAValidar';
+import ReporteComercialPrincipal from './components/quality-development/Pnc/ReporteComercial/ReporteComercialPrincipal';
+import InventarioPrincipal from './components/quality-development/Inventario/InventarioPrincipal';
+import MovimientoPrincipal from './components/quality-development/Inventario/MovimientoPrincipal';
+import ListaDesviacionReq from "./components/quality-development/DesviacionRequisitos/ListaDesviacionReq";
+import FormDesviacionReq from "./components/quality-development/DesviacionRequisitos/FormDesviacionReq";
 
 
 class MainPage extends Component {
@@ -610,7 +624,7 @@ class MainPage extends Component {
 						<Route path="/quality-development_solicitudse" component={PrincipalSE} />
 						<Route path="/quality-development_solicitudse_new" component={FormularioSE} />
 						<Route path="/quality-development_solicitudse_edit/:idSolicitud" component={FormularioSE} />
-                        <Route path="/quality-development_solicitudse_planesaccion/:idSolicitud" component={SEPlanesAccion} />
+						<Route path="/quality-development_solicitudse_planesaccion/:idSolicitud" component={SEPlanesAccion} />
 						<Route path="/quality-development_solicitudse_validar" component={ValidarPrincipal} />
 						<Route path="/quality-development_solicitudse_validar_solicitud/:idSolicitud" component={VerValidar} />
 						<Route path="/quality-development_solicitudse_procesar" component={ResponderPrincipal} />
@@ -643,7 +657,7 @@ class MainPage extends Component {
 						<Route path="/quality-development_solicitudpp_mantenimiento_aprobar_ver/:idSolicitud" component={VerAprobarManteSPP} />
 						<Route path="/quality-development_solicitudpp_calidad_aprobar_principal" component={AprobacionCalidad} />
 						<Route path="/quality-development_solicitudpp_calidad_aprobar_ver/:idSolicitud" component={VerAprobarCalidadSPP} />
-                        <Route path="/quality-development_solicitudse_calidad_aprobar_ver/:idSolicitud" component={VerAprobarSE} />
+						<Route path="/quality-development_solicitudse_calidad_aprobar_ver/:idSolicitud" component={VerAprobarSE} />
 						<Route path="/quality-development_solicitudpp_planta_aprobar_principal" component={AprobacionPlanta} />
 						<Route path="/quality-development_solicitudpp_planta_aprobar_ver/:idSolicitud" component={VerAprobarPlantaSPP} />
 						<Route path="/quality-development_solicitudpp_aprobar_principal" component={AprobacionPrincipalSPP} />
@@ -651,16 +665,39 @@ class MainPage extends Component {
 						<Route path="/quality-development_solicitudpp_ajuste_maquinaria_principal" component={AjusteMaquinariaPrincipal} />
 						<Route path="/quality-development_solicitudpp_ajuste_maquinaria_ver/:idSolicitud" component={VerAjusteMaquinaria} />
 						<Route path="/quality-development_solicitudpp_informe/:idSolicitud/:tipo/:accion" component={InformeSPP} />
-                        <Route path="/quality-development_solicitudpp_informe_final/:idSolicitud/:tipo" component={InformeSPPLectura} />
-                        <Route path="/quality-development_consulta_tests" component={ConsultaTest} />
-                        <Route path="/quality-development_solicitud_revisar_plan_accion" component={RevisarPlanAccionPrincipal} />
-                        <Route path="/quality-development_solicitud_revisar_plan_accion_ver/:idSolicitud" component={SEPlanesAccionVer} />
+						<Route path="/quality-development_solicitudpp_informe_final/:idSolicitud/:tipo" component={InformeSPPLectura} />
+						<Route path="/quality-development_consulta_tests" component={ConsultaTest} />
+						<Route path="/quality-development_solicitud_revisar_plan_accion" component={RevisarPlanAccionPrincipal} />
+						<Route path="/quality-development_solicitud_revisar_plan_accion_ver/:idSolicitud" component={SEPlanesAccionVer} />
 						<Route path="/quality-development_solicitud_revisar_plan_accion_rev/:idSolicitud" component={SEPlanesAccionRev} />
 
-                        <Route path="/administracion_usuario" component={Usuario} />
-                        <Route path="/administracion_usuario_registro/:idUsuario" component={UsuarioFormulario} />
-                        <Route path="/quality-development_unidad_medida" component={UnidadMedida} />
+						<Route path="/administracion_usuario" component={Usuario} />
+						<Route path="/administracion_usuario_registro/:idUsuario" component={UsuarioFormulario} />
+						<Route path="/quality-development_unidad_medida" component={UnidadMedida} />
 
+						{/* --------- PNC ------------- */}
+						<Route path="/quality-development_pnc_defecto" component={Defecto} />
+						<Route path="/quality-development_pnc_principal" component={PncPrincipal} />
+						<Route path="/quality-development_pnc_nuevo" component={Form} />
+						<Route path="/quality-development_pnc_edit/:idPnc" component={Form} />
+						<Route path="/quality-development_pnc_salida_material_nuevo/:idPnc" component={PncSalidaMaterialForm} />
+						<Route path="/quality-development_pnc_salida_material_edit/:idPnc/:idPncSalida" component={PncSalidaMaterialForm} />
+						<Route path="/quality-development_pnc_salida_material_aprobacion" component={PncAprobacionPrincipal} />
+						<Route path="/quality-development_pnc_salida_material_aprobacion_ver/:idPncSalida" component={PncVerAprobacion} />
+						<Route path="/quality-development_pnc_procesarTarea" component={PncPAProcesarPrincipal} />
+						<Route path="/quality-development_pnc_procesarTarea_ver/:idPncSalida/:idPlan" component={PncVerPAProcesar} />
+						<Route path="/quality-development_pnc_validarTarea" component={PncPAValidarPrincipal} />
+						<Route path="/quality-development_pnc_validarTarea_ver/:idPncSalida/:idPlan" component={PncVerPAValidar} />
+						<Route path="/quality-development_pnc_reporteComercial" component={ReporteComercialPrincipal} />
+						<Route path="/quality-development_pnc_desviacion_req" component={ListaDesviacionReq} />
+						<Route path="/quality-development_pnc_desviacion_req_edit/:idDesvReq" component={FormDesviacionReq} />
+						<Route path="/quality-development_pnc_desviacion_req_nuevo" component={FormDesviacionReq} />
+						{/* --------- PNC ------------- */}
+
+                        {/* --------- INVENTARIO ------------- */}
+						<Route path="/quality-development_inventario" component={InventarioPrincipal} />
+						<Route path="/quality-development_inventario_detalle/:idInventario" component={MovimientoPrincipal} />
+                        {/* --------- INVENTARIO ------------- */}
 						<Route path="/home" component={Home} />
 
 

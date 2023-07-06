@@ -16,6 +16,7 @@ import { Toolbar } from 'primereact/toolbar';
 import * as _ from "lodash";
 import CriterioAprobacio from './CriterioAprobacion';
 import Paletizacion from './Paletizacion';
+import { FileUpload } from 'primereact/fileupload';
 
 var that;
 class ProductoForm extends Component {
@@ -65,6 +66,8 @@ class ProductoForm extends Component {
         this.validarCamposRequeridos = this.validarCamposRequeridos.bind(this);
         this.actualizarRevision = this.actualizarRevision.bind(this);
         this.visualizarCamposPorGrupoProducto = this.visualizarCamposPorGrupoProducto.bind(this);
+        this.myUploader = this.myUploader.bind(this);
+        this.leerImagen = this.leerImagen.bind(this);
     }
 
     /* Metodo para lanzar mensajes */
@@ -188,6 +191,14 @@ class ProductoForm extends Component {
             typeProductTxt: this.state.grupoProducto,
             armorType: this.state.tipoArmadura,
             inspectionSamplingTesting: this.state.inspeccionMuestreoEnsayo
+        }
+    }
+
+    async leerImagen(idDocumento) {
+        const respuesta = await ProductoService.obtenerImagenPatron(idDocumento);
+        if (respuesta) {
+            console.log(respuesta);
+            document.getElementById("ItemPreview").src = `data:${respuesta.tipo};base64,` + respuesta.base64;
         }
     }
 
@@ -328,6 +339,25 @@ class ProductoForm extends Component {
         }
     }
 
+    async myUploader(event) {
+        await ProductoService.subirImagenPatron(this.state.id, this.crearSolicitudDocumento(event.files[0]));
+        this.leerImagen(this.state.id);
+        this.fileUploadRef.clear();
+    }
+
+    crearSolicitudDocumento(archivo) {
+        let formadata = new FormData();
+        formadata.append('file', archivo);
+        return formadata;
+    }
+
+    onChangeTab(index) {
+        if (index === 6) {
+            this.leerImagen(this.state.id);
+        }
+        this.setState({ activeIndex: index });
+    }
+
     render() {
         const header = (
             <div>
@@ -460,7 +490,7 @@ class ProductoForm extends Component {
                             {this.determinarEsCampoRequerido('descripcion') && <div style={divErrorStyle}>Campo Obligatorio</div>}
                         </div>
                         {this.state.id && <div className='p-col-12 p-lg-12'>
-                            <TabView style={{ marginTop: '10px' }} >
+                            <TabView style={{ marginTop: '10px' }} activeIndex={this.state.activeIndex} onTabChange={(e) => this.onChangeTab(e.index)}>
                                 <TabPanel header="Criterios Aceptación" leftIcon="pi pi-check" >
                                     <CriterioAprobacio producto={this.state.prdocutoSeleccionado} _this={this} />
                                 </TabPanel>
@@ -478,6 +508,17 @@ class ProductoForm extends Component {
                                 </TabPanel>
                                 <TabPanel header="Inspección, Muestreo y Ensayo" leftIcon="pi pi-exclamation-circle" headerStyle={{ display: this.visualizarCamposPorGrupoProducto('InspeccionMuestreoYEnsayo') }}>
                                     <Editor headerTemplate={header} style={{ height: '320px' }} value={this.state.inspeccionMuestreoEnsayo} onTextChange={(e) => this.setState({ inspeccionMuestreoEnsayo: e.htmlValue })} />
+                                </TabPanel>
+                                <TabPanel header="Patron HCC" leftIcon="pi pi-image">
+                                    <div className='p-col-12 p-lg-4'></div>
+                                    <div className='p-col-12 p-lg-4'>
+                                        <img style={{ width: 'auto', maxHeight: '100%', maxWidth: '100%', display: 'block', margin: 'auto' }} id="ItemPreview" src="" />
+
+                                        <FileUpload ref={(el) => this.fileUploadRef = el} mode="basic" name="demo" customUpload={true} uploadHandler={this.myUploader} accept="image/*" chooseLabel='Seleccione Imagen' uploadLabel='Subir Imagen' />
+
+                                    </div>
+                                    <div className='p-col-12 p-lg-4'></div>
+
                                 </TabPanel>
 
 

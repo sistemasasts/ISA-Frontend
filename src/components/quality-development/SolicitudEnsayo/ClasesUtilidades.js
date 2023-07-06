@@ -78,6 +78,23 @@ export function determinarColorActivo(estado) {
 
 }
 
+export function determinarColorPNC(estado) {
+    switch (estado) {
+        case 'CREADO': return 'customer-badge-default';
+        case 'EN_PROCESO':
+        case 'PENDIENTE_APROBACION':
+        case 'PENDIENTE_REVISION':
+            return 'customer-badge-warning';
+        case 'ANULADO':
+        case 'RECHAZADO':
+            return 'customer-badge-danger';
+        case 'CERRADO':
+        case 'FINALIZADO':
+            return 'customer-badge-success';
+        default: return 'customer-badge-default'
+    }
+}
+
 export function determinarColorPrioridad(prioridad) {
     switch (prioridad) {
         case 'ALTO':
@@ -88,5 +105,15 @@ export function determinarColorPrioridad(prioridad) {
             return 'customer-badge-default';
 
         default: return ''
+    }
+}
+
+export function determinarTipoMovimiento(prioridad) {
+    switch (prioridad) {
+        case 'EGRESO':
+            return 'customer-badge-danger';
+        case 'INGRESO':
+            return 'customer-badge-success';
+        default: return 'customer-badge-default';
     }
 }
