@@ -301,27 +301,27 @@ class Form extends Component {
 
                             <div className="p-col-12 p-lg-4">
                                 <Checkbox readOnly={!this.state.editar} inputId="cb1" value="Mano de Obra" onChange={this.onFivemsChange} checked={this.state.fivems.indexOf('Mano de Obra') !== -1}
-                                    tooltip="Mano de Obra .............." tooltipOptions={{ position: 'top' }}></Checkbox>
+                                    tooltip="Se asocia cuando la no conformidad fue generada por el ser humano ya sea por falta de conocimiento, entrenamiento, habilidad, comunicación y capacidad del personal." tooltipOptions={{ position: 'top' }}></Checkbox>
                                 <label htmlFor="cb1" style={{ paddingLeft: '8px' }} className="p-checkbox-label">Mano de Obra</label>
                             </div>
                             <div className="p-col-12 p-lg-4">
                                 <Checkbox readOnly={!this.state.editar} inputId="cb1" value="Materia Prima" onChange={this.onFivemsChange} checked={this.state.fivems.indexOf('Materia Prima') !== -1}
-                                    tooltip="Materia Prima .............." tooltipOptions={{ position: 'top' }}></Checkbox>
+                                    tooltip="Se asocia cuando la no conformidad se genera por incumplimiento de especificaciones en materias primas que afectan al producto." tooltipOptions={{ position: 'top' }}></Checkbox>
                                 <label htmlFor="cb1" style={{ paddingLeft: '8px' }} className="p-checkbox-label">Materia Prima</label>
                             </div>
                             <div className="p-col-12 p-lg-4">
                                 <Checkbox readOnly={!this.state.editar} inputId="cb1" value="Método" onChange={this.onFivemsChange} checked={this.state.fivems.indexOf('Método') !== -1}
-                                    tooltip="Método .............." tooltipOptions={{ position: 'top' }}></Checkbox>
+                                    tooltip="Se asocia cuando la no conformidad se genera por condiciones de proceso." tooltipOptions={{ position: 'top' }}></Checkbox>
                                 <label htmlFor="cb1" style={{ paddingLeft: '8px' }} className="p-checkbox-label">Método</label>
                             </div>
                             <div className="p-col-12 p-lg-4">
                                 <Checkbox readOnly={!this.state.editar} inputId="cb1" value="Medio Ambiente" onChange={this.onFivemsChange} checked={this.state.fivems.indexOf('Medio Ambiente') !== -1}
-                                    tooltip="Medio Ambiente .............." tooltipOptions={{ position: 'top' }}></Checkbox>
+                                    tooltip="Se asocia cuando la no conformidad se genera por condiciones ambientales como: temperatura, humedad, ruido, iluminación, corriente de aire." tooltipOptions={{ position: 'top' }}></Checkbox>
                                 <label htmlFor="cb1" style={{ paddingLeft: '8px' }} className="p-checkbox-label">Medio Ambiente</label>
                             </div>
                             <div className="p-col-12 p-lg-4">
                                 <Checkbox readOnly={!this.state.editar} inputId="cb1" value="Maquinaria" onChange={this.onFivemsChange} checked={this.state.fivems.indexOf('Maquinaria') !== -1}
-                                    tooltip="Maquinaria .............." tooltipOptions={{ position: 'top' }}></Checkbox>
+                                    tooltip="Se asocia cuando la no conformidad se genera por fallas de máquina, falta de mantenimiento, uso de herramientas no adecuadas entre otras." tooltipOptions={{ position: 'top' }}></Checkbox>
                                 <label htmlFor="cb1" style={{ paddingLeft: '8px' }} className="p-checkbox-label">Maquinaria</label>
                             </div>
                             {/* <div className="p-col-12 p-lg-4">
@@ -330,7 +330,7 @@ class Form extends Component {
                             </div> */}
                         </div>
                     </div>
-                   {/*  <div className='p-col-12 p-lg-12'>
+                    {/*  <div className='p-col-12 p-lg-12'>
                         <div className='p-grid'>
                             <label className="p-col-12 p-lg-12" htmlFor="float-input"><span style={{ color: '#CB3234' }}>*</span><strong>Datos Generales</strong></label>
                             <div className='p-col-12 p-lg-4'>

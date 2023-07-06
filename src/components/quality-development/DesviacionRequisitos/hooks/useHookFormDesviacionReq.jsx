@@ -306,7 +306,7 @@ export const useHookFormDesviacionReq = () => {
         const recursosResp = await RecursoRecuperarMaterialService.listarPorDesviacionId(_.defaultTo(idDesvReq, nuevaDesviacionReq.id));
 
         setListaRecurso(recursosResp);
-        setTotalRecurso(_.sumBy(recursosResp, (o) => {return o.costo}));
+        setTotalRecurso(_.sumBy(recursosResp, (o) => {return o.costoTotal}));
         setDisplayFormRecurso(false);
     }
 
