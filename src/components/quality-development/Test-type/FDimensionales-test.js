@@ -343,7 +343,7 @@ class DimensionalesForm extends Component {
     componentWillMount() {
         var pp = getPropertyInformation();
         if (pp !== null) {
-            pp.properties.map(function (obj) {
+            pp.propiedades.map(function (obj) {
                 switch (obj.propertyList.idProperty) {
                     case 'PROP_10':
                         that.state.eAnchoMin = obj.minProperty;

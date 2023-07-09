@@ -291,7 +291,7 @@ class IngresoMPForm extends Component {
                 return false;
             }
 
-            _.forEach(dataProduct.properties, (x) => {
+            _.forEach(dataProduct.propiedades, (x) => {
                 if (_.some(configurations, { idProperty: x.propertyList.idProperty })) {
                     const datForm = {};
                     if (x.typeProperty === 'T') {

@@ -87,7 +87,6 @@ class Form extends Component {
             const pnc = await PncService.listarPorId(idPnc);
             if (pnc) {
                 let cincoMsValor = _.split(pnc.observacionCincoMs, ',');
-                console.log(pnc)
                 this.setState({
                     id: pnc.id,
                     numero: pnc.numero,
@@ -171,7 +170,7 @@ class Form extends Component {
     crearObjSolicitud() {
         return {
             id: this.state.id,
-            fechaProduccion: moment(this.state.fechaProduccion).format("YYYY-MM-DD"),
+            fechaProduccion: moment(this.state.fechaProduccion).format("YYYY-MM-DD hh:mm:ss.SSS"),
             fechaDeteccion: moment(this.state.fechaDeteccion).format("YYYY-MM-DD"),
             area: this.state.area,
             producto: this.state.producto,
@@ -195,8 +194,8 @@ class Form extends Component {
 
     formularioValido() {
         var valido = true;
-        if (_.isEmpty(moment(this.state.fechaProduccion).format("YYYY-MM-DD"))
-            || _.isEmpty(moment(this.state.fechaDeteccion).format("YYYY-MM-DD"))
+        if (!this.state.fechaProduccion
+            || !this.state.fechaDeteccion
             || _.isEmpty(this.state.producto)
             || _.isEmpty(this.state.area)
         )
@@ -239,7 +238,7 @@ class Form extends Component {
                         <Dropdown disabled={!this.state.editar} optionLabel='nameArea' options={this.state.catalogoArea} value={this.state.area} autoWidth={false} onChange={(e) => this.setState({ area: e.value })} placeholder="Selecione" />
                     </div>
 
-                    <div className='p-col-4'>
+                    <div className='p-col-12 p-col-4'>
                         <label htmlFor="float-input">Nombre Producto</label>
                         <AutoComplete disabled={!this.state.editar} field="nameProduct" minLength={3} placeholder="Ingrese criterio de búsqueda..." suggestions={this.state.productosSugeridos}
                             completeMethod={(e) => this.buscarProductos(e)} value={this.state.producto} onChange={(e) => this.setState({ producto: e.value })}

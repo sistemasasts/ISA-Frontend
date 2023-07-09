@@ -15,14 +15,14 @@ import { GetAllProducts, GetOnlyPropertyByIdProductAndIdProperty, GetProductProp
 import { formattedDate, formattedDateAndHour } from '../../utils/FormatDate';
 
 /* ====================  F O R M S   T E S T  ======== */
-import  ReblandecimientoForm  from './Test-type/FReblandecimiento-test';
-import  PhForm  from './Test-type/FPH-test';
+import ReblandecimientoForm from './Test-type/FReblandecimiento-test';
+import PhForm from './Test-type/FPH-test';
 import ViscosityForm from './Test-type/FViscosity-test';
 import AWeightForm from './Test-type/FPesoXArea-test';
-import SujecionGranulosForm  from './Test-type/FGranulosSujecion';
-import DimensionalesForm  from './Test-type/FDimensionales-test';
-import  ReadTestPFForm  from './Test-type/FReadTestPF';
-import  IngresoMPForm from './Test-type/FIngresoMP';
+import SujecionGranulosForm from './Test-type/FGranulosSujecion';
+import DimensionalesForm from './Test-type/FDimensionales-test';
+import ReadTestPFForm from './Test-type/FReadTestPF';
+import IngresoMPForm from './Test-type/FIngresoMP';
 
 
 var nameProducts = []; // Variable para fomrar el Array de nombre de productos.
@@ -162,7 +162,7 @@ export class ResultTest extends Component {
                     }
                     break;
                 default:
-                    var obj = { idProduct: productF.idProduct, properties: [{ propertyList: { idProperty: propertyIdValue } }] };
+                    var obj = { idProduct: productF.idProduct, propertyList: propertyIdValue };
                     GetOnlyPropertyByIdProductAndIdProperty(obj, function (data, status, msg) {
                         console.log(data);
                         switch (status) {
