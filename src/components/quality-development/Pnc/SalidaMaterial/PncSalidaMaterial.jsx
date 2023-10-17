@@ -84,7 +84,7 @@ class PncSalidaMaterial extends Component {
                     <Column body={this.actionTemplate} style={{ width: '7%', textAlign: 'center' }} />
                     <Column field="fecha" header="Fecha" style={{ width: '10%', textAlign: 'center' }} sortable />
                     <Column field="cantidad" header="Cantidad" style={{ width: '10%', textAlign: 'right' }} sortable />
-                    <Column field="destino" header="Tipo Salida" style={{ width: '20%', textAlign: 'center' }} sortable />
+                    <Column field="destinoDescripcion" header="Tipo Salida" style={{ width: '20%', textAlign: 'center' }} sortable />
                     <Column field="estado" filterField="estado" body={this.bodyTemplateEstado} header="Estado" style={{ width: '15%', textAlign: 'center' }} filter={true} filterElement={brandFilter} />
                     <Column field="observacion" header="Descripción" style={{ width: '45%', textAlign: 'center' }} sortable />
 

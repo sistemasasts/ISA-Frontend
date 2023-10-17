@@ -77,7 +77,7 @@ class PncPrincipal extends Component {
     }
 
     onPageChange(event) {
-        this.obenerDatosConsulta(event.page, this.state.size);
+        this.obtenerDatosConsulta(event.page, this.state.size);
         this.setState({
             first: event.first,
             rows: event.rows
