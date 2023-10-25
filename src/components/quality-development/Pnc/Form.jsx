@@ -85,6 +85,7 @@ class Form extends Component {
     async refrescar(idPnc) {
         if (idPnc) {
             const pnc = await PncService.listarPorId(idPnc);
+            const cantidadNoConformeAux = _.sumBy(pnc.defectos, (o) => o.cantidad);
             if (pnc) {
                 let cincoMsValor = _.split(pnc.observacionCincoMs, ',');
                 this.setState({
@@ -94,7 +95,7 @@ class Form extends Component {
                     fechaDeteccion: moment(pnc.fechaDeteccion, 'YYYY-MM-DD').toDate(),
                     area: pnc.area,
                     cantidadProducida: pnc.cantidadProducida,
-                    cantidadNoConforme: pnc.cantidadNoConforme,
+                    cantidadNoConforme: cantidadNoConformeAux,
                     unidad: pnc.unidad && pnc.unidad.id,
                     validez: pnc.porcentajeValidez,
                     pesoNoConforme: pnc.pesoNoConforme,
@@ -251,7 +252,7 @@ class Form extends Component {
                     </div>
                     <div className='p-col-12 p-lg-4'>
                         <label htmlFor="float-input">Cantidad No Conforme</label>
-                        <InputText readOnly={!this.state.editar} keyfilter="num" value={this.state.cantidadNoConforme} onChange={(e) => this.setState({ cantidadNoConforme: e.target.value })} />
+                        <InputText readOnly keyfilter="num" value={this.state.cantidadNoConforme} />
                     </div>
                     <div className='p-col-12 p-lg-4'>
                         <label htmlFor="float-input">Unidad</label>
@@ -360,7 +361,7 @@ class Form extends Component {
                 {
                     this.state.id > 0 &&
                     <div>
-                        <PncDefecto idPnc={this.state.id} defectos={this.state.defectos} mostrarControles={this.state.editar} />
+                        <PncDefecto idPnc={this.state.id} defectos={this.state.defectos} mostrarControles={this.state.editar} origen={this}/>
                         <br />
                         <PncSalidaMaterial idPnc={this.state.id} mostrarControles={this.state.editar} />
                         <br />

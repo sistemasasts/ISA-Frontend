@@ -25,6 +25,7 @@ class PncDefecto extends Component {
         this.actionTemplate = this.actionTemplate.bind(this);
         this.itemTemplate = this.itemTemplate.bind(this);
         this.previewTemplate = this.previewTemplate.bind(this);
+        this.actualizarCantidadNoConforme = this.actualizarCantidadNoConforme.bind(this);
 
         this.responsiveOptions = [
             {
@@ -74,6 +75,10 @@ class PncDefecto extends Component {
     }
     previewTemplate(item) {
         return <img src={`${item}`} alt={item.alt} style={{ width: '100%', display: 'block' }} />
+    }
+
+    actualizarCantidadNoConforme(cantidadActual) {
+        this.props.origen.setState({ cantidadNoConforme: cantidadActual })
     }
 
     actionTemplate(rowData, column) {

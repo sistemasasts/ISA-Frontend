@@ -108,6 +108,9 @@ class PncDefectoForm extends Component {
 
     actualizarTablaDefectos(defectosActualizados) {
         console.log(defectosActualizados);
+        const cantidadNoConformeAux = _.sumBy(defectosActualizados, (o) => o.cantidad);
+        console.log(cantidadNoConformeAux)
+        this.props.origen.actualizarCantidadNoConforme(cantidadNoConformeAux);
         this.props.origen.setState({ defectos: defectosActualizados });
     }
 
