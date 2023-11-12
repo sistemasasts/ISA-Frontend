@@ -12,6 +12,7 @@ import PncSalidaMaterialService from '../../../../service/Pnc/PncSalidaMaterialS
 import PncHistorial from '../PncHistorial';
 import FormLectura from '../FormLectura';
 import PncSalidaMaterialFormLectura from '../SalidaMaterial/PncSalidaMaterialFormLectura';
+import PncDefecto from '../PncDefecto';
 
 const ESTADO = 'PENDIENTE_APROBACION';
 const TIPO_SOLICITUD = 'SALIDA_MATERIAL';
@@ -29,7 +30,8 @@ class PncVerAprobacion extends Component {
             tiposAprobacion: [],
             aprobacion: null,
             pnc: null,
-            salida: null
+            salida: null,
+            defectos: []
         };
         this.aprobarSolicitud = this.aprobarSolicitud.bind(this);
         this.redirigirInicio = this.redirigirInicio.bind(this);
@@ -51,7 +53,8 @@ class PncVerAprobacion extends Component {
                     estado: salidaMaterial.estado,
                     mostrarControles: salidaMaterial.estado === ESTADO,
                     pnc: salidaMaterial.productoNoConforme,
-                    salida: salidaMaterial
+                    salida: salidaMaterial,
+                    defectos: salidaMaterial.productoNoConforme.defectos
                 });
             }
         }
@@ -111,7 +114,12 @@ class PncVerAprobacion extends Component {
                 {this.state.id > 0 &&
                     <div className='p-grid p-grid-responsive p-fluid'>
                         <FormLectura pnc={this.state.pnc} />
-                        <PncSalidaMaterialFormLectura salidaMaterial={this.state.salida} />
+                        <div className='p-col-12 p-lg-12' style={{ paddingLeft: '15px', paddingRight: '15px' }}>
+                            <PncDefecto idPnc={this.state.id} defectos={this.state.defectos} mostrarControles={false} />
+                        </div>
+                        <div className='p-col-12 p-lg-12'>
+                            <PncSalidaMaterialFormLectura salidaMaterial={this.state.salida} />
+                        </div>
                         <div className='p-col-12 p-lg-12 caja'>INFORMACIÓN ADICIONAL</div>
                         <div className='p-col-12 p-lg-12'>
                             <Adjuntos solicitud={this.props.match.params.idPncSalida} orden={ORDEN} controles={this.state.mostrarControles} estado={ESTADO} tipo={TIPO_SOLICITUD} />

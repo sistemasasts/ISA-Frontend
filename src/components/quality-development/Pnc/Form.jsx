@@ -275,7 +275,7 @@ class Form extends Component {
                         <InputText readOnly={!this.state.editar} value={this.state.lote} onChange={(e) => this.setState({ lote: e.target.value })} />
                     </div>
                     <div className='p-col-12 p-lg-4'>
-                        <label htmlFor="float-input">HCC Traspaso Libre Utilización</label>
+                        <label htmlFor="float-input">Transferencia a PNC</label>
                         <InputText readOnly={!this.state.editar} value={this.state.hcc} onChange={(e) => this.setState({ hcc: e.target.value })} />
                     </div>
                     <div className='p-col-12 p-lg-4'>

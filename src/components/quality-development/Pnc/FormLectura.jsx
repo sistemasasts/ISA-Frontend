@@ -181,10 +181,10 @@ class FormLectura extends Component {
                         <label htmlFor="float-input">Unidad</label>
                         <Dropdown disabled options={this.state.unidadesCatalogo} value={this.state.unidad} autoWidth={false} onChange={(e) => this.setState({ unidad: e.value })} placeholder="Selecione" />
                     </div>
-                    <div className='p-col-12 p-lg-4'>
+                   {/*  <div className='p-col-12 p-lg-4'>
                         <label htmlFor="float-input">Validez Producto(%)</label>
                         <InputText readOnly keyfilter="num" value={this.state.validez} onChange={(e) => this.setState({ validez: e.target.value })} />
-                    </div>
+                    </div> */}
                     <div className='p-col-12 p-lg-4'>
                         <label htmlFor="float-input">Peso No Conforme KG</label>
                         <InputText readOnly keyfilter="num" value={this.state.pesoNoConforme} onChange={(e) => this.setState({ pesoNoConforme: e.target.value })} />
@@ -198,7 +198,7 @@ class FormLectura extends Component {
                         <InputText readOnly value={this.state.lote} onChange={(e) => this.setState({ lote: e.target.value })} />
                     </div>
                     <div className='p-col-12 p-lg-4'>
-                        <label htmlFor="float-input">HCC Traspaso Libre Utilización</label>
+                        <label htmlFor="float-input">Transferencia a PNC</label>
                         <InputText readOnly value={this.state.hcc} onChange={(e) => this.setState({ hcc: e.target.value })} />
                     </div>
                     <div className='p-col-12 p-lg-4'>
