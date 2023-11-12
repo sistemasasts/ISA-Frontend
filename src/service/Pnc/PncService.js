@@ -23,7 +23,7 @@ const PncService = {
     generarReporte: (id) => httpFiles.request.get(`${apiEndpoint}/generarReporte/${id}`),
 
     reporteComercial: (page, size, criterios) => http.request.post(`${apiEndpoint}/reporteComercial/?page=${page}&size=${size}`, criterios),
-    listarDefectos: (id) => http.request.get(`${apiEndpoint}/detalleDefectos/${id}`),
+    listarDefectos: (id, defectoId) => http.request.get(`${apiEndpoint}/detalleDefectos/${id}/${defectoId}`),
 
     listarOrigen: async () => await http.request.get(`${apiEndpoint}/origenes`),
 

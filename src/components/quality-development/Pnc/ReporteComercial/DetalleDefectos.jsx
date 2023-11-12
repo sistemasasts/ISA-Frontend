@@ -35,18 +35,19 @@ class DetalleDefectos extends Component {
 
     componentDidUpdate(prevProps) {
         if (this.props.mostrar !== prevProps.mostrar) {
-            this.fetchData(this.props.idPnc);
+            this.fetchData(this.props.idDefecto);
         }
     }
 
     async fetchData(data) {
-        console.log(data)
-        const defectos = await PncService.listarDefectos(data);
-        this.setState({ defectos: defectos, mostrar: true })
+        if (data && this.props.that.state.pncSeleccionado) {
+            const defectos = await PncService.listarDefectos(this.props.that.state.pncSeleccionado, data);
+            this.setState({ defectos: defectos, mostrar: true })
+        }
     }
 
     async componentDidMount() {
-        this.fetchData(this.props.idPnc);
+        this.fetchData(this.props.idDefecto);
     }
 
     cerrarDialogo() {

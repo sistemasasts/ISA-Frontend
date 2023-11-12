@@ -24,6 +24,7 @@ class ReporteComercialPrincipal extends Component {
             totalRecords: 0,
             currenPage: '',
             pncSeleccionado: null,
+            defectoSeleccionado: null,
             mostrarDefectos: false
         };
         this.actionTemplate = this.actionTemplate.bind(this);
@@ -87,7 +88,7 @@ class ReporteComercialPrincipal extends Component {
 
     actionTemplate(rowData, column) {
         return <div>
-            <Button type="button" icon="pi pi-eye" label='Defectos' className="p-button-success" onClick={() => this.setState({ pncSeleccionado: rowData.id, mostrarDefectos: true })}></Button>
+            <Button type="button" icon="pi pi-eye" label='Defectos' className="p-button-success" onClick={() => this.setState({ defectoSeleccionado: rowData.defectoId, pncSeleccionado: rowData.id, mostrarDefectos: true })}></Button>
         </div>
     }
 
@@ -147,7 +148,7 @@ class ReporteComercialPrincipal extends Component {
                 </DataTable>
                 <Paginator first={this.state.first} rows={this.state.size} totalRecords={this.state.totalRecords} onPageChange={this.onPageChange}
                     template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport" currentPageReportTemplate={this.state.currenPage}></Paginator>
-                <DetalleDefectos idPnc={this.state.pncSeleccionado} mostrar={this.state.mostrarDefectos} that={this}></DetalleDefectos>
+                <DetalleDefectos idDefecto={this.state.defectoSeleccionado} mostrar={this.state.mostrarDefectos} that={this}></DetalleDefectos>
             </div>
         )
     }
