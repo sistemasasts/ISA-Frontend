@@ -28,7 +28,6 @@ class PncPlanAccion extends Component {
     async componentDidMount() {
         const salidaMaterialId = this.props.idSalidaMaterial;
         const planesAccion = await PncPlanAccionService.listarPorSalidaMaterialId(salidaMaterialId);
-        console.log(this.props);
         this.setState({
             idSalidaMaterial: salidaMaterialId, planes: planesAccion, mostrarControles: this.props.mostrarControles
         });
