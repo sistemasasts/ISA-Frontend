@@ -28,6 +28,8 @@ class PncPrincipal extends Component {
             rows: 0,
             totalRecords: 0,
             currenPage: '',
+            codigo: null,
+            lote: null,
         };
         this.actionTemplate = this.actionTemplate.bind(this);
         this.consultar = this.consultar.bind(this);
@@ -57,6 +59,7 @@ class PncPrincipal extends Component {
             fechaInicio: this.state.fechaInicio && moment(this.state.fechaInicio).format("YYYY-MM-DD hh:mm:ss.SSS"),
             fechaFin: this.state.fechaFin && moment(this.state.fechaFin).format("YYYY-MM-DD hh:mm:ss.SSS"),
             productoId: this.state.producto && this.state.producto.idProduct,
+            lote: this.state.lote,
             estados: this.estado
         }
     }
@@ -71,7 +74,8 @@ class PncPrincipal extends Component {
             fechaFin: null,
             estado: null,
             producto: null,
-            codigo: null,
+            codigo: '',
+            lote: '',
             listPnc: []
         });
     }
@@ -140,11 +144,9 @@ class PncPrincipal extends Component {
                                 <label htmlFor="float-input">Número PNC</label>
                                 <InputText value={this.state.codigo} onChange={(e) => this.setState({ codigo: e.target.value })} />
                             </div>
-                            <div className='p-col-3'>
-                                <label htmlFor="float-input">Producto</label>
-                                <AutoComplete field="nameProduct" minLength={3} suggestions={this.state.productosSugeridos}
-                                    completeMethod={(e) => this.buscarProductos(e)} value={this.state.producto} onChange={(e) => this.setState({ producto: e.value })}
-                                />
+                            <div className='p-col-12 p-lg-3'>
+                                <label htmlFor="float-input">Lote</label>
+                                <InputText value={this.state.lote} onChange={(e) => this.setState({ lote: e.target.value })} />
                             </div>
                             <div className='p-col-12 p-lg-3'>
                                 <label htmlFor="float-input">Fecha Inicio</label>
@@ -153,6 +155,12 @@ class PncPrincipal extends Component {
                             <div className='p-col-12 p-lg-3'>
                                 <label htmlFor="float-input">Fecha Fin</label>
                                 <Calendar dateFormat="yy/mm/dd" inputId='ffin' value={this.state.fechaFin} locale={es} onChange={(e) => this.setState({ fechaFin: e.value })} showIcon={true} />
+                            </div>
+                            <div className='p-col-12'>
+                                <label htmlFor="float-input">Producto</label>
+                                <AutoComplete field="nameProduct" minLength={3} suggestions={this.state.productosSugeridos}
+                                    completeMethod={(e) => this.buscarProductos(e)} value={this.state.producto} onChange={(e) => this.setState({ producto: e.value })}
+                                />
                             </div>
                             <div className='p-col-12 p-lg-12'>
                                 <label htmlFor="float-input">Estado</label>

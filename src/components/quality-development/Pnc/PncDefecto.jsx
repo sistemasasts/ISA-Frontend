@@ -48,7 +48,6 @@ class PncDefecto extends Component {
 
         const pnc = this.props.idPnc;
         const defectos = this.props.defectos;
-        console.log(this.props);
         this.setState({
             unidadesCatalogo: unidades, idPnc: pnc, defectos: defectos, mostrarControles: this.props.mostrarControles
         });
