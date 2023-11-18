@@ -4,6 +4,7 @@ import ProductoService from "../../../../service/productoService";
 import { getDecodedToken } from "../../../../config/auth/credentialConfiguration";
 import UnidadMedidaService from "../../../../service/UnidadMedidaService";
 import PncService from "../../../../service/Pnc/PncService";
+import DefectoService from "../../../../service/Pnc/DefectoService";
 import history from '../../../../history';
 import { useParams } from "react-router-dom";
 import * as _ from "lodash";
@@ -21,6 +22,7 @@ const defaultObjDesviacionReq = {
     control: "",
     alcance: "",
     lotes: [],
+    defectos: [],
     product: {},
     productoAfectado: {},
     productoReplanificado: {},
@@ -38,6 +40,10 @@ const defaultLote = {
     cantidad: 0,
     unidad: "",
     lote: ""
+}
+
+const defaultDefecto = {
+    defecto: {},
 }
 
 const defaultRecurso = {
@@ -63,6 +69,7 @@ export const useHookFormDesviacionReq = () => {
     const { idDesvReq } = useParams();
     const [displayForm, setDisplayForm] = useState(false);
     const [displayFormRecurso, setDisplayFormRecurso] = useState(false);
+    const [displayFormDefecto, setDisplayFormDefecto] = useState(false);
     const [nuevaDesviacionReq, setNuevaDesviacionReq] = useState({ ...defaultObjDesviacionReq })
     const [listaProductos, setListaProductos] = useState([]);
     const [productoSel, setProductoSel] = useState();
@@ -70,13 +77,17 @@ export const useHookFormDesviacionReq = () => {
     const [productoReplanificadoSel, setProductoReplanificadoSel] = useState();
     const [es, setEs] = useState(defaultEs)
     const [unidadesMedida, setUnidadesMedida] = useState([]);
+    const [defectosCatalogo, setDefectosCatalogo] = useState([]);
     const [catalogoLineaAfectacion, setCatalogoLineaAfectacion] = useState([]);
     const [lote, setLote] = useState(defaultLote);
     const [listaLote, setListaLote] = useState([]);
+    const [defecto, setDefecto] = useState(defaultDefecto);
+    const [listaDefecto, setListaDefecto] = useState([]);
     const [recurso, setRecurso] = useState(defaultRecurso);
     const [totalRecurso, setTotalRecurso] = useState(0);
     const [listaRecurso, setListaRecurso] = useState([]);
     const [materialSel, setMaterialSel] = useState();
+    const [defectoSel, setDefectoSel] = useState();
     const [isEdit, setIsEdit] = useState(false);
     const [isEditLocal, setIsEditLocal] = useState(false);
 
@@ -84,6 +95,10 @@ export const useHookFormDesviacionReq = () => {
         async function obtenerUnidadesMedida() {
             const responseUnidadesMedidas = await UnidadMedidaService.listarActivos();
             setUnidadesMedida(responseUnidadesMedidas);
+        }
+        async function obtenerDefectosCatalogo() {
+            const responseDefectos = await DefectoService.listarActivos();
+            setDefectosCatalogo(responseDefectos);
         }
         async function obtenerCatalogoLineaAfectacion() {
             const responseCatalogoLineaAfecta = await PncService.obtenerLineaAfecta();
@@ -96,6 +111,7 @@ export const useHookFormDesviacionReq = () => {
             checkRecursos();
         }
         obtenerUnidadesMedida();
+        obtenerDefectosCatalogo();
         obtenerCatalogoLineaAfectacion();
         obtenerDesviacionRePorId();
     }, []);
@@ -109,6 +125,7 @@ export const useHookFormDesviacionReq = () => {
             setProductoSel(desvResp.product);
             setProductoAfectadoSel(desvResp.productoAfectado);
             setProductoReplanificadoSel(desvResp.productoReplanificado);
+            setListaDefecto(desvResp.defectos);
             setIsEdit(true);
         }
     }
@@ -127,7 +144,7 @@ export const useHookFormDesviacionReq = () => {
             const recursosResp = await RecursoRecuperarMaterialService.listarPorDesviacionId(idDesvReq);
 
             setListaRecurso(recursosResp);
-            setTotalRecurso(_.sumBy(recursosResp, (o) => {return o.costoTotal}));
+            setTotalRecurso(_.sumBy(recursosResp, (o) => { return o.costoTotal }));
         }
     }
 
@@ -147,13 +164,14 @@ export const useHookFormDesviacionReq = () => {
         if (!isEdit && !nuevaDesviacionReq.id) {
             const response = await DesviacionRequisitoService.crear({ ...nuevaDesviacionReq, responsable: _.get(user, "user_name") });
             setNuevaDesviacionReq(response);
-
             growl.current.show({ severity: 'success', detail: 'Desviacion de Requisitos registrada exitosamente' });
+            setListaDefecto([]);
         } else {
             await DesviacionRequisitoService.actualizar({ ...nuevaDesviacionReq, responsable: _.get(user, "user_name") });
 
             checkLotes();
             checkRecursos();
+            //setListaDefecto();
 
             growl.current.show({ severity: 'success', detail: 'Desviacion de Requisitos modificada exitosamente' });
         }
@@ -161,6 +179,7 @@ export const useHookFormDesviacionReq = () => {
         setDisplayForm(false);
         setLote(defaultLote)
         setListaLote([]);
+        setDefecto(defaultDefecto)
         setRecurso(defaultRecurso);
         setListaRecurso([]);
     }
@@ -306,7 +325,7 @@ export const useHookFormDesviacionReq = () => {
         const recursosResp = await RecursoRecuperarMaterialService.listarPorDesviacionId(_.defaultTo(idDesvReq, nuevaDesviacionReq.id));
 
         setListaRecurso(recursosResp);
-        setTotalRecurso(_.sumBy(recursosResp, (o) => {return o.costoTotal}));
+        setTotalRecurso(_.sumBy(recursosResp, (o) => { return o.costoTotal }));
         setDisplayFormRecurso(false);
     }
 
@@ -321,10 +340,50 @@ export const useHookFormDesviacionReq = () => {
         }
     }
 
+    /* DEFECTOS */
+    const closeFormDefecto = () => {
+        setDefectoSel(null);
+        setDisplayFormDefecto(false);
+        setDefecto(defaultDefecto);
+        setIsEditLocal(false);
+    }
+
+    const clickFormDefecto = async (editDefecto, rowData) => {
+        setDisplayFormDefecto(true);
+        setIsEditLocal(editDefecto);
+        /* if (editDefecto && rowData) {
+            const busc = await LoteService.listarPorLoteId(rowData.id);
+            _.set(rowData, "fecha", formattedStringtoDate(rowData.fecha));
+            setLote(rowData);
+        } */
+    }
+
+    const eliminarDefectoPorId = async (rowData) => {
+        if (rowData) {
+            const defectos = await DesviacionRequisitoService.eliminarDefecto(nuevaDesviacionReq.id,rowData.id);
+            growl.current.show({ severity: 'success', detail: 'Defecto eliminado exitosamente' });
+            setListaDefecto(defectos);
+        }
+    }
+
+    const handleChangeDefecto = (field, value) => {
+        const loteTmp = { ...defecto };
+        loteTmp[field] = value;
+        setDefecto(loteTmp);
+    }
+
+    const saveDefecto = async () => {
+        const recursosResp = await DesviacionRequisitoService.agregarDefecto(nuevaDesviacionReq.id, defecto.defecto.id);
+        setListaDefecto(recursosResp);
+        setDisplayFormDefecto(false);
+    }
+
+
     return {
         growl,
         displayForm,
         displayFormRecurso,
+        displayFormDefecto,
         nuevaDesviacionReq,
         listaProductos,
         productoSel,
@@ -332,28 +391,37 @@ export const useHookFormDesviacionReq = () => {
         productoReplanificadoSel,
         es,
         unidadesMedida,
+        defectosCatalogo,
         catalogoLineaAfectacion,
         listaLote,
+        listaDefecto,
         lote,
+        defecto,
         listaRecurso,
         totalRecurso,
         recurso,
         materialSel,
+        defectoSel,
         actions: {
             closeForm,
             createItem: saveItem,
             handleChangeNewDesviacionReq,
             buscarProductos,
             clickFormLote,
+            clickFormDefecto,
             handleChangeLote,
             saveLocalLote,
             cancelar,
             eliminarPorId,
+            eliminarDefectoPorId,
             closeFormRecurso,
             handleChangeRecurso,
             clickFormRecurso,
             saveRecurso,
-            eliminarRecursoPorId
+            eliminarRecursoPorId,
+            closeFormDefecto,
+            handleChangeDefecto,
+            saveDefecto
         }
     };
 }

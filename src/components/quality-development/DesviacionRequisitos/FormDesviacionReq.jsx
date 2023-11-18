@@ -14,6 +14,15 @@ import { DataTable } from "primereact/datatable";
 import { InputSwitch } from 'primereact/inputswitch';
 import * as _ from "lodash";
 
+export const ActionButtonDefecto = ({ edit, view, remove, rowData }) => {
+    return (
+        <div>
+            {remove && <Button type="button" icon="pi pi-trash" className="p-button-danger" onClick={() => remove(rowData)}></Button>}
+            {view && <Button type="button" icon="pi pi-file-pdf" className="p-button-success" onClick={() => view(rowData)}/>}
+        </div>
+    )
+}
+
 export const FormDesviacionReq = () => {
     const {
         growl,
@@ -24,10 +33,14 @@ export const FormDesviacionReq = () => {
         productoReplanificadoSel,
         es,
         unidadesMedida,
+        defectosCatalogo,
         catalogoLineaAfectacion,
         displayForm,
+        displayFormDefecto,
         listaLote,
         lote,
+        listaDefecto,
+        defecto,
         materialSel,
         recurso,
         listaRecurso,
@@ -62,10 +75,10 @@ export const FormDesviacionReq = () => {
                     <label htmlFor="float-input">Línea Afectada</label>
                     <Dropdown value={nuevaDesviacionReq.afectacion} options={catalogoLineaAfectacion} placeholder="Seleccione una línea de afectación" onChange={(e) => actions.handleChangeNewDesviacionReq("afectacion", e.value)} autoWidth={false} />
                 </div>
-                <div className='p-col-12 p-lg-6'>
+                {/* <div className='p-col-12 p-lg-6'>
                     <label htmlFor="float-input">Motivo de la desviación</label>
                     <InputTextarea autoResize={true} value={nuevaDesviacionReq.motivo} onChange={(e) => actions.handleChangeNewDesviacionReq("motivo", e.target.value)} />
-                </div>
+                </div> */}
                 <div className='p-col-12 p-lg-6'>
                     <label htmlFor="float-input">Descripción de la desviación</label>
                     <InputTextarea autoResize={true} value={nuevaDesviacionReq.descripcion} onChange={(e) => actions.handleChangeNewDesviacionReq("descripcion", e.target.value)} />
@@ -78,6 +91,42 @@ export const FormDesviacionReq = () => {
                     <label htmlFor="float-input">Alcance y tiempo de la desviación</label>
                     <InputTextarea autoResize={true} value={nuevaDesviacionReq.alcance} onChange={(e) => actions.handleChangeNewDesviacionReq("alcance", e.target.value)} />
                 </div>
+                {(nuevaDesviacionReq && nuevaDesviacionReq.id) && (
+                    <div className='p-col-12 p-lg-12'>
+                        <div>
+                            <h1><strong>Defectos</strong></h1>
+                            <DataTable
+                                header={<Header clickDisplayForm={() => actions.clickFormDefecto(false)} label={"Agregar Defecto"} edit={false} icon={"pi pi-plus"} />}
+                                value={listaDefecto}
+                                autoLayout={true}
+                                scrollable={true}
+                                responsive={true}
+                                selectionMode={"single"}
+                            >
+                                <Column
+                                    body={(row) =>
+                                        <ActionButtonDefecto
+                                            /* edit={() => actions.clickFormLote(true, row)} */
+                                            remove={() => actions.eliminarDefectoPorId(row)}
+                                            rowData={row}
+                                        />}
+                                    style={{ width: '10em', textAlign: 'center' }} />
+                                <Column field={"defecto.nombre"} header={"Descripción Defecto"} style={{textAlign: 'left' }}/>
+                            </DataTable>
+                            <Dialog header={"Nuevo"} visible={displayFormDefecto} modal={true} style={{ width: "50vw" }} onHide={actions.closeFormDefecto} footer={<ActionFooter save={actions.saveDefecto} cancel={actions.closeFormDefecto} />}>
+                                <div className="p-grid p-fluid">
+                                    <div className='p-col-12 p-lg-12'>
+                                        <label htmlFor="float-input">Defecto</label>
+                                        <Dropdown appendTo={document.body} value={defecto.defecto} options={defectosCatalogo} optionLabel="nombre" placeholder="Seleccione..." onChange={(e) => actions.handleChangeDefecto("defecto", e.value)} autoWidth={false} />
+                                    </div>                                    
+                                </div>
+                            </Dialog>
+                        </div>
+                    </div>
+                )}
+
+
+
                 {(nuevaDesviacionReq && nuevaDesviacionReq.id) && (
                     <div className='p-col-12 p-lg-12'>
                         <div>
