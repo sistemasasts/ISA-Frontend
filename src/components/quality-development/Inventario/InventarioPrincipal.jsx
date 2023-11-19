@@ -9,6 +9,7 @@ import * as _ from "lodash";
 import InventarioService from '../../../service/Inventario/InventarioService';
 import history from '../../../history';
 import InventarioForm from './InventarioForm';
+import { InputText } from 'primereact/inputtext';
 
 class InventarioPrincipal extends Component {
 
@@ -72,6 +73,10 @@ class InventarioPrincipal extends Component {
     render() {
         let header = <div className="p-clearfix" style={{ width: '100%' }}>
             <Button style={{ float: 'left' }} label="Nuevo" icon="pi pi-plus" onClick={() => this.setState({ mostrarForm: true })} />
+            <div style={{'textAlign':'right'}}>
+                <i className="pi pi-search" style={{margin:'4px 4px 0 0'}}></i>
+                <InputText type="search" onInput={(e) => this.setState({globalFilter: e.target.value})} placeholder="Búsqueda General" size="50"/>
+            </div>
         </div>;
         //const statusFilter = this.renderStatusFilter();
         return (
@@ -80,11 +85,12 @@ class InventarioPrincipal extends Component {
                 <h3><strong>INVENTARIO DE PRODUCTOS (REACTIVOS)</strong></h3>
 
                 <DataTable value={this.state.inventario} paginator={true} rows={15} header={header} responsive={true} scrollable={true}
-                    selectionMode="single"
+                    selectionMode="single" globalFilter={this.state.globalFilter}
                 >
                     <Column body={this.actionTemplate} style={{ textAlign: 'center', width: '8em' }} />
                     <Column field="productoNombre" header="Producto" sortable={true} style={{ textAlign: 'center', width: '25em' }} />
-                    <Column field="unidad.abreviatura" header="Unidad" style={{ width: '10em' }} />
+                    <Column field="tipoProducto" header="Tipo" sortable={true} style={{ textAlign: 'center', width: '20em' }} />
+                    <Column field="unidad.abreviatura" header="Unidad" style={{ width: '10em', textAlign: 'center' }} />
                     <Column field="minimo" header="Mínimo" sortable={true} style={{ textAlign: 'center', width: '12em' }} />
                     <Column field="maximo" header="Máximo" sortable={true} style={{ textAlign: 'center', width: '12em' }} />
                     <Column field="cantidadAlertar" header="Alertar" sortable={true} style={{ textAlign: 'center', width: '11em' }} />
