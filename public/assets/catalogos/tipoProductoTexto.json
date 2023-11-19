@@ -89,8 +89,28 @@
             "value": "Reactivos Laboratorio"
         },
         {
-            "label": "EPPS Y Suministros Oficina",
-            "value": "EPPS Y Suministros Oficina"
+            "label": "EPPS",
+            "value": "EPPS"
+        },
+        {
+            "label": "Suministros Oficina",
+            "value": "Suministros Oficina"
+        },
+        {
+            "label": "Suministros de Limpieza",
+            "value": "Suministros de Limpieza"
+        },
+        {
+            "label": "Material de Vidrio",
+            "value": "Material de Vidrio"
+        },
+        {
+            "label": "Material de Laboratorio",
+            "value": "Material de Laboratorio"
+        },
+        {
+            "label": "Repuestos Claves",
+            "value": "Repuestos Claves"
         },
         {
             "label": "Tubos",

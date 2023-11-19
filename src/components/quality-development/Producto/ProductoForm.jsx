@@ -230,13 +230,13 @@ class ProductoForm extends Component {
         if (_.isEmpty(this.state.codigoSap)) {
             camposOblogatoriosDetectados.push(this.crearObjValidacion('codigoSap'));
         }
-        if (_.isEmpty(this.state.grupoSap)) {
+        if (_.isEmpty(this.state.grupoSap) && this.visualizarCamposPorGrupoProducto('grupoSap') !== 'none') {
             camposOblogatoriosDetectados.push(this.crearObjValidacion('grupoSap'));
         }
         /* if (_.isEmpty(this.state.nombreGenerico)) {
             camposOblogatoriosDetectados.push(this.crearObjValidacion('nombreGenerico'));
         } */
-        if (_.isEmpty(this.state.itcdq)) {
+        if (_.isEmpty(this.state.itcdq) && this.visualizarCamposPorGrupoProducto('itcdq') !== 'none') {
             camposOblogatoriosDetectados.push(this.crearObjValidacion('itcdq'));
         }
         if (_.isEmpty(this.state.tipo)) {
@@ -245,13 +245,13 @@ class ProductoForm extends Component {
         /* if (_.isEmpty(this.state.origen)) {
             camposOblogatoriosDetectados.push(this.crearObjValidacion('origen'));
         } */
-        if (_.isEmpty(this.state.descripcion)) {
+        if (_.isEmpty(this.state.descripcion) && this.visualizarCamposPorGrupoProducto('descripcion') !== 'none') {
             camposOblogatoriosDetectados.push(this.crearObjValidacion('descripcion'));
         }
         /* if (_.isEmpty(this.state.usoEspecifico)) {
             camposOblogatoriosDetectados.push(this.crearObjValidacion('usoEspecifico'));
         } */
-        if (_.isEmpty(this.state.presentacion)) {
+        if (_.isEmpty(this.state.presentacion) && this.visualizarCamposPorGrupoProducto('presentacion') !== 'none') {
             camposOblogatoriosDetectados.push(this.crearObjValidacion('presentacion'));
         }
 
@@ -333,6 +333,16 @@ class ProductoForm extends Component {
                     || (nombreCampo === 'InspeccionMuestreoYEnsayo'))
                     return 'none';
                 break;
+            case "EPPS":
+            case "Suministros Oficina":
+            case "Suministros de Limpieza":
+            case "Material de Vidrio":
+            case "Material de Laboratorio":
+            case "Repuestos Claves":
+                if ((nombreCampo === 'descripcion') || (nombreCampo === 'Origen') || (nombreCampo === 'presentacion') || (nombreCampo === 'normaReferencia') || (nombreCampo === 'itcdq') || (nombreCampo === 'grupoSap') || (nombreCampo === 'NombreComercial') || (nombreCampo === 'TipoArmadura') || (nombreCampo === 'CodigoBarras') || (nombreCampo === 'Designacion') || (nombreCampo === 'NormaReferencia') || (nombreCampo === 'CaracteristicasPaletizado')
+                    || (nombreCampo === 'InspeccionMuestreoYEnsayo'))
+                    return 'none';
+                break;
 
             default:
                 break;
@@ -409,16 +419,16 @@ class ProductoForm extends Component {
                     </Toolbar>
                     <div className='p-fluid p-grid' style={{ marginTop: '5px' }}>
                         <div className='p-col-12 p-lg-4'>
-                            <label htmlFor="float-input">Código SAP</label>
+                            <label htmlFor="float-input">Código ERP</label>
                             <InputText className={this.determinarEsCampoRequerido('codigoSap') && 'p-error'} placeholder="Código" value={this.state.codigoSap} onChange={(e) => this.setState({ codigoSap: e.target.value })} />
                             {this.determinarEsCampoRequerido('codigoSap') && <div style={divErrorStyle}>Campo Obligatorio</div>}
                         </div>
                         <div className='p-col-12 p-lg-8'>
-                            <label htmlFor="float-input">Nombre SAP</label>
+                            <label htmlFor="float-input">Nombre ERP</label>
                             <InputText className={this.determinarEsCampoRequerido('nombre') && 'p-error'} placeholder="Nombre" value={this.state.nombre} onChange={(e) => this.setState({ nombre: e.target.value })} />
                             {this.determinarEsCampoRequerido('nombre') && <div style={divErrorStyle}>Campo Obligatorio</div>}
                         </div>
-                        <div className='p-col-12 p-lg-4'>
+                        <div className='p-col-12 p-lg-4' style={{ display: this.visualizarCamposPorGrupoProducto('grupoSap') }}>
                             <label htmlFor="float-input">Grupo de Artículos</label>
                             <InputText className={this.determinarEsCampoRequerido('grupoSap') && 'p-error'} placeholder="Grupo" value={this.state.grupoSap} onChange={(e) => this.setState({ grupoSap: e.target.value })} />
                             {this.determinarEsCampoRequerido('grupoSap') && <div style={divErrorStyle}>Campo Obligatorio</div>}
@@ -429,7 +439,7 @@ class ProductoForm extends Component {
                             <InputText className={this.determinarEsCampoRequerido('nombreGenerico') && 'p-error'} placeholder="Genérico" value={this.state.nombreGenerico} onChange={(e) => this.setState({ nombreGenerico: e.target.value })} />
                             {this.determinarEsCampoRequerido('nombreGenerico') && <div style={divErrorStyle}>Campo Obligatorio</div>}
                         </div>
-                        <div className='p-col-12 p-lg-4'>
+                        <div className='p-col-12 p-lg-4' style={{ display: this.visualizarCamposPorGrupoProducto('itcdq') }}>
                             <label htmlFor="float-input">ITCDQ</label>
                             <InputText className={this.determinarEsCampoRequerido('itcdq') && 'p-error'} placeholder="ITCDQ" value={this.state.itcdq} onChange={(e) => this.setState({ itcdq: e.target.value })} />
                             {this.determinarEsCampoRequerido('itcdq') && <div style={divErrorStyle}>Campo Obligatorio</div>}
@@ -452,7 +462,7 @@ class ProductoForm extends Component {
                             <InputText placeholder="Código de barras" value={this.state.codigoBarras} onChange={(e) => this.setState({ codigoBarras: e.target.value })} />
                         </div>
 
-                        <div className='p-col-12 p-lg-4'>
+                        <div className='p-col-12 p-lg-4' style={{ display: this.visualizarCamposPorGrupoProducto('normaReferencia') }}>
                             <label htmlFor="float-input">Norma de Referencia</label>
                             <InputText placeholder="Norma" value={this.state.normaReferencia} onChange={(e) => this.setState({ normaReferencia: e.target.value })} />
                         </div>
@@ -474,17 +484,17 @@ class ProductoForm extends Component {
                         </div>
 
 
-                        <div className='p-col-12 p-lg-6' style={{ display: this.visualizarCamposPorGrupoProducto('UsoEspecifico') }}>
+                        <div className='p-col-12 p-lg-12' style={{ display: this.visualizarCamposPorGrupoProducto('UsoEspecifico') }}>
                             <label htmlFor="float-input">Uso Específico</label>
                             <InputTextarea className={this.determinarEsCampoRequerido('usoEspecifico') && 'p-error'} rows={3} value={this.state.usoEspecifico} onChange={(e) => this.setState({ usoEspecifico: e.target.value })} />
                             {this.determinarEsCampoRequerido('usoEspecifico') && <div style={divErrorStyle}>Campo Obligatorio</div>}
                         </div>
-                        <div className='p-col-12 p-lg-6'>
+                        <div className='p-col-12 p-lg-12' style={{ display: this.visualizarCamposPorGrupoProducto('presentacion') }}>
                             <label htmlFor="float-input">Presentación</label>
                             <InputTextarea className={this.determinarEsCampoRequerido('presentacion') && 'p-error'} rows={3} placeholder="Presentación" value={this.state.presentacion} onChange={(e) => this.setState({ presentacion: e.target.value })} />
                             {this.determinarEsCampoRequerido('presentacion') && <div style={divErrorStyle}>Campo Obligatorio</div>}
                         </div>
-                        <div className='p-col-12 p-lg-12'>
+                        <div className='p-col-12 p-lg-12' style={{ display: this.visualizarCamposPorGrupoProducto('descripcion') }}>
                             <label htmlFor="float-input">Descripción</label>
                             <InputTextarea className={this.determinarEsCampoRequerido('descripcion') && 'p-error'} rows={3} value={this.state.descripcion} onChange={(e) => this.setState({ descripcion: e.target.value })} />
                             {this.determinarEsCampoRequerido('descripcion') && <div style={divErrorStyle}>Campo Obligatorio</div>}
