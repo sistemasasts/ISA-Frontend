@@ -18,6 +18,8 @@ const PncSalidaMaterialService = {
     aprobar: (norma) => http.request.post(`${apiEndpoint}/aprobar`, norma),
     regresar: (salida) => http.request.post(`${apiEndpoint}/regresar`, salida),
 
+    actualizarInfoAdd: (salida) => http.request.post(`${apiEndpoint}/actualizarInfoAdd`, salida),
+
 }
 
 export default PncSalidaMaterialService;

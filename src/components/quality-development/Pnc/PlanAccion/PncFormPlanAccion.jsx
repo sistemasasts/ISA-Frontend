@@ -4,6 +4,7 @@ import { Dialog } from 'primereact/dialog';
 import { Growl } from 'primereact/growl';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Calendar } from 'primereact/calendar';
+import { Checkbox } from 'primereact/checkbox';
 import * as moment from 'moment';
 import * as _ from "lodash";
 import { Dropdown } from 'primereact/dropdown';
@@ -24,6 +25,7 @@ class PncFormPlanAccion extends Component {
             fechaInicio: null,
             fechaFin: null,
             responsable: null,
+            llenarInfoAdicional: false,
             orden: null,
             cumplido: null,
             display: false,
@@ -62,6 +64,7 @@ class PncFormPlanAccion extends Component {
                 fechaFin: moment(itemSeleccionado.fechaFin, 'YYYY-MM-DD').toDate(),
                 responsable: itemSeleccionado.responsable,
                 orden: itemSeleccionado.orden,
+                llenarInfoAdicional: itemSeleccionado.llenarInfoAdicional,
                 usuarios: this.transformarDatos(catalogo_usuarios)
                 /* cumplidoTexto: itemSeleccionado.cumplido === null ? null : itemSeleccionado.cumplido ? 'SI' : 'NO', */
             });
@@ -131,6 +134,7 @@ class PncFormPlanAccion extends Component {
             salidaMaterialId: this.state.salidaMaterialId,
             responsable: this.state.responsable,
             orden: this.state.orden,
+            llenarInfoAdicional: this.state.llenarInfoAdicional
         }
     }
 
@@ -235,6 +239,10 @@ class PncFormPlanAccion extends Component {
                                     <Message severity="error" text="Campo Obligatorio" />
                                 </div>
                             }
+                        </div>
+                        <div className='p-col-12 p-lg-12'>
+                            <label style={{marginRight: '5px'}} htmlFor="float-input">Habilitar llenar información adicional</label>
+                            <Checkbox onChange={e => this.setState({ llenarInfoAdicional: e.checked })} checked={this.state.llenarInfoAdicional}></Checkbox>                            
                         </div>
 
                     </div>

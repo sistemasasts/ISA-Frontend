@@ -58,6 +58,10 @@ class PncPlanAccion extends Component {
         return <span className={determinarColorPNC(rowData.estado)}>{rowData.estadoTexto}</span>;
     }
 
+    bodyTemplateInfoAdicional(rowData) {
+        return <span>{rowData.llenarInfoAdicional? 'SI': ''}</span>;
+    }
+
     render() {
         let header = <div className="p-clearfix" style={{ width: '100%' }}>
             {this.state.mostrarControles &&
@@ -75,6 +79,7 @@ class PncPlanAccion extends Component {
                     <Column field="fechaFin" header="Fecha Fin" style={{ width: '10%', textAlign: 'center' }} />
                     <Column field="responsableNombre" header="Responsable" style={{ width: '12%', textAlign: 'center' }} />
                     <Column body={this.bodyTemplateEstado} header="Estado" style={{ width: '12%', textAlign: 'center' }} />
+                    <Column body={this.bodyTemplateInfoAdicional} header="Info. Adicional" style={{ width: '8%', textAlign: 'center' }} />
                     <Column field="descripcion" header="Plan de Acción" style={{ width: '45%', textAlign: 'center' }} />
                     {this.state.mostrarControles &&
                         <Column body={this.actionTemplate} style={{ width: '10%', textAlign: 'center' }} />

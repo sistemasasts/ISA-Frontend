@@ -10,6 +10,7 @@ import PncSalidaMaterialFormLectura from '../../SalidaMaterial/PncSalidaMaterial
 import Adjuntos from '../../../SolicitudEnsayo/Adjuntos';
 import PncHistorial from '../../PncHistorial';
 import PncPlanAccionService from '../../../../../service/Pnc/PncPlanAccionService';
+import PncSalidaMaterialInfoAdd from './PncSalidaMaterialInfoAdd';
 
 
 const ESTADO = 'ASIGNADO';
@@ -45,7 +46,6 @@ class PncVerPAProcesar extends Component {
             const salidaMaterial = await PncSalidaMaterialService.listarPorIdCompleto(idSolicitud);
             const plan = await PncPlanAccionService.listarPorId(idPlan);
             console.log(salidaMaterial)
-            console.log(plan)
             if (salidaMaterial) {
                 this.setState({
                     id: salidaMaterial.id,
@@ -89,9 +89,12 @@ class PncVerPAProcesar extends Component {
 
                 {this.state.id > 0 &&
                     <div className='p-grid p-grid-responsive p-fluid'>
-                        <FormLectura pnc={this.state.pnc} reporte={true}/>
+                        <FormLectura pnc={this.state.pnc} reporte={true} />
                         <PncSalidaMaterialFormLectura salidaMaterial={this.state.salida} />
                         <div className='p-col-12 p-lg-12 caja'>INFORMACIÓN ADICIONAL</div>
+                        <div className='p-col-12 p-lg-12'>
+                            <PncSalidaMaterialInfoAdd salidaMaterial={this.state.salida} />
+                        </div>
                         <div className='p-col-12 p-lg-12'>
                             <Adjuntos solicitud={this.props.match.params.idPncSalida} orden={ORDEN} controles={this.state.mostrarControles}
                                 estado={ESTADO} tipo={TIPO_SOLICITUD} planAccionId={this.state.planEnProceso.id} />

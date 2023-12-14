@@ -10,6 +10,7 @@ import PncSalidaMaterialFormLectura from '../../SalidaMaterial/PncSalidaMaterial
 import Adjuntos from '../../../SolicitudEnsayo/Adjuntos';
 import PncHistorial from '../../PncHistorial';
 import PncPlanAccionService from '../../../../../service/Pnc/PncPlanAccionService';
+import PncSalidaMaterialInfoAdd from '../Procesar/PncSalidaMaterialInfoAdd';
 
 
 const ESTADO = 'PENDIENTE_REVISION';
@@ -101,6 +102,9 @@ class PncVerPAValidar extends Component {
                         <FormLectura pnc={this.state.pnc} />
                         <PncSalidaMaterialFormLectura salidaMaterial={this.state.salida} />
                         <div className='p-col-12 p-lg-12 caja'>INFORMACIÓN ADICIONAL</div>
+                        <div className='p-col-12 p-lg-12'>
+                            <PncSalidaMaterialInfoAdd salidaMaterial={this.state.salida} />
+                        </div>
                         <div className='p-col-12 p-lg-12'>
                             <Adjuntos solicitud={this.props.match.params.idPncSalida} orden={ORDEN} controles={this.state.mostrarControles} 
                             estado={ESTADO} tipo={TIPO_SOLICITUD} planAccionId={this.state.planEnProceso.id}/>

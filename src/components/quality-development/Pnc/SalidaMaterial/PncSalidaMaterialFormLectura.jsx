@@ -24,6 +24,7 @@ class PncSalidaMaterialFormLectura extends Component {
             observacion: null,
             observacion2: null,
             mostrarControles: true,
+            verPlanesAccion: false,
 
             pnc: null,
             destinoFinalCatalogo: [],
@@ -53,6 +54,7 @@ class PncSalidaMaterialFormLectura extends Component {
                 cantidad: salida.cantidad,
                 destinoFinal: salida.destino,
                 observacion: salida.observacion,
+                verPlanesAccion: salida.verPlanesAccion
             });
         }
     }
@@ -95,7 +97,7 @@ class PncSalidaMaterialFormLectura extends Component {
                         <InputTextarea readOnly value={this.state.observacion} onChange={(e) => this.setState({ observacion: e.target.value })} rows={3} />
                     </div>
                 </div>
-                {((this.state.destinoFinal === 'RETRABAJO') || (this.state.destinoFinal === 'REPROCESO')) && this.state.id > 0 &&
+                {this.state.verPlanesAccion && this.state.id > 0 &&
                     <div className='p-col-12 p-lg-12'>
                         <PncPlanAccion idSalidaMaterial={this.state.id} mostrarControles={false} />
                     </div>

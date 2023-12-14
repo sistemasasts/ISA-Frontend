@@ -46,7 +46,8 @@ class PncSalidaMaterialForm extends Component {
             cantidadNoConforme: null,
             tipoProducto: null,
             defectos: [],
-            idPncDefecto: null
+            idPncDefecto: null,
+            verPlanesAccion: false
         }
 
         this.validarCamposRequeridos = this.validarCamposRequeridos.bind(this);
@@ -59,7 +60,6 @@ class PncSalidaMaterialForm extends Component {
     async componentDidMount() {
         const pnc = this.props.idPnc;
         const destinos = await PncSalidaMaterialService.listarDestinoFinal();
-        console.log(this.props.match.params);
         this.refrescar(this.props.match.params.idPnc, this.props.match.params.idPncSalida);
         this.setState({
             idPnc: pnc, destinoFinalCatalogo: destinos
@@ -70,13 +70,11 @@ class PncSalidaMaterialForm extends Component {
         if (idPnc) {
             const pnc = await PncService.listarPorId(idPnc);
             if (pnc) {
-                console.log(pnc)
                 const defectosTmp = [ ...pnc.defectos ];
                 const defectos = defectosTmp.map((x) => ({label: x.descripcionCompleta, value: x.id}));
 
                 if (idPncSalida) {
                     const salida = await PncSalidaMaterialService.listarPorId(idPncSalida);
-                    console.log(salida);
                     this.setState({
                         idPnc: pnc.id,
                         id: salida.id,
@@ -96,7 +94,8 @@ class PncSalidaMaterialForm extends Component {
                         editar: salida.estado === 'CREADO',
                         mostrarControles: salida.estado === 'CREADO',
                         idPncDefecto: salida.idPncDefecto,
-                        defectos: defectos
+                        defectos: defectos,
+                        verPlanesAccion: salida.verPlanesAccion
                     });
 
                 } else {
@@ -138,7 +137,7 @@ class PncSalidaMaterialForm extends Component {
             if (this.validarStock()) {
                 const salida = await PncSalidaMaterialService.actualizar(this.crearObj());
                 this.growl.show({ severity: 'success', detail: 'Salida de materia actualizado!' });
-                this.setState({ destinoFinalAux: salida.destino });
+                this.setState({ destinoFinalAux: salida.destino, verPlanesAccion: salida.verPlanesAccion });
             } else {
                 this.growl.show({ severity: 'error', detail: 'Cantidad excede al stock disponible!' });
             }
@@ -307,7 +306,7 @@ class PncSalidaMaterialForm extends Component {
                         }
                     </div>
                 </div>
-                {((this.state.destinoFinalAux === 'RETRABAJO') || (this.state.destinoFinalAux === 'REPROCESO')) && this.state.id > 0 &&
+                {this.state.verPlanesAccion && this.state.id > 0 &&
                     <div className='p-col-12 p-lg-12'>
                         <PncPlanAccion idSalidaMaterial={this.state.id} mostrarControles={this.state.editar} />
                     </div>
