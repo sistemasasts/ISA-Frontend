@@ -28,6 +28,7 @@ class PncPrincipal extends Component {
             rows: 0,
             totalRecords: 0,
             currenPage: '',
+            codigo: null
         };
         this.actionTemplate = this.actionTemplate.bind(this);
         this.consultar = this.consultar.bind(this);
@@ -64,15 +65,17 @@ class PncPrincipal extends Component {
     limpiar() {
         var finiComponent = document.getElementById("fini");
         var ffinComponent = document.getElementById("ffin");
+        var numeroComponent = document.getElementById("numero");
         finiComponent.value = null;
         ffinComponent.value = null;
+        numeroComponent.value = null;
         this.setState({
             fechaInicio: null,
             fechaFin: null,
             estado: null,
             producto: null,
             codigo: null,
-            listPnc: []
+            listadoPnc: []
         });
     }
 
@@ -138,7 +141,7 @@ class PncPrincipal extends Component {
                         <div className="p-grid p-grid-responsive p-fluid">
                             <div className='p-col-12 p-lg-3'>
                                 <label htmlFor="float-input">Número PNC</label>
-                                <InputText value={this.state.codigo} onChange={(e) => this.setState({ codigo: e.target.value })} />
+                                <InputText id='numero' value={this.state.codigo} onChange={(e) => this.setState({ codigo: e.target.value })} />
                             </div>
                             <div className='p-col-3'>
                                 <label htmlFor="float-input">Producto</label>
