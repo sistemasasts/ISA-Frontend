@@ -113,7 +113,7 @@ class Product extends Component {
                             <Column field="nameProduct" header="Nombre" sortable={true} filter={true} />
                             <Column field="typeProduct" header="Tipo" sortable={true} filter={true} style={{ textAlign: 'center', width: '20em' }} />
                             <Column field="itcdq" header="ITCDQ" sortable={true} filter={true} style={{ textAlign: 'center', width: '15em'}} />
-                            <Column field="sapCode" header="Código SAP" sortable={true} filter={true} style={{ textAlign: 'center', width: '9em' }} />
+                            <Column field="sapCode" header="Código ERP" sortable={true} filter={true} style={{ textAlign: 'center', width: '9em' }} />
                             <Column header={actionHeader} body={this.actionTemplate} style={{ textAlign: 'center', width: '8em' }} />
                         </DataTable>
                     </div>

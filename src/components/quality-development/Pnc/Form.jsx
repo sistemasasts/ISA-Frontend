@@ -18,6 +18,7 @@ import PncDefecto from './PncDefecto';
 import PncSalidaMaterial from './SalidaMaterial/PncSalidaMaterial';
 import { determinarColorPNC } from '../SolicitudEnsayo/ClasesUtilidades';
 import Adjuntos from '../SolicitudEnsayo/Adjuntos';
+import { CatalogoService } from '../../../service/CatalogoService';
 
 const ESTADO = 'CREADO';
 const TIPO_SOLICITUD = 'PNC';
@@ -52,6 +53,7 @@ class Form extends Component {
             origen: null,
             produccionTotalMes: null,
             ventaTotalMes: null,
+            bodegaERP: null,
 
 
             catalogoArea: null,
@@ -60,7 +62,9 @@ class Form extends Component {
             catalogoLineaAfecta: null,
             catalogoOrigen: null,
             productosSugeridos: [],
+            catalogoBodegas:[],
         }
+        this.catalogoService = new CatalogoService();
         this.onFivemsChange = this.onFivemsChange.bind(this);
         this.guardar = this.guardar.bind(this);
         this.cancelar = this.cancelar.bind(this);
@@ -80,6 +84,7 @@ class Form extends Component {
             catalogoArea: catalogAreas, unidadesCatalogo: unidades, catalogoProcedenciaLinea: procedenciaLinea,
             catalogoLineaAfecta: lineaAfecta, catalogoOrigen: origenes
         });
+        this.catalogoService.getBodegasERP().then(data => this.setState({ catalogoBodegas: data }));
     }
 
     async refrescar(idPnc) {
@@ -113,6 +118,7 @@ class Form extends Component {
                     origen: pnc.origen,
                     produccionTotalMes: pnc.produccionTotalMes,
                     ventaTotalMes: pnc.ventaTotalMes,
+                    bodegaERP: pnc.bodegaERP,
                     editar: _.includes(['CREADO', 'EN_PROCESO', 'FINALIZADO'], pnc.estado),
                 });
             }
@@ -189,7 +195,8 @@ class Form extends Component {
             nombreCliente: this.state.nombreCliente,
             produccionTotalMes: this.state.produccionTotalMes,
             ventaTotalMes: this.state.ventaTotalMes,
-            origen: this.state.origen
+            origen: this.state.origen,
+            bodegaERP: this.state.bodegaERP
         }
     }
 
@@ -293,6 +300,11 @@ class Form extends Component {
                     <div className='p-col-12 p-lg-4'>
                         <label htmlFor="float-input">Origen</label>
                         <Dropdown disabled={!this.state.editar} options={this.state.catalogoOrigen} value={this.state.origen} autoWidth={false} onChange={(e) => this.setState({ origen: e.value })} placeholder="Selecione" />
+                    </div>
+                    <div className='p-col-12 p-lg-4'>
+                        <label htmlFor="float-input">Bodega ERP</label>
+                        <Dropdown
+                         disabled={!this.state.editar} options={this.state.catalogoBodegas} value={this.state.bodegaERP} autoWidth={false} onChange={(e) => this.setState({ bodegaERP: e.value })} placeholder="Selecione" />
                     </div>
 
                     <label className="p-col-12 p-lg-12" htmlFor="float-input"><span style={{ color: '#CB3234' }}>*</span><strong>Observaciones 5 M's</strong></label>

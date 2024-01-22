@@ -62,4 +62,9 @@ export class CatalogoService {
             .then(res => res.data.data)
     }
 
+    getBodegasERP() {
+        return axios.get('assets/catalogos/bodegaERP.json')
+            .then(res => res.data.data)
+    }
+
 }

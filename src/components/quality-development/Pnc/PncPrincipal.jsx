@@ -60,7 +60,7 @@ class PncPrincipal extends Component {
             fechaFin: this.state.fechaFin && moment(this.state.fechaFin).format("YYYY-MM-DD hh:mm:ss.SSS"),
             productoId: this.state.producto && this.state.producto.idProduct,
             lote: this.state.lote,
-            estados: this.estado
+            estados: this.state.estado
         }
     }
 
@@ -151,11 +151,11 @@ class PncPrincipal extends Component {
                                 <InputText value={this.state.lote} onChange={(e) => this.setState({ lote: e.target.value })} />
                             </div>
                             <div className='p-col-12 p-lg-3'>
-                                <label htmlFor="float-input">Fecha Inicio</label>
+                                <label htmlFor="float-input">Fecha Producción Inicio</label>
                                 <Calendar dateFormat="yy/mm/dd" inputId='fini' value={this.state.fechaInicio} locale={es} onChange={(e) => this.setState({ fechaInicio: e.value })} showIcon={true} />
                             </div>
                             <div className='p-col-12 p-lg-3'>
-                                <label htmlFor="float-input">Fecha Fin</label>
+                                <label htmlFor="float-input">Fecha Producción Fin</label>
                                 <Calendar dateFormat="yy/mm/dd" inputId='ffin' value={this.state.fechaFin} locale={es} onChange={(e) => this.setState({ fechaFin: e.value })} showIcon={true} />
                             </div>
                             <div className='p-col-12'>
