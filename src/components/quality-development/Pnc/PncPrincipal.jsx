@@ -58,6 +58,8 @@ class PncPrincipal extends Component {
             numero: this.state.codigo,
             fechaInicio: this.state.fechaInicio && moment(this.state.fechaInicio).format("YYYY-MM-DD hh:mm:ss.SSS"),
             fechaFin: this.state.fechaFin && moment(this.state.fechaFin).format("YYYY-MM-DD hh:mm:ss.SSS"),
+            fechaInicioDeteccion: this.state.fechaInicioDeteccion && moment(this.state.fechaInicioDeteccion).format("YYYY-MM-DD hh:mm:ss.SSS"),
+            fechaFinDeteccion: this.state.fechaFinDeteccion && moment(this.state.fechaFinDeteccion).format("YYYY-MM-DD hh:mm:ss.SSS"),
             productoId: this.state.producto && this.state.producto.idProduct,
             lote: this.state.lote,
             estados: this.state.estado
@@ -67,13 +69,19 @@ class PncPrincipal extends Component {
     limpiar() {
         var finiComponent = document.getElementById("fini");
         var ffinComponent = document.getElementById("ffin");
+        var finiDeteccionComponent = document.getElementById("finiD");
+        var ffinDeteccionComponent = document.getElementById("ffinD");
         var numeroComponent = document.getElementById("numero");
         finiComponent.value = null;
         ffinComponent.value = null;
+        finiDeteccionComponent.value = null;
+        ffinDeteccionComponent.value = null;
         numeroComponent.value = null;
         this.setState({
             fechaInicio: null,
             fechaFin: null,
+            fechaInicioDeteccion: null,
+            fechaFinDeteccion: null,
             estado: null,
             producto: null,
             codigo: '',
@@ -158,11 +166,19 @@ class PncPrincipal extends Component {
                                 <label htmlFor="float-input">Fecha Producción Fin</label>
                                 <Calendar dateFormat="yy/mm/dd" inputId='ffin' value={this.state.fechaFin} locale={es} onChange={(e) => this.setState({ fechaFin: e.value })} showIcon={true} />
                             </div>
-                            <div className='p-col-12'>
+                            <div className='p-col-6'>
                                 <label htmlFor="float-input">Producto</label>
                                 <AutoComplete field="nameProduct" minLength={3} suggestions={this.state.productosSugeridos}
                                     completeMethod={(e) => this.buscarProductos(e)} value={this.state.producto} onChange={(e) => this.setState({ producto: e.value })}
                                 />
+                            </div>
+                            <div className='p-col-12 p-lg-3'>
+                                <label htmlFor="float-input">Fecha Detección Inicio</label>
+                                <Calendar dateFormat="yy/mm/dd" inputId='finiD' value={this.state.fechaInicioDeteccion} locale={es} onChange={(e) => this.setState({ fechaInicioDeteccion: e.value })} showIcon={true} />
+                            </div>
+                            <div className='p-col-12 p-lg-3'>
+                                <label htmlFor="float-input">Fecha Detección Fin</label>
+                                <Calendar dateFormat="yy/mm/dd" inputId='ffinD' value={this.state.fechaFinDeteccion} locale={es} onChange={(e) => this.setState({ fechaFinDeteccion: e.value })} showIcon={true} />
                             </div>
                             <div className='p-col-12 p-lg-12'>
                                 <label htmlFor="float-input">Estado</label>

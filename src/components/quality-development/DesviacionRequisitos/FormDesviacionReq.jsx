@@ -35,6 +35,7 @@ export const FormDesviacionReq = () => {
         unidadesMedida,
         defectosCatalogo,
         catalogoLineaAfectacion,
+        catalogoCausas,
         displayForm,
         displayFormDefecto,
         listaLote,
@@ -68,12 +69,16 @@ export const FormDesviacionReq = () => {
                     />
                 </div>
                 <div className='p-col-12 p-lg-6'>
-                    <label htmlFor="float-input">Resp. Seguimiento</label>
-                    <InputTextarea autoResize={true} value={nuevaDesviacionReq.seguimiento} onChange={(e) => actions.handleChangeNewDesviacionReq("seguimiento", e.target.value)} />
-                </div>
-                <div className='p-col-12 p-lg-6'>
                     <label htmlFor="float-input">Línea Afectada</label>
                     <Dropdown value={nuevaDesviacionReq.afectacion} options={catalogoLineaAfectacion} placeholder="Seleccione una línea de afectación" onChange={(e) => actions.handleChangeNewDesviacionReq("afectacion", e.value)} autoWidth={false} />
+                </div>
+                <div className='p-col-12 p-lg-6'>
+                    <label htmlFor="float-input">Causa</label>
+                    <Dropdown value={nuevaDesviacionReq.causa} editable={true} options={catalogoCausas} onChange={(e) => actions.handleChangeNewDesviacionReq("causa", e.value)} autoWidth={false} />
+                </div>
+                <div className='p-col-12 p-lg-6'>
+                    <label htmlFor="float-input">Resp. Seguimiento</label>
+                    <InputTextarea autoResize={true} value={nuevaDesviacionReq.seguimiento} onChange={(e) => actions.handleChangeNewDesviacionReq("seguimiento", e.target.value)} />
                 </div>
                 {/* <div className='p-col-12 p-lg-6'>
                     <label htmlFor="float-input">Motivo de la desviación</label>
@@ -153,6 +158,7 @@ export const FormDesviacionReq = () => {
                                 <Column field={"lote"} header={"Lote/Orden de fabricación"} />
                                 <Column field={"cantidad"} header={"Cantidad"} />
                                 <Column field={"unidad.nombre"} header={"Unidad"} />
+                                <Column field={"costo"} header={"Costo"} style={{textAlign: "right"}} />
                             </DataTable>
                             <Dialog header={"Nuevo"} visible={displayForm} modal={true} style={{ width: "50vw" }} onHide={actions.closeForm} footer={<ActionFooter save={actions.saveLocalLote} cancel={actions.closeForm} />}>
                                 <div className="p-grid p-fluid">
@@ -178,6 +184,10 @@ export const FormDesviacionReq = () => {
                                             locale={es}
                                             onChange={(e) => actions.handleChangeLote("fecha", e.value)}
                                         />
+                                    </div>
+                                    <div className='p-col-12 p-lg-12'>
+                                        <label htmlFor="float-input">Costo</label>
+                                        <InputText type={"number"} value={lote.costo} onChange={(e) => actions.handleChangeLote("costo", e.target.value)} />
                                     </div>
                                     {/*{_.isEmpty(this.state.codigoUnidad) && _.isEmpty(this.state.defectoSeleccionado) &&*/}
                                     {/*    <div className='p-col-12 p-lg-12'>*/}

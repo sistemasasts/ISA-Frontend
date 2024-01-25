@@ -1,0 +1,36 @@
+{
+    "data": [
+        {
+            "label": "Problemas de Formulación",
+            "value": "Problemas de Formulación"
+        },
+        {
+            "label": "Calibración de equipo de medición",
+            "value": "Calibración de equipo de medición"
+        },
+        {
+            "label": "Problemas en ejecución de ensayos",
+            "value": "Problemas en ejecución de ensayos"
+        },
+        {
+            "label": "Mano de obra",
+            "value": "Mano de obra"
+        },
+        {
+            "label": "Maquinaria",
+            "value": "Maquinaria"
+        },
+        {
+            "label": "Desarrollo de productos",
+            "value": "Desarrollo de productos"
+        },
+        {
+            "label": "Uso de MP no conforme",
+            "value": "Uso de MP no conforme"
+        },
+        {
+            "label": "Incumplimiento de parámetros",
+            "value": "Incumplimiento de parámetros"
+        }
+    ]
+}

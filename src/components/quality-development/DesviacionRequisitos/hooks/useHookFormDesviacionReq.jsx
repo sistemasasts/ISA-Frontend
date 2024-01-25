@@ -12,6 +12,7 @@ import { formattedStringtoDate } from "../../../../utils/FormatDate";
 import LoteService from "../../../../service/DesviacionRequisitos/LoteService";
 import RecursoRecuperarMaterialService from "../../../../service/DesviacionRequisitos/RecursoRecuperarMaterialService";
 import moment from "moment";
+import { CatalogoService } from '../../../../service/CatalogoService';
 
 const defaultObjDesviacionReq = {
     origen: "",
@@ -32,14 +33,16 @@ const defaultObjDesviacionReq = {
     unidadRecuperada: null,
     desperdicioGenerado: null,
     unidadDesperdicio: null,
-    replanificacion: false
+    replanificacion: false,
+    causa: ""
 }
 
 const defaultLote = {
     fecha: "",
     cantidad: 0,
     unidad: "",
-    lote: ""
+    lote: "",
+    costo: 0
 }
 
 const defaultDefecto = {
@@ -79,6 +82,7 @@ export const useHookFormDesviacionReq = () => {
     const [unidadesMedida, setUnidadesMedida] = useState([]);
     const [defectosCatalogo, setDefectosCatalogo] = useState([]);
     const [catalogoLineaAfectacion, setCatalogoLineaAfectacion] = useState([]);
+    const [catalogoCausas, setCatalogoCausas] = useState([]);
     const [lote, setLote] = useState(defaultLote);
     const [listaLote, setListaLote] = useState([]);
     const [defecto, setDefecto] = useState(defaultDefecto);
@@ -110,10 +114,16 @@ export const useHookFormDesviacionReq = () => {
             checkLotes();
             checkRecursos();
         }
+        function obtenerCatalogoCausas(){
+            const catalogoService = new CatalogoService();
+            catalogoService.getCausasDesviacion().then(data => setCatalogoCausas(data));
+        }
+
         obtenerUnidadesMedida();
         obtenerDefectosCatalogo();
         obtenerCatalogoLineaAfectacion();
         obtenerDesviacionRePorId();
+        obtenerCatalogoCausas();
     }, []);
 
     const checkIsEditOrNew = async () => {
@@ -393,6 +403,7 @@ export const useHookFormDesviacionReq = () => {
         unidadesMedida,
         defectosCatalogo,
         catalogoLineaAfectacion,
+        catalogoCausas,
         listaLote,
         listaDefecto,
         lote,

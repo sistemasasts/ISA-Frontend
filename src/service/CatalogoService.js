@@ -67,4 +67,9 @@ export class CatalogoService {
             .then(res => res.data.data)
     }
 
+    getCausasDesviacion() {
+        return axios.get('assets/catalogos/causaDesviacion.json')
+            .then(res => res.data.data)
+    }
+
 }
