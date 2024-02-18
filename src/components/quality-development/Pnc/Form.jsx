@@ -19,6 +19,7 @@ import PncSalidaMaterial from './SalidaMaterial/PncSalidaMaterial';
 import { determinarColorPNC } from '../SolicitudEnsayo/ClasesUtilidades';
 import Adjuntos from '../SolicitudEnsayo/Adjuntos';
 import { CatalogoService } from '../../../service/CatalogoService';
+import { tieneRol } from '../../../service/UsuarioSesionService';
 
 const ESTADO = 'CREADO';
 const TIPO_SOLICITUD = 'PNC';
@@ -119,7 +120,7 @@ class Form extends Component {
                     produccionTotalMes: pnc.produccionTotalMes,
                     ventaTotalMes: pnc.ventaTotalMes,
                     bodegaERP: pnc.bodegaERP,
-                    editar: _.includes(['CREADO', 'EN_PROCESO', 'FINALIZADO'], pnc.estado),
+                    editar: _.includes(['CREADO', 'EN_PROCESO', 'FINALIZADO'], pnc.estado) && !(tieneRol('JPL') || tieneRol('PL')),
                 });
             }
         }
@@ -380,10 +381,10 @@ class Form extends Component {
                         <Adjuntos solicitud={this.state.id} orden={ORDEN} controles={this.state.editar} tipo={TIPO_SOLICITUD} estado={ESTADO} />
                         <br />
                         <div className='p-col-12 p-lg-12 boton-opcion' >
-                            {this.state.estado !== 'ANULADO' &&
+                            {this.state.estado !== 'ANULADO' && !(tieneRol('JPL') || tieneRol('PL')) &&
                                 <Button className="p-button" label="ACTUALIZAR" onClick={this.actualizar} />
                             }
-                            {this.state.estado === 'CREADO' &&
+                            {this.state.estado === 'CREADO' && !(tieneRol('JPL') || tieneRol('PL')) &&
 
                                 <Button className="p-button-danger" label="ANULAR" onClick={this.anular} />
                             }

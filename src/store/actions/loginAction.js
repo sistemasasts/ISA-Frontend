@@ -21,7 +21,7 @@ export const login = (credentials) => async (dispatch) => {
     try {
         const dataUser = await LoginService.login(credentials)
 
-        const user = getDecodedToken();       
+        const user = getDecodedToken();
 
         dispatch(loginUser(user.user_name))
       

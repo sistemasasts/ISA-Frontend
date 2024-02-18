@@ -102,6 +102,7 @@ import InventarioPrincipal from './components/quality-development/Inventario/Inv
 import MovimientoPrincipal from './components/quality-development/Inventario/MovimientoPrincipal';
 import ListaDesviacionReq from "./components/quality-development/DesviacionRequisitos/ListaDesviacionReq";
 import FormDesviacionReq from "./components/quality-development/DesviacionRequisitos/FormDesviacionReq";
+import PncConsulta from './components/quality-development/Pnc/Consulta/PncConsulta';
 
 
 class MainPage extends Component {
@@ -692,6 +693,7 @@ class MainPage extends Component {
 						<Route path="/quality-development_pnc_desviacion_req" component={ListaDesviacionReq} />
 						<Route path="/quality-development_pnc_desviacion_req_edit/:idDesvReq" component={FormDesviacionReq} />
 						<Route path="/quality-development_pnc_desviacion_req_nuevo" component={FormDesviacionReq} />
+						<Route path="/quality-development_pnc_consulta" component={PncConsulta} />
 						{/* --------- PNC ------------- */}
 
                         {/* --------- INVENTARIO ------------- */}

@@ -55,8 +55,8 @@ class PncSalidaMaterial extends Component {
 
     actionTemplate(rowData, column) {
         return <div>
-            {this.state.mostrarControles &&
-                <Button type="button" icon="pi pi-pencil" className="p-button-warning" onClick={() => history.push(`/quality-development_pnc_salida_material_edit/${rowData.idPnc}/${rowData.id}`)}></Button>}
+            
+                <Button type="button" icon="pi pi-pencil" className="p-button-warning" onClick={() => history.push(`/quality-development_pnc_salida_material_edit/${rowData.idPnc}/${rowData.id}`)}></Button>
             {rowData.estado === 'CREADO' &&
                 <Button type="button" icon="pi pi-trash" className="p-button-danger" onClick={() => this.eliminar(rowData.id)}></Button>
             }

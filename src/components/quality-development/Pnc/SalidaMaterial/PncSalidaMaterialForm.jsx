@@ -16,6 +16,7 @@ import history from '../../../../history';
 import Adjuntos from '../../SolicitudEnsayo/Adjuntos';
 import PncHistorial from '../PncHistorial';
 import PncPlanAccion from '../PlanAccion/PncPlanAccion';
+import { tieneRol } from '../../../../service/UsuarioSesionService';
 
 const ESTADO = 'CREADO';
 const TIPO_SOLICITUD = 'SALIDA_MATERIAL';
@@ -91,8 +92,8 @@ class PncSalidaMaterialForm extends Component {
                         unidad: pnc.unidad.abreviatura,
                         cantidadNoConforme: pnc.cantidadNoConforme,
                         tipoProducto: pnc.producto.typeProduct,
-                        editar: salida.estado === 'CREADO',
-                        mostrarControles: salida.estado === 'CREADO',
+                        editar: salida.estado === 'CREADO' && !(tieneRol('JPL') || tieneRol('PL')),
+                        mostrarControles: salida.estado === 'CREADO' && !(tieneRol('JPL') || tieneRol('PL')),
                         idPncDefecto: salida.idPncDefecto,
                         defectos: defectos,
                         verPlanesAccion: salida.verPlanesAccion
