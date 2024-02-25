@@ -56,6 +56,7 @@ class PncSalidaMaterialForm extends Component {
         this.actualizar = this.actualizar.bind(this);
         this.regresar = this.regresar.bind(this);
         this.enviar = this.enviar.bind(this);
+        this.generarReporteSalidaConcesion = this.generarReporteSalidaConcesion.bind(this);
     }
 
     async componentDidMount() {
@@ -71,8 +72,8 @@ class PncSalidaMaterialForm extends Component {
         if (idPnc) {
             const pnc = await PncService.listarPorId(idPnc);
             if (pnc) {
-                const defectosTmp = [ ...pnc.defectos ];
-                const defectos = defectosTmp.map((x) => ({label: x.descripcionCompleta, value: x.id}));
+                const defectosTmp = [...pnc.defectos];
+                const defectos = defectosTmp.map((x) => ({ label: x.descripcionCompleta, value: x.id }));
 
                 if (idPncSalida) {
                     const salida = await PncSalidaMaterialService.listarPorId(idPncSalida);
@@ -92,11 +93,17 @@ class PncSalidaMaterialForm extends Component {
                         unidad: pnc.unidad.abreviatura,
                         cantidadNoConforme: pnc.cantidadNoConforme,
                         tipoProducto: pnc.producto.typeProduct,
+                        estado: salida.estado,
                         editar: salida.estado === 'CREADO' && !(tieneRol('JPL') || tieneRol('PL')),
                         mostrarControles: salida.estado === 'CREADO' && !(tieneRol('JPL') || tieneRol('PL')),
                         idPncDefecto: salida.idPncDefecto,
                         defectos: defectos,
-                        verPlanesAccion: salida.verPlanesAccion
+                        verPlanesAccion: salida.verPlanesAccion,
+
+                        cliente: salida.cliente,
+                        factura: salida.factura,
+                        responsableVenta:  salida.responsableVenta,
+                        responsableBodega: salida.responsableBodega
                     });
 
                 } else {
@@ -166,6 +173,17 @@ class PncSalidaMaterialForm extends Component {
         history.goBack();
     }
 
+    async generarReporteSalidaConcesion() {
+        var data = await PncSalidaMaterialService.generarReporteSalidaConsesion(this.state.id);
+        const ap = window.URL.createObjectURL(data)
+        const a = document.createElement('a');
+        document.body.appendChild(a);
+        a.href = ap;
+        a.download = `Salida Consesion_PNC${this.state.numero}_${this.state.nombreProducto}.pdf`;
+        a.click();
+        this.growl.show({ severity: 'success', detail: 'Reporte generado!' });
+    }
+
     crearObj() {
         return {
             id: this.state.id > 0 ? this.state.id : null,
@@ -174,13 +192,28 @@ class PncSalidaMaterialForm extends Component {
             destino: this.state.destinoFinal,
             idPnc: this.state.idPnc,
             observacion: this.state.observacion,
-            idPncDefecto: this.state.idPncDefecto
+            idPncDefecto: this.state.idPncDefecto,
+            cliente: this.state.cliente,
+            factura: this.state.factura,
+            responsableVenta: this.state.responsableVenta,
+            responsableBodega: this.state.responsableBodega
         }
     }
 
     validarCamposRequeridos() {
         var camposOblogatoriosDetectados = []
-        if (this.state.cantidad === null) {
+        var campos= ['cantidad','destinoFinal','fecha']
+        var camposSalidaConcesion= ['cliente','factura','responsableVenta', 'responsableBodega']
+
+        _.forEach(campos, (x)=>{
+            if (this.state[x] === null) {
+                let obj = { campo: '', obligatorio: true }
+                obj.campo = x; obj.obligatorio = true
+                camposOblogatoriosDetectados.push(obj);
+            }
+        })
+
+       /*  if (this.state.cantidad === null) {
             let obj = { campo: '', obligatorio: true }
             obj.campo = 'cantidad'; obj.obligatorio = true
             camposOblogatoriosDetectados.push(obj);
@@ -194,7 +227,7 @@ class PncSalidaMaterialForm extends Component {
             let obj = { campo: '', obligatorio: true }
             obj.campo = 'fecha'; obj.obligatorio = true
             camposOblogatoriosDetectados.push(obj);
-        }
+        } */
         this.setState({ camposObligatorios: camposOblogatoriosDetectados })
         return camposOblogatoriosDetectados.length === 0 ? true : false;
     }
@@ -280,7 +313,7 @@ class PncSalidaMaterialForm extends Component {
                     <div className='p-col-12 p-lg-4'>
                         <label htmlFor="float-input">Bodega</label>
                         <Dropdown key={"defecto-id"} disabled={!this.state.editar} options={this.state.defectos} autoWidth={false} value={this.state.idPncDefecto} onChange={(e) => this.setState({ idPncDefecto: e.value })}
-                                  placeholder="Selecione" />
+                            placeholder="Selecione" />
                         {this.determinarEsCampoRequerido('idPncDefecto') &&
                             <div style={{ marginTop: '8px' }}>
                                 <Message severity="error" text="Campo Obligatorio" />
@@ -297,6 +330,47 @@ class PncSalidaMaterialForm extends Component {
                             </div>
                         }
                     </div>
+                    {this.state.destinoFinal === 'SALIDA_CONCESION' &&
+                        <div className='p-col-12 p-grid'>
+                            <div className='p-col-12 p-lg-4'>
+                                <label htmlFor="float-input">Cliente</label>
+                                <InputText readOnly={!this.state.editar} value={this.state.cliente} onChange={(e) => this.setState({ cliente: e.target.value })} />
+                                {this.determinarEsCampoRequerido('cliente') &&
+                                    <div style={{ marginTop: '8px' }}>
+                                        <Message severity="error" text="Campo Obligatorio" />
+                                    </div>
+                                }
+                            </div>
+                            <div className='p-col-12 p-lg-4'>
+                                <label htmlFor="float-input">Factura</label>
+                                <InputText readOnly={!this.state.editar} value={this.state.factura} onChange={(e) => this.setState({ factura: e.target.value })} />
+                                {this.determinarEsCampoRequerido('factura') &&
+                                    <div style={{ marginTop: '8px' }}>
+                                        <Message severity="error" text="Campo Obligatorio" />
+                                    </div>
+                                }
+                            </div>
+                            <div className='p-col-12 p-lg-4'>
+                                <label htmlFor="float-input">Responsable Venta</label>
+                                <InputText readOnly={!this.state.editar} value={this.state.responsableVenta} onChange={(e) => this.setState({ responsableVenta: e.target.value })} />
+                                {this.determinarEsCampoRequerido('responsableVenta') &&
+                                    <div style={{ marginTop: '8px' }}>
+                                        <Message severity="error" text="Campo Obligatorio" />
+                                    </div>
+                                }
+                            </div>
+                            <div className='p-col-12 p-lg-4'>
+                                <label htmlFor="float-input">Responsable Bodega</label>
+                                <InputText readOnly={!this.state.editar} value={this.state.responsableBodega} onChange={(e) => this.setState({ responsableBodega: e.target.value })} />
+                                {this.determinarEsCampoRequerido('responsableBodega') &&
+                                    <div style={{ marginTop: '8px' }}>
+                                        <Message severity="error" text="Campo Obligatorio" />
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+
                     <div className='p-col-12 p-lg-12'>
                         <label htmlFor="float-input">Observación Adicional</label>
                         <InputTextarea readOnly={!this.state.editar} value={this.state.observacion} onChange={(e) => this.setState({ observacion: e.target.value })} rows={3} />
@@ -346,6 +420,7 @@ class PncSalidaMaterialForm extends Component {
                             {this.state.mostrarControles && <Button style={{ marginRight: '15px' }} className="p-button" label="ACTUALIZAR" onClick={this.actualizar} />}
                             {this.state.mostrarControles && <Button style={{ marginRight: '15px' }} className="p-button" label="ENVIAR" onClick={this.enviar} />}
                             {this.state.mostrarControles && <Button style={{ marginRight: '15px' }} className="p-button-danger" label="ANULAR" onClick={this.regresar} />}
+                            {this.state.destinoFinal === 'SALIDA_CONCESION' && this.state.estado === 'CERRADO' && <Button style={{ marginRight: '15px' }} className="p-button-danger" label="REPORTE" onClick={this.generarReporteSalidaConcesion} />}
                             <Button className="p-button-secondary" label="ATRÁS" onClick={this.regresar} />
                         </div>
                     }

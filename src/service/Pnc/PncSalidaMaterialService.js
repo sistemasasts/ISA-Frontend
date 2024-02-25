@@ -1,4 +1,5 @@
 import http from '../http';
+import httpFiles from '../httpFiles';
 
 const apiEndpoint = '/pncSalidasMaterial'
 
@@ -19,6 +20,7 @@ const PncSalidaMaterialService = {
     regresar: (salida) => http.request.post(`${apiEndpoint}/regresar`, salida),
 
     actualizarInfoAdd: (salida) => http.request.post(`${apiEndpoint}/actualizarInfoAdd`, salida),
+    generarReporteSalidaConsesion: (id) => httpFiles.request.get(`${apiEndpoint}/generarReporteSalidaConcesion/${id}`)
 
 }
 
