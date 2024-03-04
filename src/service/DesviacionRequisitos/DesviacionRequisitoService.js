@@ -12,6 +12,11 @@ const DesviacionRequisitoService = {
     obtenerReporte: (desviacionId) => httpFiles.request.get(`${apiEndpoint}/reporte/${desviacionId}`),
     agregarDefecto: (desviacionId, defectoId) => http.request.get(`${apiEndpoint}/agregarDefecto/${desviacionId}/${defectoId}`),
     eliminarDefecto: (desviacionId, defectoId) => http.request.delete(`${apiEndpoint}/eliminarDefecto/${desviacionId}/${defectoId}`),
+    enviar: (desviacionRequisito) => http.request.post(`${apiEndpoint}/enviar`, desviacionRequisito),
+    
+    listarPorEstado: (estado) => http.request.get(`${apiEndpoint}/estado/${estado}`),
+    listarHistorial: (id) => http.request.get(`${apiEndpoint}/historial/${id}`),
+    procesar: (desviacion) => http.request.post(`${apiEndpoint}/procesar`, desviacion),
 }
 
 export default DesviacionRequisitoService

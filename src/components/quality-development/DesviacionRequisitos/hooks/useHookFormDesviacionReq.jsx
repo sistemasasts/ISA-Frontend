@@ -15,6 +15,7 @@ import moment from "moment";
 import { CatalogoService } from '../../../../service/CatalogoService';
 
 const defaultObjDesviacionReq = {
+    id: 0,
     origen: "",
     seguimiento: "",
     afectacion: "",
@@ -69,7 +70,7 @@ export const defaultEs = {
 export const useHookFormDesviacionReq = () => {
     let growl = useRef(null);
     const user = getDecodedToken();
-    const { idDesvReq } = useParams();
+    const { idDesvReq, orden } = useParams();
     const [displayForm, setDisplayForm] = useState(false);
     const [displayFormRecurso, setDisplayFormRecurso] = useState(false);
     const [displayFormDefecto, setDisplayFormDefecto] = useState(false);
@@ -92,8 +93,11 @@ export const useHookFormDesviacionReq = () => {
     const [listaRecurso, setListaRecurso] = useState([]);
     const [materialSel, setMaterialSel] = useState();
     const [defectoSel, setDefectoSel] = useState();
+    const [observacion, setObservacion] = useState();
     const [isEdit, setIsEdit] = useState(false);
     const [isEditLocal, setIsEditLocal] = useState(false);
+    const [verControles, setVerControles] = useState(false);
+    const [verControlesAprobacion, setVerControlesAprobacion] = useState(false);
 
     useEffect(() => {
         async function obtenerUnidadesMedida() {
@@ -114,7 +118,7 @@ export const useHookFormDesviacionReq = () => {
             checkLotes();
             checkRecursos();
         }
-        function obtenerCatalogoCausas(){
+        function obtenerCatalogoCausas() {
             const catalogoService = new CatalogoService();
             catalogoService.getCausasDesviacion().then(data => setCatalogoCausas(data));
         }
@@ -129,7 +133,7 @@ export const useHookFormDesviacionReq = () => {
     const checkIsEditOrNew = async () => {
         if (idDesvReq) {
             const desvResp = await DesviacionRequisitoService.obtenerPorId(idDesvReq);
-
+            console.log(desvResp)
             setNuevaDesviacionReq(desvResp);
 
             setProductoSel(desvResp.product);
@@ -137,6 +141,23 @@ export const useHookFormDesviacionReq = () => {
             setProductoReplanificadoSel(desvResp.productoReplanificado);
             setListaDefecto(desvResp.defectos);
             setIsEdit(true);
+
+            if (orden && orden === 'aprobacion') {
+                if (desvResp.estado === 'PENDIENTE_APROBACION')
+                    setVerControlesAprobacion(true);
+                setVerControles(false);
+                setIsEdit(false);
+            } else {
+                if (desvResp.estado === 'NUEVO') {
+                    setVerControles(true);
+                    setIsEdit(true);
+                }
+                else {
+                    setVerControles(false);
+                    setIsEdit(false);
+                }
+            }
+
         }
     }
 
@@ -192,6 +213,38 @@ export const useHookFormDesviacionReq = () => {
         setDefecto(defaultDefecto)
         setRecurso(defaultRecurso);
         setListaRecurso([]);
+    }
+
+    const ejecutarAccion = async (accion) => {
+        if (accion === 'RECHAZADO' && _.isEmpty(observacion)){
+            growl.current.show({ severity: 'error', detail: 'La observación es obligatorio' });
+            return;
+        }
+        var desviacion = nuevaDesviacionReq;
+        desviacion.observacion = observacion;
+        desviacion.accion = accion;
+        
+        await DesviacionRequisitoService.procesar(desviacion);
+        growl.current.show({ severity: 'success', detail: 'Desviación procesada' });
+        cancelar();
+
+    }
+
+    const handleChangeAprobacion = (field, value) => {
+        debugger
+        if (field === "observacion")
+            setObservacion(value);
+    }
+
+    const enviarItem = async () => {
+        var desviacion = nuevaDesviacionReq;
+        desviacion.observacion = observacion;
+
+        const response = await DesviacionRequisitoService.enviar(desviacion);
+
+        growl.current.show({ severity: 'success', detail: 'Desviacion de Requisitos enviado' });
+
+        cancelar();
     }
 
     const handleChangeNewDesviacionReq = (field, value) => {
@@ -292,7 +345,12 @@ export const useHookFormDesviacionReq = () => {
     }
 
     const cancelar = () => {
-        history.push("/quality-development_pnc_desviacion_req");
+        if (orden) {
+            history.push("/quality-development_desviacion_aprobacion");
+        } else {
+            history.push("/quality-development_pnc_desviacion_req");
+        }
+
     }
 
     const eliminarPorId = async (rowData) => {
@@ -370,7 +428,7 @@ export const useHookFormDesviacionReq = () => {
 
     const eliminarDefectoPorId = async (rowData) => {
         if (rowData) {
-            const defectos = await DesviacionRequisitoService.eliminarDefecto(nuevaDesviacionReq.id,rowData.id);
+            const defectos = await DesviacionRequisitoService.eliminarDefecto(nuevaDesviacionReq.id, rowData.id);
             growl.current.show({ severity: 'success', detail: 'Defecto eliminado exitosamente' });
             setListaDefecto(defectos);
         }
@@ -413,10 +471,17 @@ export const useHookFormDesviacionReq = () => {
         recurso,
         materialSel,
         defectoSel,
+        observacion,
+        verControles,
+        verControlesAprobacion,
+        isEdit,
         actions: {
             closeForm,
             createItem: saveItem,
+            enviar: enviarItem,
+            ejecutarAccion,
             handleChangeNewDesviacionReq,
+            handleChangeAprobacion,
             buscarProductos,
             clickFormLote,
             clickFormDefecto,

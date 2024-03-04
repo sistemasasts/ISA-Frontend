@@ -13,12 +13,15 @@ import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { InputSwitch } from 'primereact/inputswitch';
 import * as _ from "lodash";
+import { Message } from 'primereact/message'
+import Adjuntos from "../SolicitudEnsayo/Adjuntos";
+import PncHistorial from "../Pnc/PncHistorial";
 
 export const ActionButtonDefecto = ({ edit, view, remove, rowData }) => {
     return (
         <div>
             {remove && <Button type="button" icon="pi pi-trash" className="p-button-danger" onClick={() => remove(rowData)}></Button>}
-            {view && <Button type="button" icon="pi pi-file-pdf" className="p-button-success" onClick={() => view(rowData)}/>}
+            {view && <Button type="button" icon="pi pi-file-pdf" className="p-button-success" onClick={() => view(rowData)} />}
         </div>
     )
 }
@@ -47,7 +50,11 @@ export const FormDesviacionReq = () => {
         listaRecurso,
         totalRecurso,
         displayFormRecurso,
-        actions
+        observacion,
+        actions,
+        isEdit,
+        verControles,
+        verControlesAprobacion
     } = useHookFormDesviacionReq();
 
     let footerRecurso = <div style={{ textAlign: 'right' }}> <span style={{ paddingRight: '20%' }}>TOTAL:</span> {totalRecurso}</div>
@@ -59,6 +66,7 @@ export const FormDesviacionReq = () => {
                 <div className='p-col-12 p-lg-12'>
                     <label htmlFor="float-input">Material</label>
                     <AutoComplete
+                        disabled={!isEdit}
                         field="nameProduct"
                         minLength={3}
                         placeholder="Ingrese criterio de búsqueda..."
@@ -70,15 +78,15 @@ export const FormDesviacionReq = () => {
                 </div>
                 <div className='p-col-12 p-lg-6'>
                     <label htmlFor="float-input">Línea Afectada</label>
-                    <Dropdown value={nuevaDesviacionReq.afectacion} options={catalogoLineaAfectacion} placeholder="Seleccione una línea de afectación" onChange={(e) => actions.handleChangeNewDesviacionReq("afectacion", e.value)} autoWidth={false} />
+                    <Dropdown disabled={!isEdit} value={nuevaDesviacionReq.afectacion} options={catalogoLineaAfectacion} placeholder="Seleccione una línea de afectación" onChange={(e) => actions.handleChangeNewDesviacionReq("afectacion", e.value)} autoWidth={false} />
                 </div>
                 <div className='p-col-12 p-lg-6'>
                     <label htmlFor="float-input">Causa</label>
-                    <Dropdown value={nuevaDesviacionReq.causa} editable={true} options={catalogoCausas} onChange={(e) => actions.handleChangeNewDesviacionReq("causa", e.value)} autoWidth={false} />
+                    <Dropdown disabled={!isEdit} value={nuevaDesviacionReq.causa} editable={true} options={catalogoCausas} onChange={(e) => actions.handleChangeNewDesviacionReq("causa", e.value)} autoWidth={false} />
                 </div>
                 <div className='p-col-12 p-lg-6'>
                     <label htmlFor="float-input">Resp. Seguimiento</label>
-                    <InputTextarea autoResize={true} value={nuevaDesviacionReq.seguimiento} onChange={(e) => actions.handleChangeNewDesviacionReq("seguimiento", e.target.value)} />
+                    <InputTextarea readOnly={!isEdit} autoResize={true} value={nuevaDesviacionReq.seguimiento} onChange={(e) => actions.handleChangeNewDesviacionReq("seguimiento", e.target.value)} />
                 </div>
                 {/* <div className='p-col-12 p-lg-6'>
                     <label htmlFor="float-input">Motivo de la desviación</label>
@@ -86,44 +94,46 @@ export const FormDesviacionReq = () => {
                 </div> */}
                 <div className='p-col-12 p-lg-6'>
                     <label htmlFor="float-input">Descripción de la desviación</label>
-                    <InputTextarea autoResize={true} value={nuevaDesviacionReq.descripcion} onChange={(e) => actions.handleChangeNewDesviacionReq("descripcion", e.target.value)} />
+                    <InputTextarea readOnly={!isEdit} autoResize={true} value={nuevaDesviacionReq.descripcion} onChange={(e) => actions.handleChangeNewDesviacionReq("descripcion", e.target.value)} />
                 </div>
                 <div className='p-col-12 p-lg-6'>
                     <label htmlFor="float-input">Controles requeridos</label>
-                    <InputTextarea autoResize={true} value={nuevaDesviacionReq.control} onChange={(e) => actions.handleChangeNewDesviacionReq("control", e.target.value)} />
+                    <InputTextarea readOnly={!isEdit} autoResize={true} value={nuevaDesviacionReq.control} onChange={(e) => actions.handleChangeNewDesviacionReq("control", e.target.value)} />
                 </div>
                 <div className='p-col-12 p-lg-6'>
                     <label htmlFor="float-input">Alcance y tiempo de la desviación</label>
-                    <InputTextarea autoResize={true} value={nuevaDesviacionReq.alcance} onChange={(e) => actions.handleChangeNewDesviacionReq("alcance", e.target.value)} />
+                    <InputTextarea readOnly={!isEdit} autoResize={true} value={nuevaDesviacionReq.alcance} onChange={(e) => actions.handleChangeNewDesviacionReq("alcance", e.target.value)} />
                 </div>
                 {(nuevaDesviacionReq && nuevaDesviacionReq.id) && (
                     <div className='p-col-12 p-lg-12'>
                         <div>
                             <h1><strong>Defectos</strong></h1>
                             <DataTable
-                                header={<Header clickDisplayForm={() => actions.clickFormDefecto(false)} label={"Agregar Defecto"} edit={false} icon={"pi pi-plus"} />}
+                                header={<Header clickDisplayForm={() => actions.clickFormDefecto(false)} label={"Agregar Defecto"} visible={isEdit} icon={"pi pi-plus"} />}
                                 value={listaDefecto}
                                 autoLayout={true}
                                 scrollable={true}
                                 responsive={true}
                                 selectionMode={"single"}
                             >
-                                <Column
-                                    body={(row) =>
-                                        <ActionButtonDefecto
-                                            /* edit={() => actions.clickFormLote(true, row)} */
-                                            remove={() => actions.eliminarDefectoPorId(row)}
-                                            rowData={row}
-                                        />}
-                                    style={{ width: '10em', textAlign: 'center' }} />
-                                <Column field={"defecto.nombre"} header={"Descripción Defecto"} style={{textAlign: 'left' }}/>
+                                {isEdit &&
+                                    <Column
+                                        body={(row) =>
+                                            <ActionButtonDefecto
+                                                /* edit={() => actions.clickFormLote(true, row)} */
+                                                remove={() => actions.eliminarDefectoPorId(row)}
+                                                rowData={row}
+                                            />}
+                                        style={{ width: '10em', textAlign: 'center' }} />
+                                }
+                                <Column field={"defecto.nombre"} header={"Descripción Defecto"} style={{ textAlign: 'left' }} />
                             </DataTable>
                             <Dialog header={"Nuevo"} visible={displayFormDefecto} modal={true} style={{ width: "50vw" }} onHide={actions.closeFormDefecto} footer={<ActionFooter save={actions.saveDefecto} cancel={actions.closeFormDefecto} />}>
                                 <div className="p-grid p-fluid">
                                     <div className='p-col-12 p-lg-12'>
                                         <label htmlFor="float-input">Defecto</label>
                                         <Dropdown appendTo={document.body} value={defecto.defecto} options={defectosCatalogo} optionLabel="nombre" placeholder="Seleccione..." onChange={(e) => actions.handleChangeDefecto("defecto", e.value)} autoWidth={false} />
-                                    </div>                                    
+                                    </div>
                                 </div>
                             </Dialog>
                         </div>
@@ -137,7 +147,7 @@ export const FormDesviacionReq = () => {
                         <div>
                             <h1><strong>Lotes</strong></h1>
                             <DataTable
-                                header={<Header clickDisplayForm={() => actions.clickFormLote(false)} label={"Agregar Lote"} edit={false} icon={"pi pi-plus"} />}
+                                header={<Header clickDisplayForm={() => actions.clickFormLote(false)} label={"Agregar Lote"} visible={isEdit} icon={"pi pi-plus"} />}
                                 value={listaLote}
                                 paginator={true}
                                 rows={10}
@@ -146,19 +156,21 @@ export const FormDesviacionReq = () => {
                                 responsive={true}
                                 selectionMode={"single"}
                             >
-                                <Column
-                                    body={(row) =>
-                                        <ActionButton
-                                            edit={() => actions.clickFormLote(true, row)}
-                                            remove={() => actions.eliminarPorId(row)}
-                                            rowData={row}
-                                        />}
-                                    style={{ width: '20em', textAlign: 'center' }} />
+                                {isEdit &&
+                                    <Column
+                                        body={(row) =>
+                                            <ActionButton
+                                                edit={() => actions.clickFormLote(true, row)}
+                                                remove={() => actions.eliminarPorId(row)}
+                                                rowData={row}
+                                            />}
+                                        style={{ width: '20em', textAlign: 'center' }} />
+                                }
                                 <Column field={"fechaLote"} header={"Fecha"} />
                                 <Column field={"lote"} header={"Lote/Orden de fabricación"} />
                                 <Column field={"cantidad"} header={"Cantidad"} />
                                 <Column field={"unidad.nombre"} header={"Unidad"} />
-                                <Column field={"costo"} header={"Costo"} style={{textAlign: "right"}} />
+                                <Column field={"costo"} header={"Costo"} style={{ textAlign: "right" }} />
                             </DataTable>
                             <Dialog header={"Nuevo"} visible={displayForm} modal={true} style={{ width: "50vw" }} onHide={actions.closeForm} footer={<ActionFooter save={actions.saveLocalLote} cancel={actions.closeForm} />}>
                                 <div className="p-grid p-fluid">
@@ -203,7 +215,7 @@ export const FormDesviacionReq = () => {
                 )}
                 <div className='p-col-12 p-lg-6'>
                     <label htmlFor="float-input">Replanificación</label> <br />
-                    <InputSwitch checked={nuevaDesviacionReq.replanificacion} onChange={(e) => actions.handleChangeNewDesviacionReq("replanificacion", e.target.value)} />
+                    <InputSwitch disabled={!isEdit} checked={nuevaDesviacionReq.replanificacion} onChange={(e) => actions.handleChangeNewDesviacionReq("replanificacion", e.target.value)} />
                 </div>
                 <div className='p-col-12 p-lg-6'></div>
                 {(nuevaDesviacionReq && nuevaDesviacionReq.id && nuevaDesviacionReq.replanificacion) && (
@@ -231,7 +243,7 @@ export const FormDesviacionReq = () => {
                             <label htmlFor="float-input">Desperdicio Generado</label>
                             <div className="p-inputgroup">
                                 <InputText type={"number"} value={nuevaDesviacionReq.desperdicioGenerado} onChange={(e) => actions.handleChangeNewDesviacionReq("desperdicioGenerado", e.target.value)} />
-                                <Dropdown style={{ minWidth: '3%', maxWidth: '40%' }} appendTo={document.body} value={_.get(nuevaDesviacionReq,"unidadDesperdicio.id")} options={unidadesMedida} placeholder="Seleccione una unidad" onChange={(e) => actions.handleChangeNewDesviacionReq("unidadDesperdicio", e.value)} autoWidth={false} />
+                                <Dropdown style={{ minWidth: '3%', maxWidth: '40%' }} appendTo={document.body} value={_.get(nuevaDesviacionReq, "unidadDesperdicio.id")} options={unidadesMedida} placeholder="Seleccione una unidad" onChange={(e) => actions.handleChangeNewDesviacionReq("unidadDesperdicio", e.value)} autoWidth={false} />
                             </div>
                         </div>
                         <div className='p-col-12 p-lg-4'>
@@ -260,7 +272,7 @@ export const FormDesviacionReq = () => {
                         <div>
                             <h1><strong>Materia Prima y/o Mano  de obra de empleados</strong></h1>
                             <DataTable
-                                header={<Header clickDisplayForm={() => actions.clickFormRecurso(false)} label={"Agregar Recurso"} edit={false} icon={"pi pi-plus"} />}
+                                header={<Header clickDisplayForm={() => actions.clickFormRecurso(false)} label={"Agregar Recurso"} visble={!isEdit} icon={"pi pi-plus"} />}
                                 footer={footerRecurso}
                                 value={listaRecurso}
 
@@ -269,17 +281,19 @@ export const FormDesviacionReq = () => {
                                 responsive={true}
                                 selectionMode={"single"}
                             >
-                                <Column
-                                    body={(row) =>
-                                        <ActionButton
-                                            edit={() => actions.clickFormRecurso(true, row)}
-                                            remove={() => actions.eliminarRecursoPorId(row)}
-                                            rowData={row}
-                                        />}
-                                    style={{ width: '20em', textAlign: 'center' }} />
+                                {isEdit &&
+                                    <Column
+                                        body={(row) =>
+                                            <ActionButton
+                                                edit={() => actions.clickFormRecurso(true, row)}
+                                                remove={() => actions.eliminarRecursoPorId(row)}
+                                                rowData={row}
+                                            />}
+                                        style={{ width: '20em', textAlign: 'center' }} />
+                                }
                                 <Column field={"descripcion"} header={"Material"} />
-                                <Column field={"cantidad"} header={"Cantidad"} style={{ textAlign: 'right' }}/>
-                                <Column field={"unidad.nombre"} header={"Unidad"} style={{ textAlign: 'right' }}/>
+                                <Column field={"cantidad"} header={"Cantidad"} style={{ textAlign: 'right' }} />
+                                <Column field={"unidad.nombre"} header={"Unidad"} style={{ textAlign: 'right' }} />
                                 <Column field={"costo"} header={"Costo"} style={{ textAlign: 'right' }} />
                                 <Column field={"costoTotal"} header={"Costo total"} style={{ textAlign: 'right' }} />
                             </DataTable>
@@ -314,9 +328,31 @@ export const FormDesviacionReq = () => {
                         </div>
                     </div>
                 )}
+
+                {nuevaDesviacionReq && nuevaDesviacionReq.id &&
+                    <div className='p-col-12 p-lg-12'>
+                        <div className='p-col-12 p-lg-12 caja' >INFORMACIÓN ADICIONAL</div>
+                        <div className='p-col-12 p-lg-12'>
+                            <Adjuntos solicitud={nuevaDesviacionReq.id} orden={'INGRESO'} controles={verControles} tipo={'DESVIACION_REQUISITO'} />
+                            <PncHistorial solicitud={nuevaDesviacionReq.id} tipo={'DESVIACION_REQUISITOS'} />
+
+                            <div className='p-col-12 p-lg-12'>
+                                <label htmlFor="float-input">OBSERVACIÓN</label>
+                                <InputTextarea rows={3} value={observacion} onChange={(e) => actions.handleChangeAprobacion("observacion", e.target.value)} />
+                            </div>
+
+                        </div>
+                    </div>
+
+                }
+
+
                 <div className='p-col-12 p-lg-12' style={{ justifyContent: 'center', textAlign: 'center' }}>
-                    <Button label='Guardar' icon='pi pi-save' style={{ width: '10%' }} onClick={actions.createItem} />
-                    <Button label='Cancelar' icon='pi pi-times' style={{ width: '10%' }} className='p-button-danger' onClick={actions.cancelar} />
+                    {verControles && <Button label='GUARDAR' icon='pi pi-save' style={{ width: '10%' }} onClick={actions.createItem} />}
+                    {verControles && <Button label='ENVIAR' style={{ width: '10%' }} onClick={actions.enviar} />}
+                    {verControlesAprobacion && <Button label='APROBAR' style={{ width: '10%' }} onClick={() => actions.ejecutarAccion('APROBADO')} />}
+                    {verControlesAprobacion && <Button label='RECHAZAR' style={{ width: '10%' }} className='p-button-danger' onClick={() => actions.ejecutarAccion('RECHAZADO')} />}
+                    <Button label='ATRÁS' style={{ width: '10%' }} className='p-button-danger' onClick={actions.cancelar} />
                 </div>
             </div>
         </div>

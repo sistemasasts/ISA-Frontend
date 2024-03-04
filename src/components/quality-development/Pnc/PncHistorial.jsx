@@ -5,6 +5,7 @@ import * as moment from 'moment';
 import "../../site.css";
 import PncSalidaMaterialService from '../../../service/Pnc/PncSalidaMaterialService';
 import PncDocumentoService from '../../../service/Pnc/PncDocumentoService';
+import DesviacionRequisitoService from '../../../service/DesviacionRequisitos/DesviacionRequisitoService';
 
 class PncHistorial extends Component {
 
@@ -18,7 +19,12 @@ class PncHistorial extends Component {
     }
 
     async componentDidMount() {
-        const historialData = await PncSalidaMaterialService.listarHistorial(this.props.solicitud);
+        console.log(this.props)
+        var historialData;
+        if (this.props.tipo === 'DESVIACION_REQUISITOS')
+            historialData = await DesviacionRequisitoService.listarHistorial(this.props.solicitud);
+        else
+            historialData = await PncSalidaMaterialService.listarHistorial(this.props.solicitud);
         this.setState({ historial: historialData });
     }
 

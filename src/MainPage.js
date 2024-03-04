@@ -103,6 +103,7 @@ import MovimientoPrincipal from './components/quality-development/Inventario/Mov
 import ListaDesviacionReq from "./components/quality-development/DesviacionRequisitos/ListaDesviacionReq";
 import FormDesviacionReq from "./components/quality-development/DesviacionRequisitos/FormDesviacionReq";
 import PncConsulta from './components/quality-development/Pnc/Consulta/PncConsulta';
+import DesviacionAprobacionPrincipal from './components/quality-development/DesviacionRequisitos/Aprobacion/DesviacionAprobacionPrincipal';
 
 
 class MainPage extends Component {
@@ -692,9 +693,13 @@ class MainPage extends Component {
 						<Route path="/quality-development_pnc_reporteComercial" component={ReporteComercialPrincipal} />
 						<Route path="/quality-development_pnc_desviacion_req" component={ListaDesviacionReq} />
 						<Route path="/quality-development_pnc_desviacion_req_edit/:idDesvReq" component={FormDesviacionReq} />
+						<Route path="/quality-development_pnc_desviacion_req_view/:idDesvReq/:orden" component={FormDesviacionReq} />
 						<Route path="/quality-development_pnc_desviacion_req_nuevo" component={FormDesviacionReq} />
 						<Route path="/quality-development_pnc_consulta" component={PncConsulta} />
 						{/* --------- PNC ------------- */}
+
+						{/* ----------DESVIACION REQUISITO */}
+						<Route path="/quality-development_desviacion_aprobacion" component={DesviacionAprobacionPrincipal} />
 
                         {/* --------- INVENTARIO ------------- */}
 						<Route path="/quality-development_inventario" component={InventarioPrincipal} />
