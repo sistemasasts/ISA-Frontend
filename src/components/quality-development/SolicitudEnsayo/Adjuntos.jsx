@@ -10,6 +10,7 @@ import { Button } from 'primereact/button';
 import "../../site.css";
 import SolicitudPruebaProcesoDocumentoService from '../../../service/SolicitudPruebaProceso/SolicitudPruebaProcesoDocumentoService';
 import PncDocumentoService from '../../../service/Pnc/PncDocumentoService';
+import DesviacionRequsitoDocumentoService from '../../../service/DesviacionRequisitos/DesviacionDocumentoService';
 class Adjuntos extends Component {
 
     constructor() {
@@ -37,13 +38,15 @@ class Adjuntos extends Component {
             await PncDocumentoService.subirArchivo(this.crearSolicitudDocumentoPnc(event.files[0]));
         if (this.props.tipo === 'PNC')
             await PncDocumentoService.subirArchivoPnc(this.crearSolicitudDocumentoPnc(event.files[0]));
+        if (this.props.tipo === 'DESVIACION_REQUISITO')
+            await DesviacionRequsitoDocumentoService.subirArchivo(this.crearSolicitudDocumentoDesviacion(event.files[0]));
         this.refrescar();
         this.fileUploadRef.clear();
         this.props.closeModal();
     }
 
     async refrescar() {
-        if (this.props.solicitud && this.props.estado) {
+        if (this.props.solicitud) {
             console.log(this.props)
             let archivosData;
             if (this.props.tipo === 'SOLICITUD_ENSAYO')
@@ -59,6 +62,9 @@ class Adjuntos extends Component {
             }
             if (this.props.tipo === 'PNC') {
                 archivosData = await PncDocumentoService.listarArchivosPnc(this.props.solicitud);
+            }
+            if (this.props.tipo === 'DESVIACION_REQUISITO') {
+                archivosData = await DesviacionRequsitoDocumentoService.listarArchivos(this.props.orden, this.props.solicitud);
             }
             this.setState({ archivos: archivosData });
         }
@@ -90,6 +96,16 @@ class Adjuntos extends Component {
         return formadata;
     }
 
+    crearSolicitudDocumentoDesviacion(archivo) {
+        let infoAdicional = {};
+        let formadata = new FormData();
+        infoAdicional.solicitudId = this.props.solicitud;
+        infoAdicional.orden = this.props.orden;
+        formadata.append('file', archivo);
+        formadata.append('info', JSON.stringify(infoAdicional));
+        return formadata;
+    }
+
     async eliminar(id) {
         this.props.openModal();
         var a = false;
@@ -99,6 +115,8 @@ class Adjuntos extends Component {
             a = await SolicitudPruebaProcesoDocumentoService.eliminar(id);
         if (this.props.tipo === 'SALIDA_MATERIAL' || this.props.tipo === 'PNC')
             a = await PncDocumentoService.eliminar(id);
+        if (this.props.tipo === 'DESVIACION_REQUISITO')
+            a = await DesviacionRequsitoDocumentoService.eliminar(id);
         this.props.closeModal();
         if (a) {
             this.refrescar();
@@ -116,6 +134,8 @@ class Adjuntos extends Component {
             data = await SolicitudPruebaProcesoDocumentoService.ver(id);
         if (this.props.tipo === 'SALIDA_MATERIAL' || this.props.tipo === 'PNC')
             data = await PncDocumentoService.ver(id);
+        if (this.props.tipo === 'DESVIACION_REQUISITO')
+            data = await DesviacionRequsitoDocumentoService.ver(id);
         this.props.closeModal();
         const ap = window.URL.createObjectURL(data)
         const a = document.createElement('a');
@@ -147,6 +167,8 @@ class Adjuntos extends Component {
                 else
                     return this.props.controles && archivo.estado === this.props.estado;
             case 'PNC':
+                return this.props.controles;
+            case 'DESVIACION_REQUISITO':
                 return this.props.controles;
             default:
                 return this.props.controles && archivo.estado === this.props.estado;

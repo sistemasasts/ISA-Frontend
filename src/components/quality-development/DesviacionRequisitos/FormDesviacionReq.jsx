@@ -54,7 +54,9 @@ export const FormDesviacionReq = () => {
         actions,
         isEdit,
         verControles,
-        verControlesAprobacion
+        verControlesAprobacion,
+        ordenFlujo,
+        verControlesDocumentos,
     } = useHookFormDesviacionReq();
 
     let footerRecurso = <div style={{ textAlign: 'right' }}> <span style={{ paddingRight: '20%' }}>TOTAL:</span> {totalRecurso}</div>
@@ -333,7 +335,7 @@ export const FormDesviacionReq = () => {
                     <div className='p-col-12 p-lg-12'>
                         <div className='p-col-12 p-lg-12 caja' >INFORMACIÓN ADICIONAL</div>
                         <div className='p-col-12 p-lg-12'>
-                            <Adjuntos solicitud={nuevaDesviacionReq.id} orden={'INGRESO'} controles={verControles} tipo={'DESVIACION_REQUISITO'} />
+                        {ordenFlujo &&<Adjuntos solicitud={nuevaDesviacionReq.id} orden={ordenFlujo} controles={verControlesDocumentos} tipo={'DESVIACION_REQUISITO'} />}
                             <PncHistorial solicitud={nuevaDesviacionReq.id} tipo={'DESVIACION_REQUISITOS'} />
 
                             <div className='p-col-12 p-lg-12'>

@@ -97,7 +97,9 @@ export const useHookFormDesviacionReq = () => {
     const [isEdit, setIsEdit] = useState(false);
     const [isEditLocal, setIsEditLocal] = useState(false);
     const [verControles, setVerControles] = useState(false);
+    const [verControlesDocumentos, setVerControlesDocumentos] = useState(false);
     const [verControlesAprobacion, setVerControlesAprobacion] = useState(false);
+    const [ordenFlujo, setOrdenFlujo] = useState();
 
     useEffect(() => {
         async function obtenerUnidadesMedida() {
@@ -143,13 +145,18 @@ export const useHookFormDesviacionReq = () => {
             setIsEdit(true);
 
             if (orden && orden === 'aprobacion') {
-                if (desvResp.estado === 'PENDIENTE_APROBACION')
+                if (desvResp.estado === 'PENDIENTE_APROBACION'){
                     setVerControlesAprobacion(true);
+                    setVerControlesDocumentos(true);
+                }
                 setVerControles(false);
                 setIsEdit(false);
+                setOrdenFlujo('APROBACION_GERENCIA_CALIDAD');
             } else {
+                setOrdenFlujo('INGRESO');
                 if (desvResp.estado === 'NUEVO') {
                     setVerControles(true);
+                    setVerControlesDocumentos(true);
                     setIsEdit(true);
                 }
                 else {
@@ -473,8 +480,10 @@ export const useHookFormDesviacionReq = () => {
         defectoSel,
         observacion,
         verControles,
+        verControlesDocumentos,
         verControlesAprobacion,
         isEdit,
+        ordenFlujo,
         actions: {
             closeForm,
             createItem: saveItem,

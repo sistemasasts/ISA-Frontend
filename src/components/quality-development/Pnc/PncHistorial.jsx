@@ -6,6 +6,7 @@ import "../../site.css";
 import PncSalidaMaterialService from '../../../service/Pnc/PncSalidaMaterialService';
 import PncDocumentoService from '../../../service/Pnc/PncDocumentoService';
 import DesviacionRequisitoService from '../../../service/DesviacionRequisitos/DesviacionRequisitoService';
+import DesviacionDocumentoService from '../../../service/DesviacionRequisitos/DesviacionDocumentoService';
 
 class PncHistorial extends Component {
 
@@ -19,7 +20,6 @@ class PncHistorial extends Component {
     }
 
     async componentDidMount() {
-        console.log(this.props)
         var historialData;
         if (this.props.tipo === 'DESVIACION_REQUISITOS')
             historialData = await DesviacionRequisitoService.listarHistorial(this.props.solicitud);
@@ -30,13 +30,22 @@ class PncHistorial extends Component {
 
     async descargarDocumentos(historial) {
         if (historial) {
-            var data = await PncDocumentoService.descargarComprimido(historial.id);
+            var data;
+            var nombreArchivo;
+            const fecha = moment().format('yyyy-MM-DD');
+            if (this.props.tipo === 'DESVIACION_REQUISITOS') {
+                data = await DesviacionDocumentoService.descargarComprimido(historial.id);
+                nombreArchivo = `DesviacionRequisito-${historial.desviacionRequisito.secuencial}-${fecha}.rar`;
+            }
+            else {
+                data = await PncDocumentoService.descargarComprimido(historial.id);
+                nombreArchivo = `SalidaMaterial-${historial.salidaMaterialId}-${fecha}.rar`;
+            }
             const ap = window.URL.createObjectURL(data)
             const a = document.createElement('a');
             document.body.appendChild(a);
             a.href = ap;
-            const fecha = moment().format('yyyy-MM-DD');
-            a.download = `SalidaMaterial-${historial.salidaMaterialId}-${fecha}.rar`;
+            a.download = nombreArchivo;
             a.click();
         }
     }
