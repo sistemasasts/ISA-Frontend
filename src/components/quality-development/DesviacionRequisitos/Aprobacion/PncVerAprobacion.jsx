@@ -46,7 +46,6 @@ class PncVerAprobacion extends Component {
     async refrescar(idSolicitud) {
         if (idSolicitud) {
             const salidaMaterial = await PncSalidaMaterialService.listarPorIdCompleto(idSolicitud);
-            console.log(salidaMaterial)
             if (salidaMaterial) {
                 this.setState({
                     id: salidaMaterial.id,

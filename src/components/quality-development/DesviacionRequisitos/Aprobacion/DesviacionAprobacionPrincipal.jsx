@@ -20,7 +20,6 @@ class DesviacionAprobacionPrincipal extends Component {
 
     async componentDidMount() {
         const solicitudes_data = await DesviacionRequisitoService.listarPorEstado("PENDIENTE_APROBACION");
-        console.log(solicitudes_data)
         this.setState({ solicitudes: solicitudes_data });
     }
 

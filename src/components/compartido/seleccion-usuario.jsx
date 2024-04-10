@@ -42,7 +42,6 @@ export class SeleccionUsuario extends Component {
     }
 
     abrirDialogo() {
-        debugger
         let a = this.props.origen;
         const solicitudes = a.state.seleccionSolicitud;
         if (_.size(solicitudes) > 0) {

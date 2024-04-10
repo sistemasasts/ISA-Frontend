@@ -128,7 +128,6 @@ class PncForm extends Component {
 
     /* Metodo para hacer la data de combos */
     convertDataToCatalogAreas(data) {
-        debugger
         var areas = [];
         data.map(function (value) {
             let newData = { label: '', value: '' }
@@ -141,7 +140,6 @@ class PncForm extends Component {
 
     /* Metodo para guardar el PNC */
     savePNC() {
-        debugger;
 
         if (this.validarCamposRequeridos()) {
             var pncNew = {};

@@ -78,7 +78,7 @@ export const ListaDesviacionReq = () => {
                                     <label htmlFor="float-input">Producto</label>
                                     <AutoComplete
                                         field="nameProduct"
-                                        minLength={3}
+                                        minLength={1}
                                         suggestions={listaProductos}
                                         completeMethod={(e) => actions.buscarProductos(e.query)}
                                         value={productoSel}

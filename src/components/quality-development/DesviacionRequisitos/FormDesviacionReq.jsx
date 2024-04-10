@@ -351,7 +351,7 @@ export const FormDesviacionReq = () => {
 
                 <div className='p-col-12 p-lg-12' style={{ justifyContent: 'center', textAlign: 'center' }}>
                     {verControles && <Button label='GUARDAR' icon='pi pi-save' style={{ width: '10%' }} onClick={actions.createItem} />}
-                    {verControles && <Button label='ENVIAR' style={{ width: '10%' }} onClick={actions.enviar} />}
+                    {nuevaDesviacionReq && nuevaDesviacionReq.id && verControles && <Button label='ENVIAR' style={{ width: '10%' }} onClick={actions.enviar} />}
                     {verControlesAprobacion && <Button label='APROBAR' style={{ width: '10%' }} onClick={() => actions.ejecutarAccion('APROBADO')} />}
                     {verControlesAprobacion && <Button label='RECHAZAR' style={{ width: '10%' }} className='p-button-danger' onClick={() => actions.ejecutarAccion('RECHAZADO')} />}
                     <Button label='ATRÁS' style={{ width: '10%' }} className='p-button-danger' onClick={actions.cancelar} />

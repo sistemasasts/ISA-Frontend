@@ -77,7 +77,6 @@ class Especificacion extends Component {
     async refrescarListaProductos() {
         nameProducts = [];
         const productos = await ProductoService.list();
-        debugger
         if (productos !== null) {
             productos.map(function (value, index) {
                 nameProducts.push(value.nameProduct);
@@ -88,7 +87,6 @@ class Especificacion extends Component {
     }
 
     async componentDidMount() {
-        console.log();
         this.refrescarListaProductos();
     }
 

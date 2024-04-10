@@ -152,7 +152,7 @@ class ExitMaterial extends Component {
     /* Metodo que Guarda el registro de la salida de material */
     async saveExitMaterial() {
         try {
-            debugger
+            
             if (this.validarCamposRequeridos()) {
                 var emh = { quantity: null, description: null, date: null, ncpID: null, type: null, listTasks: [], concessionRequest: null, asUser: null, }
                 emh.quantity = this.state.quantity;

@@ -50,7 +50,6 @@ class UsuarioFormulario extends Component {
     }
 
     async refrescar(idUsuario) {
-        debugger
         if (idUsuario !== '0') {
             const usuario = await UsuarioService.listarPorId(idUsuario);
             if (usuario) {

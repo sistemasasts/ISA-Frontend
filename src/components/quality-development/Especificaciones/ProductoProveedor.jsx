@@ -58,7 +58,6 @@ class ProductoProveedor extends Component {
     }
 
     async actualizarProveedor(data) {
-        debugger
         data['action'] = 'UPDATE';
         data.asUser = this.props.currentUser.nickName;
         await ProductoProveedorService.update(data);

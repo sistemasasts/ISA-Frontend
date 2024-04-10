@@ -15,7 +15,7 @@ import moment from "moment";
 import { CatalogoService } from '../../../../service/CatalogoService';
 
 const defaultObjDesviacionReq = {
-    id: 0,
+    id: null,
     origen: "",
     seguimiento: "",
     afectacion: "",
@@ -96,7 +96,7 @@ export const useHookFormDesviacionReq = () => {
     const [observacion, setObservacion] = useState();
     const [isEdit, setIsEdit] = useState(true);
     const [isEditLocal, setIsEditLocal] = useState(false);
-    const [verControles, setVerControles] = useState(false);
+    const [verControles, setVerControles] = useState(true);
     const [verControlesDocumentos, setVerControlesDocumentos] = useState(false);
     const [verControlesAprobacion, setVerControlesAprobacion] = useState(false);
     const [ordenFlujo, setOrdenFlujo] = useState();
@@ -135,7 +135,6 @@ export const useHookFormDesviacionReq = () => {
     const checkIsEditOrNew = async () => {
         if (idDesvReq) {
             const desvResp = await DesviacionRequisitoService.obtenerPorId(idDesvReq);
-            console.log(desvResp)
             setNuevaDesviacionReq(desvResp);
 
             setProductoSel(desvResp.product);
@@ -198,8 +197,7 @@ export const useHookFormDesviacionReq = () => {
 
             return;
         }
-
-        if (!isEdit && !nuevaDesviacionReq.id) {
+        if (!nuevaDesviacionReq.id) {
             const response = await DesviacionRequisitoService.crear({ ...nuevaDesviacionReq, responsable: _.get(user, "user_name") });
             setNuevaDesviacionReq(response);
             growl.current.show({ severity: 'success', detail: 'Desviacion de Requisitos registrada exitosamente' });
@@ -238,7 +236,6 @@ export const useHookFormDesviacionReq = () => {
     }
 
     const handleChangeAprobacion = (field, value) => {
-        debugger
         if (field === "observacion")
             setObservacion(value);
     }

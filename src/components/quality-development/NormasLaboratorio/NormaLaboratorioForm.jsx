@@ -56,7 +56,6 @@ class NormaLaboratorioForm extends Component {
 
     validarCamposRequeridos() {
         var camposOblogatoriosDetectados = [];
-        debugger
         var obj = { campo: '', obligatorio: true }
         if (this.state.nombre === '' || this.state.nombre === undefined) {
             obj.campo = 'nombre'; obj.obligatorio = true
@@ -88,7 +87,6 @@ class NormaLaboratorioForm extends Component {
     async actualizarNorma() {
 
         if (this.validarCamposRequeridos()) {
-            debugger
             const proveedor = await NormasLaboratorioService.update(this.crearNormaLabortarorioObj());
             if (proveedor !== null) {
                 let msg = { severity: 'success', summary: 'Norma Labortorio', detail: 'Actualizado con éxito' };
@@ -101,7 +99,6 @@ class NormaLaboratorioForm extends Component {
     }
 
     async crearNorma() {
-        debugger
         if (this.validarCamposRequeridos()) {
 
             const norma = await NormasLaboratorioService.create(this.crearNormaLabortarorioObj());

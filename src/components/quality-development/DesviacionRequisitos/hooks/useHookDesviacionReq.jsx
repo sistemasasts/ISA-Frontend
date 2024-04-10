@@ -78,9 +78,8 @@ export const useHookDesviacionReq = () => {
     const onChangeCriterios = (field, value) => {
         let val;
         const criterioConsulta = { ...criterios };
-
         switch (field) {
-            case "productId":
+            case "productoId":
                 setProductoSel(value);
                 if (typeof value === 'object')
                     val = _.get(value, "idProduct");
