@@ -104,6 +104,10 @@ import ListaDesviacionReq from "./components/quality-development/DesviacionRequi
 import FormDesviacionReq from "./components/quality-development/DesviacionRequisitos/FormDesviacionReq";
 import PncConsulta from './components/quality-development/Pnc/Consulta/PncConsulta';
 import DesviacionAprobacionPrincipal from './components/quality-development/DesviacionRequisitos/Aprobacion/DesviacionAprobacionPrincipal';
+import ReclamoPrincipal from './components/quality-development/ReclamosMP/ReclamoPrincipal';
+import ReclamoForm from './components/quality-development/ReclamosMP/ReclamoForm';
+import ReclamoAprobacionPrincipal from './components/quality-development/ReclamosMP/Aprobacion/ReclamoAprobacionPrincipal';
+import ReclamoVerAprobacion from './components/quality-development/ReclamosMP/Aprobacion/ReclamoVerAprobacion';
 
 
 class MainPage extends Component {
@@ -612,7 +616,13 @@ class MainPage extends Component {
 						<Route path="/quality-development_pnc" component={ProductoNoConforme} />
 						{/* <Route path="/quality-development_pnc" component={NotFound} /> */}
 						<Route path="/quality-development_resulttest" component={ResultTest} />
-						<Route path="/quality-development_complaint" component={Complaint} />
+						{/* -------------reclamo de MP-------------------------- */}
+						<Route path="/quality-development_complaint" component={ReclamoPrincipal} />
+						<Route path="/quality-development_complaint_registro" component={ReclamoForm} />
+						<Route path="/quality-development_complaint_edit/:idReclamo" component={ReclamoForm} />
+						<Route path="/quality-development_complaint_aprobacion/:estado" component={ReclamoAprobacionPrincipal} />
+						<Route path="/quality-development_complaint_aprobacion_ver/:idReclamo/:orden" component={ReclamoVerAprobacion} />
+
 						<Route path="/quality-development_wflow" component={WFlow} />
 						<Route path="/quality-development_report" component={ReportData} />
 						<Route path="/quality-development_propertylist" component={Propiedades} />

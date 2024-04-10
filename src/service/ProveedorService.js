@@ -7,7 +7,8 @@ const ProveedorService = {
     details: (id) => http.request.get(`${apiEndpoint}/${id}`),
     create: (proveedor) => http.request.post(apiEndpoint, proveedor),
     update: (proveedor) => http.request.put(apiEndpoint, proveedor),
-    delete: (id) => http.request.delete(`${apiEndpoint}/${id}`)
+    delete: (id) => http.request.delete(`${apiEndpoint}/${id}`),
+    listarPorProducto: (productId) => http.request.get(`${apiEndpoint}/productId/${productId}`),
   
   }
   

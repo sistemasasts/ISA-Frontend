@@ -94,7 +94,7 @@ export const useHookFormDesviacionReq = () => {
     const [materialSel, setMaterialSel] = useState();
     const [defectoSel, setDefectoSel] = useState();
     const [observacion, setObservacion] = useState();
-    const [isEdit, setIsEdit] = useState(false);
+    const [isEdit, setIsEdit] = useState(true);
     const [isEditLocal, setIsEditLocal] = useState(false);
     const [verControles, setVerControles] = useState(false);
     const [verControlesDocumentos, setVerControlesDocumentos] = useState(false);

@@ -19,7 +19,7 @@ export class Email extends Component {
         super();
         this.state = {
             waitModalView: false,
-            visibleModalEmail: false,
+            visibleModalEmail: true,
             pathFile: null,
             sendTo: [],
             sendSubject: '',

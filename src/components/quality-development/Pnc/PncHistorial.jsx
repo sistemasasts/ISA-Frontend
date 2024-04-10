@@ -7,6 +7,8 @@ import PncSalidaMaterialService from '../../../service/Pnc/PncSalidaMaterialServ
 import PncDocumentoService from '../../../service/Pnc/PncDocumentoService';
 import DesviacionRequisitoService from '../../../service/DesviacionRequisitos/DesviacionRequisitoService';
 import DesviacionDocumentoService from '../../../service/DesviacionRequisitos/DesviacionDocumentoService';
+import ReclamoMPService from '../../../service/ReclamoMPService';
+import ReclamoDocumentoService from '../../../service/ReclamoMP/ReclamoDocumentoService';
 
 class PncHistorial extends Component {
 
@@ -21,10 +23,17 @@ class PncHistorial extends Component {
 
     async componentDidMount() {
         var historialData;
-        if (this.props.tipo === 'DESVIACION_REQUISITOS')
-            historialData = await DesviacionRequisitoService.listarHistorial(this.props.solicitud);
-        else
-            historialData = await PncSalidaMaterialService.listarHistorial(this.props.solicitud);
+        switch (this.props.tipo) {
+            case 'DESVIACION_REQUISITOS':
+                historialData = await DesviacionRequisitoService.listarHistorial(this.props.solicitud);
+                break;
+            case 'RECLAMO_MP':
+                historialData = await ReclamoMPService.listarHistorial(this.props.solicitud);
+                break;
+            default:
+                historialData = await PncSalidaMaterialService.listarHistorial(this.props.solicitud);
+                break;
+        }
         this.setState({ historial: historialData });
     }
 
@@ -33,13 +42,19 @@ class PncHistorial extends Component {
             var data;
             var nombreArchivo;
             const fecha = moment().format('yyyy-MM-DD');
-            if (this.props.tipo === 'DESVIACION_REQUISITOS') {
-                data = await DesviacionDocumentoService.descargarComprimido(historial.id);
-                nombreArchivo = `DesviacionRequisito-${historial.desviacionRequisito.secuencial}-${fecha}.rar`;
-            }
-            else {
-                data = await PncDocumentoService.descargarComprimido(historial.id);
-                nombreArchivo = `SalidaMaterial-${historial.salidaMaterialId}-${fecha}.rar`;
+            switch (this.props.tipo) {
+                case 'DESVIACION_REQUISITOS':
+                    data = await DesviacionDocumentoService.descargarComprimido(historial.id);
+                    nombreArchivo = `DesviacionRequisito-${historial.desviacionRequisito.secuencial}-${fecha}.rar`;
+                    break;
+                case 'RECLAMO_MP':
+                    data = await ReclamoDocumentoService.descargarComprimido(historial.id);
+                    nombreArchivo = `ReclamoMP-${historial.salidaMaterialId}-${fecha}.rar`;
+                    break;
+                default:
+                    data = await PncDocumentoService.descargarComprimido(historial.id);
+                    nombreArchivo = `SalidaMaterial-${historial.salidaMaterialId}-${fecha}.rar`;
+                    break;
             }
             const ap = window.URL.createObjectURL(data)
             const a = document.createElement('a');

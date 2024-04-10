@@ -11,6 +11,7 @@ import "../../site.css";
 import SolicitudPruebaProcesoDocumentoService from '../../../service/SolicitudPruebaProceso/SolicitudPruebaProcesoDocumentoService';
 import PncDocumentoService from '../../../service/Pnc/PncDocumentoService';
 import DesviacionRequsitoDocumentoService from '../../../service/DesviacionRequisitos/DesviacionDocumentoService';
+import ReclamoDocumentoService from '../../../service/ReclamoMP/ReclamoDocumentoService';
 class Adjuntos extends Component {
 
     constructor() {
@@ -40,6 +41,10 @@ class Adjuntos extends Component {
             await PncDocumentoService.subirArchivoPnc(this.crearSolicitudDocumentoPnc(event.files[0]));
         if (this.props.tipo === 'DESVIACION_REQUISITO')
             await DesviacionRequsitoDocumentoService.subirArchivo(this.crearSolicitudDocumentoDesviacion(event.files[0]));
+        if (this.props.tipo === 'RECLAMO_MP')
+            await ReclamoDocumentoService.subirArchivo(this.crearSolicitudDocumentoDesviacion(event.files[0]));
+
+
         this.refrescar();
         this.fileUploadRef.clear();
         this.props.closeModal();
@@ -66,6 +71,8 @@ class Adjuntos extends Component {
             if (this.props.tipo === 'DESVIACION_REQUISITO') {
                 archivosData = await DesviacionRequsitoDocumentoService.listarArchivos(this.props.orden, this.props.solicitud);
             }
+            if (this.props.tipo === 'RECLAMO_MP')
+                archivosData = await ReclamoDocumentoService.listarArchivos(this.props.orden, this.props.solicitud);
             this.setState({ archivos: archivosData });
         }
     }
@@ -117,6 +124,8 @@ class Adjuntos extends Component {
             a = await PncDocumentoService.eliminar(id);
         if (this.props.tipo === 'DESVIACION_REQUISITO')
             a = await DesviacionRequsitoDocumentoService.eliminar(id);
+        if (this.props.tipo === 'RECLAMO_MP')
+            a = await ReclamoDocumentoService.eliminar(id);
         this.props.closeModal();
         if (a) {
             this.refrescar();
@@ -136,6 +145,8 @@ class Adjuntos extends Component {
             data = await PncDocumentoService.ver(id);
         if (this.props.tipo === 'DESVIACION_REQUISITO')
             data = await DesviacionRequsitoDocumentoService.ver(id);
+        if (this.props.tipo === 'RECLAMO_MP')
+            data = await ReclamoDocumentoService.ver(id);
         this.props.closeModal();
         const ap = window.URL.createObjectURL(data)
         const a = document.createElement('a');
@@ -169,6 +180,7 @@ class Adjuntos extends Component {
             case 'PNC':
                 return this.props.controles;
             case 'DESVIACION_REQUISITO':
+            case 'RECLAMO_MP':
                 return this.props.controles;
             default:
                 return this.props.controles && archivo.estado === this.props.estado;

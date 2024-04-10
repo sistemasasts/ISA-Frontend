@@ -105,7 +105,7 @@ export const ListaDesviacionReq = () => {
                         </AccordionTab>
                     </Accordion>
                     <DataTable
-                        header={<Header label={"Nuevo"} icon={"pi pi-plus"} clickDisplayForm={actions.clickNuevaDesviacionReq} />}
+                        header={<Header label={"Nuevo"} icon={"pi pi-plus"} clickDisplayForm={actions.clickNuevaDesviacionReq} visible={true}/>}
                         value={listaDesviacionReq}
                         autoLayout={true}
                         scrollable={true}
