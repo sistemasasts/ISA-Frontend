@@ -108,6 +108,8 @@ import ReclamoPrincipal from './components/quality-development/ReclamosMP/Reclam
 import ReclamoForm from './components/quality-development/ReclamosMP/ReclamoForm';
 import ReclamoAprobacionPrincipal from './components/quality-development/ReclamosMP/Aprobacion/ReclamoAprobacionPrincipal';
 import ReclamoVerAprobacion from './components/quality-development/ReclamosMP/Aprobacion/ReclamoVerAprobacion';
+import AprobacionPlanAccionPrincipal from './components/quality-development/ReclamosMP/AprobacionPlanAccion/AprobacionPlanAccionPrincipal';
+import ReclamoVerPlanAccion from './components/quality-development/ReclamosMP/AprobacionPlanAccion/ReclamoVerAprobacion';
 
 
 class MainPage extends Component {
@@ -622,6 +624,8 @@ class MainPage extends Component {
 						<Route path="/quality-development_complaint_edit/:idReclamo" component={ReclamoForm} />
 						<Route path="/quality-development_complaint_aprobacion/:estado" component={ReclamoAprobacionPrincipal} />
 						<Route path="/quality-development_complaint_aprobacion_ver/:idReclamo/:orden" component={ReclamoVerAprobacion} />
+						<Route path="/quality-development_complaint_procesar_tarea" component={AprobacionPlanAccionPrincipal} />
+						<Route path="/quality-development_complaint_procesar_tarea_ver/:idReclamo" component={ReclamoVerPlanAccion} />
 
 						<Route path="/quality-development_wflow" component={WFlow} />
 						<Route path="/quality-development_report" component={ReportData} />

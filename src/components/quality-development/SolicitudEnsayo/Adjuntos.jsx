@@ -108,6 +108,11 @@ class Adjuntos extends Component {
         let formadata = new FormData();
         infoAdicional.solicitudId = this.props.solicitud;
         infoAdicional.orden = this.props.orden;
+        if (this.props.tipo === 'RECLAMO_MP'){
+            if(this.props.id){
+                infoAdicional.planAccionId = this.props.id;
+            }
+        }
         formadata.append('file', archivo);
         formadata.append('info', JSON.stringify(infoAdicional));
         return formadata;

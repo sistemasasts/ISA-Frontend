@@ -7,3 +7,10 @@ export function tieneRol(rol){
 
     return _.includes(token.authorities, rol);
 }
+
+export function usuarioSesion(){
+
+    const token = getDecodedToken();
+
+    return token.user_name;
+}

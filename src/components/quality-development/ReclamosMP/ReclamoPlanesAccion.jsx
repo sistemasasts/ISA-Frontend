@@ -4,7 +4,6 @@ import { Growl } from 'primereact/growl';
 import ReclamoMPService from '../../../service/ReclamoMPService';
 import "../../site.css";
 import * as _ from "lodash";
-import { tieneRol } from '../../../service/UsuarioSesionService';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Dialog } from 'primereact/dialog';
@@ -15,7 +14,10 @@ import { Message } from 'primereact/message';
 import { Dropdown } from 'primereact/dropdown';
 import UsuarioService from '../../../service/UsuarioService'
 import * as moment from 'moment';
+import ReclamoPlanAccionProcesar from './ReclamoPlanAccionProcesar';
+import { usuarioSesion } from '../../../service/UsuarioSesionService';
 
+var PROCESO = 'ASIGNAR';
 class ReclamoPlanesAccion extends Component {
 
     constructor() {
@@ -24,6 +26,7 @@ class ReclamoPlanesAccion extends Component {
             id: 0,
             idReclamo: 0,
             planesAccion: [],
+            planAccionSeleccionado: null,
             mostrarControles: true,
             description: null,
             viewModalImg: false,
@@ -33,6 +36,7 @@ class ReclamoPlanesAccion extends Component {
             fechaInicio: null,
             fechaFin: null,
             responsable: null,
+            abrirProcesar: false,
 
             usuarios: [],
             camposObligatorios: []
@@ -46,11 +50,14 @@ class ReclamoPlanesAccion extends Component {
         this.validarCamposRequeridos = this.validarCamposRequeridos.bind(this);
         this.prepararDatosEditar = this.prepararDatosEditar.bind(this);
         this.cancelar = this.cancelar.bind(this);
+        this.procesar = this.procesar.bind(this);
     }
 
     async componentDidMount() {
         const pnc = this.props.idReclamo;
         const problemas = this.props.problemas;
+        PROCESO = this.props.proceso;
+
         const catalogo_usuarios = await UsuarioService.listarActivos();
         this.setState({
             idReclamo: pnc, planesAccion: problemas, mostrarControles: this.props.mostrarControles, usuarios: this.transformarDatos(catalogo_usuarios)
@@ -71,7 +78,22 @@ class ReclamoPlanesAccion extends Component {
                 <Button type="button" icon="pi pi-pencil" className="p-button-warning" onClick={() => this.prepararDatosEditar(rowData)}></Button>}
             {rowData.estado === 'CREADA' &&
                 <Button type="button" icon="pi pi-trash" className="p-button-danger" onClick={() => this.eliminarProblema(rowData.id)}></Button>}
+            {this.puedeProcesar(rowData) &&
+                <Button type="button" icon="fa fa-external-link-square" className="p-button-danger" onClick={() => this.procesar(rowData)}></Button>}
         </div>
+    }
+
+    puedeProcesar(planAccion) {
+        switch (planAccion.estado) {
+            case 'PENDIENTE_APROBACION':
+                return PROCESO === 'VALIDAR' ? true : false;
+            case 'ASIGNADA':
+            case 'REGRESADO':
+                usuarioSesion();
+                return planAccion.responsable === usuarioSesion();
+            default:
+                return false;
+        }
     }
 
     prepararDatosEditar(plan) {
@@ -85,7 +107,7 @@ class ReclamoPlanesAccion extends Component {
         })
     }
 
-    cancelar(){
+    cancelar() {
         this.setState({
             id: 0,
             fechaInicio: null,
@@ -103,6 +125,11 @@ class ReclamoPlanesAccion extends Component {
 
     myUploader(event) {
         this.setState({ imagenSubir: event.files[0] })
+    }
+
+    procesar(planAccion) {
+        console.log('ejecutnado procesar');
+        this.setState({ abrirProcesar: true, id: planAccion.id, planAccionSeleccionado: planAccion });
     }
 
     async operar() {
@@ -180,7 +207,7 @@ class ReclamoPlanesAccion extends Component {
             monthNamesShort: ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"]
         };
         let header = <div className="p-clearfix" style={{ width: '100%' }}>
-            {this.state.mostrarControles &&
+            {PROCESO === 'VALIDAR' &&
                 <Button style={{ float: 'left' }} label="Nuevo" icon="pi pi-plus" onClick={() => this.setState({ display: true })} />
             }
         </div>;
@@ -245,6 +272,7 @@ class ReclamoPlanesAccion extends Component {
 
                     </div>
                 </Dialog>
+                <ReclamoPlanAccionProcesar mostrar={this.state.abrirProcesar} origen={this} idReclamo={this.state.idReclamo} id={this.state.id} proceso={this.props.proceso}></ReclamoPlanAccionProcesar>
             </div>
 
         )
