@@ -55,8 +55,12 @@ class ReclamoPlanAccionProcesar extends Component {
 
     }
 
-    cerrarDialogo() {
-        this.props.origen.setState({ abrirProcesar: false })
+    cerrarDialogo(planesAtualizado) {
+        debugger
+        if(planesAtualizado)
+            this.props.origen.setState({ abrirProcesar: false, planesAccion: planesAtualizado })
+        else
+            this.props.origen.setState({ abrirProcesar: false})
         this.setState({
             display: false, id: null, destinos: [], asunto: null, mensaje: null
         })
@@ -64,12 +68,13 @@ class ReclamoPlanAccionProcesar extends Component {
 
     async operar(accion) {
         debugger;
+        var planes= [];
         switch (PROCESO) {
             case 'VALIDAR':
-                const planes2 = await ReclamoMPService.validarPlanAccion(this.crearObj(accion))
+                planes = await ReclamoMPService.validarPlanAccion(this.crearObj(accion))
                 break;
             case 'EJECUTAR':
-                const planes = await ReclamoMPService.procesarPlanAccion(this.crearObj(accion))
+                planes = await ReclamoMPService.procesarPlanAccion(this.crearObj(accion))
                 break;
 
             default:
@@ -77,7 +82,7 @@ class ReclamoPlanAccionProcesar extends Component {
         }
 
         this.growl.show({ severity: 'success', detail: 'Plan de acción procesado!' });
-        this.cerrarDialogo();
+        this.cerrarDialogo(planes);
 
     }
 
@@ -113,7 +118,7 @@ class ReclamoPlanAccionProcesar extends Component {
             {_.includes(['ASIGNADA', 'REGRESADO'], ESTADO) && <Button className='p-button-success' label="FINALIZAR TAREA" onClick={() => this.operar('FINALIZADO')} />}
             {_.includes(['PENDIENTE_APROBACION'], ESTADO) && <Button className='p-button-success' label="APROBAR TAREA" onClick={() => this.operar('FINALIZADO')} />}
             {_.includes(['PENDIENTE_APROBACION'], ESTADO) && <Button className='p-button-danger' label="REGRESAR TAREA" onClick={() => this.operar('REGRESADO')} />}
-            <Button className='p-button-danger' label="CANCELAR" onClick={this.cerrarDialogo} />
+            <Button className='p-button-danger' label="CANCELAR" onClick={()=>this.cerrarDialogo(null)} />
         </div>;
         return (
             <div>

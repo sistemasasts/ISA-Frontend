@@ -45,6 +45,7 @@ class ReclamoFormLectura extends Component {
             producto: null,
             problemas: [],
             detailNCP: null,
+            ordenCompra: null,
 
             editar: true,
             estado: null,
@@ -92,6 +93,7 @@ class ReclamoFormLectura extends Component {
                     origen: reclamo.origen,
                     detailNCP: reclamo.detailNCP,
                     problemas: reclamo.problemas,
+                    ordenCompra: reclamo.ordenCompra,
                     editar: false
                 });
             }
@@ -145,8 +147,8 @@ class ReclamoFormLectura extends Component {
                     </div>
 
                     <div className='p-col-12 p-lg-4'>
-                        <label htmlFor="float-input">Otro Proveedor</label>
-                        <InputText readOnly={!this.state.editar} value={this.state.otherProvider} onChange={(e) => this.setState({ otherProvider: e.target.value })} />
+                        <label htmlFor="float-input">Orden Compra</label>
+                        <InputText readOnly={!this.state.editar} value={this.state.ordenCompra} onChange={(e) => this.setState({ ordenCompra: e.target.value })} />
                     </div>
 
                     <div className='p-col-12 p-lg-4'>

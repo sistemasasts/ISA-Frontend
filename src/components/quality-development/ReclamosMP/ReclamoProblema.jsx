@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Button } from 'primereact/button';
 import { Growl } from 'primereact/growl';
 import ReclamoMPService from '../../../service/ReclamoMPService';
+import DefetoService from '../../../service/Pnc/DefectoService';
 import "../../site.css";
 import * as _ from "lodash";
 import { tieneRol } from '../../../service/UsuarioSesionService';
@@ -10,6 +11,8 @@ import { Column } from 'primereact/column';
 import { Dialog } from 'primereact/dialog';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { FileUpload } from 'primereact/fileupload';
+import { Dropdown } from 'primereact/dropdown';
+import { Message } from 'primereact/message';
 
 class ReclamoProblema extends Component {
 
@@ -23,6 +26,8 @@ class ReclamoProblema extends Component {
             description: null,
             viewModalImg: false,
             srcImageVM: null,
+            defecto: null,
+            defectosCatalogo: []
         }
         this.actionTemplate = this.actionTemplate.bind(this);
         this.imageTemplate = this.imageTemplate.bind(this);
@@ -35,8 +40,9 @@ class ReclamoProblema extends Component {
     async componentDidMount() {
         const pnc = this.props.idReclamo;
         const problemas = this.props.problemas;
+        const defectosCatalogo = await DefetoService.listarActivos();
         this.setState({
-            idReclamo: pnc, problemas: problemas, mostrarControles: this.props.mostrarControles
+            idReclamo: pnc, problemas: problemas, mostrarControles: this.props.mostrarControles, defectosCatalogo: defectosCatalogo
         });
     }
 
@@ -49,7 +55,8 @@ class ReclamoProblema extends Component {
     actionTemplate(rowData, column) {
         return <div>
             {this.state.mostrarControles &&
-                <Button type="button" icon="pi pi-pencil" className="p-button-warning" onClick={() => this.setState({ id: rowData.id, description: rowData.description, display: true })}></Button>}
+                <Button type="button" icon="pi pi-pencil" className="p-button-warning" onClick={() => this.setState({ id: rowData.id, description: rowData.description, display: true, 
+                    defecto: {id: rowData.defectoId, nombre: rowData.description, activo: true}})}></Button>}
             {this.state.mostrarControles &&
                 <Button type="button" icon="pi pi-trash" className="p-button-danger" onClick={() => this.eliminarProblema(rowData.id)}></Button>}
         </div>
@@ -65,19 +72,22 @@ class ReclamoProblema extends Component {
     }
 
     async registrar() {
-        let infoAditional = {};
-        let formadata = new FormData();
-        infoAditional.id = this.state.id;
-        infoAditional.reclamoId = this.state.idReclamo;
-        infoAditional.description = this.state.description;
-        if (this.state.imagenSubir)
-            formadata.append('file', this.state.imagenSubir);
-        else
-            formadata.append('file', new File([], ''));
-        formadata.append('info', JSON.stringify(infoAditional));
-        await ReclamoMPService.agregarProblema(formadata);
-        this.growl.show({ severity: 'success', detail: 'Registro agregado!' });
-        this.refrescarLista();
+        if (this.validarCamposRequeridos()) {
+            let infoAditional = {};
+            let formadata = new FormData();
+            infoAditional.id = this.state.id;
+            infoAditional.reclamoId = this.state.idReclamo;
+            infoAditional.defectoId = this.state.defecto.id;
+            infoAditional.description = this.state.defecto.nombre;
+            if (this.state.imagenSubir)
+                formadata.append('file', this.state.imagenSubir);
+            else
+                formadata.append('file', new File([], ''));
+            formadata.append('info', JSON.stringify(infoAditional));
+            await ReclamoMPService.agregarProblema(formadata);
+            this.growl.show({ severity: 'success', detail: 'Registro agregado!' });
+            this.refrescarLista();
+        }
     }
 
     async refrescarLista() {
@@ -89,6 +99,26 @@ class ReclamoProblema extends Component {
         const problemas = await ReclamoMPService.eliminarProblema(this.state.idReclamo, problemaId);
         this.growl.show({ severity: 'success', detail: 'Registro eliminado!' });
         this.setState({ problemas: problemas });
+    }
+
+    validarCamposRequeridos() {
+        var camposOblogatoriosDetectados = []
+        if (_.isEmpty(this.state.defecto)) {
+            let obj = { campo: '', obligatorio: true }
+            obj.campo = 'defecto'; obj.obligatorio = true
+            camposOblogatoriosDetectados.push(obj);
+        }
+        this.setState({ camposObligatorios: camposOblogatoriosDetectados })
+        return camposOblogatoriosDetectados.length === 0 ? true : false;
+    }
+
+    determinarEsCampoRequerido(nombreCampo) {
+        var resultado = false
+        _.forEach(this.state.camposObligatorios, (x) => {
+            if (x.campo === nombreCampo)
+                resultado = true
+        })
+        return resultado;
     }
 
     render() {
@@ -113,12 +143,20 @@ class ReclamoProblema extends Component {
                 </DataTable>
 
 
-                <Dialog visible={this.state.display} header="Crear/Editar Problema" width='300px' footer={dialogFooterP} onHide={() => this.setState({ display: false, description: null, imagenSubir: null, id: 0 })}
+                <Dialog visible={this.state.display} header="Crear/Editar Problema" style={{ width: '40vw' }} footer={dialogFooterP} onHide={() => this.setState({ display: false, description: null, imagenSubir: null, id: 0 })}
                 >
                     <div className="p-grid p-grid-responsive p-fluid">
+                        
                         <div className='p-col-12 p-lg-12'>
-                            <label htmlFor="float-input">Descripción</label>
-                            <InputTextarea rows={4} cols={90} value={this.state.description} onChange={(e) => this.setState({ description: e.target.value })} />
+                            <label htmlFor="float-input">Defecto</label>
+                            <Dropdown appendTo={document.body} options={this.state.defectosCatalogo} optionLabel="nombre" value={this.state.defecto} autoWidth={false}
+                                onChange={(e) => this.setState({ defecto: e.value })}
+                                placeholder="Seleccione ..." />
+                            {this.determinarEsCampoRequerido('defecto') &&
+                                <div style={{ marginTop: '8px' }}>
+                                    <Message severity="error" text="Campo Obligatorio" />
+                                </div>
+                            }
                         </div>
                         <div className="p-col-12 p-lg-12">
                             <label htmlFor="accion">Seleccione Imagen</label>

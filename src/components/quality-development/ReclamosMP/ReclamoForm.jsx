@@ -52,6 +52,7 @@ class ReclamoForm extends Component {
             planesAccion: [],
             accionesEjecutadas: [],
             detailNCP: null,
+            ordenCompra: null,
 
             editar: true,
             estado: null,
@@ -118,6 +119,7 @@ class ReclamoForm extends Component {
                     accionesEjecutadas: reclamo.listExecutedActons,
                     proveedoresSugeridos: proveedoresCatalogo,
                     proveedor: proveedorSeleccionado,
+                    ordenCompra: reclamo.ordenCompra,
                     editar: _.includes(['CREADA', 'REGRESADO'], reclamo.state),
                 });
             }
@@ -211,6 +213,7 @@ class ReclamoForm extends Component {
         obj.observacion = this.state.observacion;
         await ReclamoMPService.enviarPlanesAccion(obj);
         this.refrescar(this.props.match.params.idReclamo);
+        window.location.reload();
         this.growl.show({ severity: 'success', detail: 'Planes de acción enviados!' });
     }
 
@@ -236,7 +239,8 @@ class ReclamoForm extends Component {
             idProduct: this.state.producto.idProduct,
             idProvider: proveedorId,
             otherProvider: this.state.otherProvider,
-            detailNCP: this.state.detailNCP
+            detailNCP: this.state.detailNCP,
+            ordenCompra: this.state.ordenCompra
         }
     }
 
@@ -294,8 +298,8 @@ class ReclamoForm extends Component {
                     </div>
 
                     <div className='p-col-12 p-lg-4'>
-                        <label htmlFor="float-input">Otro Proveedor</label>
-                        <InputText readOnly={!this.state.editar} value={this.state.otherProvider} onChange={(e) => this.setState({ otherProvider: e.target.value })} />
+                        <label htmlFor="float-input">Orden Compra</label>
+                        <InputText readOnly={!this.state.editar} value={this.state.ordenCompra} onChange={(e) => this.setState({ordenCompra: e.target.value })} />
                     </div>
 
                     <div className='p-col-12 p-lg-4'>
