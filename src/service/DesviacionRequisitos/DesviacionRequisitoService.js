@@ -17,6 +17,9 @@ const DesviacionRequisitoService = {
     listarPorEstado: (estado) => http.request.get(`${apiEndpoint}/estado/${estado}`),
     listarHistorial: (id) => http.request.get(`${apiEndpoint}/historial/${id}`),
     procesar: (desviacion) => http.request.post(`${apiEndpoint}/procesar`, desviacion),
+
+    obtenerLineaNegocio: () => http.request.get(`${apiEndpoint}/catalogoLineaNegocio`),
+    obtenerEstados: () => http.request.get(`${apiEndpoint}/catalogoEstado`),
 }
 
 export default DesviacionRequisitoService

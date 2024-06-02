@@ -38,6 +38,7 @@ export const FormDesviacionReq = () => {
         unidadesMedida,
         defectosCatalogo,
         catalogoLineaAfectacion,
+        catalogoLineaNegocio,
         catalogoCausas,
         displayForm,
         displayFormDefecto,
@@ -78,11 +79,15 @@ export const FormDesviacionReq = () => {
                         onChange={(e) => actions.handleChangeNewDesviacionReq("product", e.value)}
                     />
                 </div>
-                <div className='p-col-12 p-lg-6'>
+                <div className='p-col-12 p-lg-4'>
                     <label htmlFor="float-input">Línea Afectada</label>
                     <Dropdown disabled={!isEdit} value={nuevaDesviacionReq.afectacion} options={catalogoLineaAfectacion} placeholder="Seleccione una línea de afectación" onChange={(e) => actions.handleChangeNewDesviacionReq("afectacion", e.value)} autoWidth={false} />
                 </div>
-                <div className='p-col-12 p-lg-6'>
+                <div className='p-col-12 p-lg-4'>
+                    <label htmlFor="float-input">Línea Negocio</label>
+                    <Dropdown disabled={!isEdit} value={nuevaDesviacionReq.lineaNegocio} options={catalogoLineaNegocio} placeholder="Seleccione la línea de negocio" onChange={(e) => actions.handleChangeNewDesviacionReq("lineaNegocio", e.value)} autoWidth={false} />
+                </div>
+                <div className='p-col-12 p-lg-4'>
                     <label htmlFor="float-input">Causa</label>
                     <Dropdown disabled={!isEdit} value={nuevaDesviacionReq.causa} editable={true} options={catalogoCausas} onChange={(e) => actions.handleChangeNewDesviacionReq("causa", e.value)} autoWidth={false} />
                 </div>
@@ -352,8 +357,9 @@ export const FormDesviacionReq = () => {
                 <div className='p-col-12 p-lg-12' style={{ justifyContent: 'center', textAlign: 'center' }}>
                     {verControles && <Button label='GUARDAR' icon='pi pi-save' style={{ width: '10%' }} onClick={actions.createItem} />}
                     {nuevaDesviacionReq && nuevaDesviacionReq.id && verControles && <Button label='ENVIAR' style={{ width: '10%' }} onClick={actions.enviar} />}
-                    {verControlesAprobacion && <Button label='APROBAR' style={{ width: '10%' }} onClick={() => actions.ejecutarAccion('APROBADO')} />}
+                    {verControlesAprobacion && <Button label='APROBAR' style={{ width: '10%' }} onClick={() => actions.ejecutarAccion('APROBADO_CC')} />}
                     {verControlesAprobacion && <Button label='RECHAZAR' style={{ width: '10%' }} className='p-button-danger' onClick={() => actions.ejecutarAccion('RECHAZADO')} />}
+                    {verControlesAprobacion && <Button label='REGRESAR' style={{ width: '10%' }} className='p-button-danger' onClick={() => actions.ejecutarAccion('REGRESADO')} />}
                     <Button label='ATRÁS' style={{ width: '10%' }} className='p-button-danger' onClick={actions.cancelar} />
                 </div>
             </div>

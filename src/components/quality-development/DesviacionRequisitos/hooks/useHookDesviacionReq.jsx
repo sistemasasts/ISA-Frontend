@@ -29,6 +29,8 @@ export const useHookDesviacionReq = () => {
     const [productoSel, setProductoSel] = useState();
     const [es, setEs] = useState(defaultEs);
     const [catalogoLineaAfectacion, setCatalogoLineaAfectacion] = useState([]);
+    const [catalogoLineaNegocio, setCatalogoLineaNegocio] = useState([]);
+    const [catalogoEstado, setCatalogoEstado] = useState([]);
     const [activeIndexTab, setActiveIndexTab] = useState();
     const [pagination, setPagination] = useState(paginadorDefault);
 
@@ -39,9 +41,21 @@ export const useHookDesviacionReq = () => {
         async function obtenerCatalogoLineaAfectada() {
             obtenerCatalogoLineaAfectacion();
         }
+        async function obtenerCatalogoLineaNegocio() {
+            const responseCatalogoLineaNegocio = await DesviacionRequisitoService.obtenerLineaNegocio();
+
+            setCatalogoLineaNegocio(responseCatalogoLineaNegocio);
+        }
+        async function obtenerCatalogoEstado() {
+            const responseCatalogoEstado = await DesviacionRequisitoService.obtenerEstados();
+
+            setCatalogoEstado(responseCatalogoEstado);
+        }
 
         obtenerLista();
         obtenerCatalogoLineaAfectada();
+        obtenerCatalogoLineaNegocio();
+        obtenerCatalogoEstado();
     }, []);
 
     const obtenerListaDesviacionReq = async () => {
@@ -141,6 +155,8 @@ export const useHookDesviacionReq = () => {
         productoSel,
         es,
         catalogoLineaAfectacion,
+        catalogoLineaNegocio,
+        catalogoEstado,
         activeIndexTab,
         pagination,
         actions: {

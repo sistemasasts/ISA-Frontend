@@ -11,6 +11,7 @@ import { InputText } from "primereact/inputtext";
 import { AutoComplete } from "primereact/autocomplete";
 import { Calendar } from "primereact/calendar";
 import { Dropdown } from "primereact/components/dropdown/Dropdown";
+import {MultiSelect} from 'primereact/multiselect';
 
 export const Header = ({ clickDisplayForm, icon, label, visible }) => {
     return (
@@ -55,6 +56,8 @@ export const ListaDesviacionReq = () => {
         productoSel,
         es,
         catalogoLineaAfectacion,
+        catalogoLineaNegocio,
+        catalogoEstado,
         activeIndexTab,
         pagination,
         actions
@@ -93,9 +96,18 @@ export const ListaDesviacionReq = () => {
                                     <label htmlFor="float-input">Fecha Fin</label>
                                     <Calendar dateFormat="yy/mm/dd" inputId='ffin' value={criterios.consulta.fechaFin} locale={es} onChange={(e) => actions.onChangeCriterios("fechaFin", e.value)} showIcon={true} />
                                 </div>
-                                <div className='p-col-12 p-lg-12'>
+                                <div className='p-col-12 p-lg-6'>
                                     <label htmlFor="float-input">Línea Afectada</label>
                                     <Dropdown value={criterios.consulta.afectacion} options={catalogoLineaAfectacion} placeholder="Seleccione una línea de afectación" onChange={(e) => actions.onChangeCriterios("afectacion", e.value)} autoWidth={false} />
+                                </div>
+                                <div className='p-col-12 p-lg-6'>
+                                    <label htmlFor="float-input">Línea Negocio</label>
+                                    <Dropdown value={criterios.consulta.afectacion} options={catalogoLineaNegocio} placeholder="Seleccione línea de negocio" onChange={(e) => actions.onChangeCriterios("lineaNegocio", e.value)} autoWidth={false} />
+                                </div>
+                                <div className='p-col-12 p-lg-12'>
+                                    <label htmlFor="float-input">Estado</label>
+                                    {/* <Dropdown value={criterios.consulta.estados} options={catalogoEstado} placeholder="Seleccione línea de negocio" onChange={(e) => actions.onChangeCriterios("estados", e.value)} autoWidth={false} /> */}
+                                    <MultiSelect value={criterios.consulta.estados} options={catalogoEstado} onChange={(e) => actions.onChangeCriterios("estados", e.value)} />
                                 </div>
                             </div>
                             <div className='p-col-12 p-lg-12 boton-opcion' >

@@ -19,6 +19,7 @@ const defaultObjDesviacionReq = {
     origen: "",
     seguimiento: "",
     afectacion: "",
+    lineaNegocio: "",
     motivo: "",
     descripcion: "",
     control: "",
@@ -83,6 +84,7 @@ export const useHookFormDesviacionReq = () => {
     const [unidadesMedida, setUnidadesMedida] = useState([]);
     const [defectosCatalogo, setDefectosCatalogo] = useState([]);
     const [catalogoLineaAfectacion, setCatalogoLineaAfectacion] = useState([]);
+    const [catalogoLineaNegocio, setCatalogoLineaNegocio] = useState([]);
     const [catalogoCausas, setCatalogoCausas] = useState([]);
     const [lote, setLote] = useState(defaultLote);
     const [listaLote, setListaLote] = useState([]);
@@ -115,6 +117,11 @@ export const useHookFormDesviacionReq = () => {
 
             setCatalogoLineaAfectacion(responseCatalogoLineaAfecta);
         }
+        async function obtenerCatalogoLineaNegocio() {
+            const responseCatalogoLineaNegocio = await DesviacionRequisitoService.obtenerLineaNegocio();
+
+            setCatalogoLineaNegocio(responseCatalogoLineaNegocio);
+        }
         async function obtenerDesviacionRePorId() {
             checkIsEditOrNew();
             checkLotes();
@@ -128,6 +135,7 @@ export const useHookFormDesviacionReq = () => {
         obtenerUnidadesMedida();
         obtenerDefectosCatalogo();
         obtenerCatalogoLineaAfectacion();
+        obtenerCatalogoLineaNegocio();
         obtenerDesviacionRePorId();
         obtenerCatalogoCausas();
     }, []);
@@ -153,7 +161,7 @@ export const useHookFormDesviacionReq = () => {
                 setOrdenFlujo('APROBACION_GERENCIA_CALIDAD');
             } else {
                 setOrdenFlujo('INGRESO');
-                if (desvResp.estado === 'NUEVO') {
+                if (_.includes(['NUEVO', 'REGRESADO'], desvResp.estado)) {
                     setVerControles(true);
                     setVerControlesDocumentos(true);
                     setIsEdit(true);
@@ -221,7 +229,7 @@ export const useHookFormDesviacionReq = () => {
     }
 
     const ejecutarAccion = async (accion) => {
-        if (accion === 'RECHAZADO' && _.isEmpty(observacion)){
+        if ( _.includes(['REGRESADO','RECHAZADO'], accion) && _.isEmpty(observacion)){
             growl.current.show({ severity: 'error', detail: 'La observación es obligatorio' });
             return;
         }
@@ -465,6 +473,7 @@ export const useHookFormDesviacionReq = () => {
         unidadesMedida,
         defectosCatalogo,
         catalogoLineaAfectacion,
+        catalogoLineaNegocio,
         catalogoCausas,
         listaLote,
         listaDefecto,
