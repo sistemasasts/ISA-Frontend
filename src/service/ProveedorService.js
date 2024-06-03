@@ -9,6 +9,8 @@ const ProveedorService = {
     update: (proveedor) => http.request.put(apiEndpoint, proveedor),
     delete: (id) => http.request.delete(`${apiEndpoint}/${id}`),
     listarPorProducto: (productId) => http.request.get(`${apiEndpoint}/productId/${productId}`),
+
+    listarPorNombreCriterio: (criterio) => http.request.get(`${apiEndpoint}/porNombre/${criterio}`),
   
   }
   

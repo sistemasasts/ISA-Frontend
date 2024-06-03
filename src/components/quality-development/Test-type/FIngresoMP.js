@@ -15,6 +15,9 @@ import { TabView, TabPanel } from 'primereact/tabview';
 import { ToggleButton } from 'primereact/togglebutton';
 import { Card } from 'primereact/card';
 import { RadioButton } from 'primereact/radiobutton';
+import * as moment from 'moment';
+import ReclamoMPService from '../../../service/ReclamoMPService';
+import UnidadMedidaService from '../../../service/UnidadMedidaService';
 
 /* ============  D A T A    C A T A L O G O  S =============== */
 import { mpEntry, placesRMP, unidadesMedida } from '../../../global/catalogs';
@@ -68,6 +71,7 @@ class IngresoMPForm extends Component {
             porcentPNC: null,
             nameProductRMP: null,
             returnApply: null, // finaliza variales de Reclamo de Materia Prima,
+            unidadesCatalogo: []
 
         }
         that = this;
@@ -509,42 +513,32 @@ class IngresoMPForm extends Component {
     }
 
     /* Metodo para guardar el Reclamo Materia Prima */
-    saveComplaintMP() {
-        var comp = {
+    async saveComplaintMP() {
+        /* var comp = {
             idProduct: null, idProvider: null, batchProvider: null, palletNumber: null, affectedProduct: null, affectedProduct: null, totalAmount: null, place: null, dateComplaint: null,
             applyReturn: null, porcentComplaint: null, asUser: null, state: null, listProblems: []
-        };
-        comp.idProduct = this.state.dataProduct.idProduct;
-        comp.idProvider = this.state.provider;
+        }; */
+        const comp = {};
+        comp.dateComplaint = moment(this.state.dateRMP, 'YYYY-MM-DD').toDate();
+        comp.totalAmount = this.state.totalAm;
+        comp.affectedAmount = this.state.affectAm;
+        comp.unidadMedidaId = this.state.unit;
+        comp.porcentComplaint = this.state.porcentPNC;
         comp.place = this.state.place;
-        comp.unitP = this.state.unit;
+        comp.affectedProduct = this.state.affectProduct
+        if (this.state.returnApply === 'SI')
+            comp.applyReturn = true;
+        else
+            comp.applyReturn = false;
+
         comp.batchProvider = this.state.batchProvider;
         comp.palletNumber = this.state.palletNumber;
-        comp.affectedAmount = this.state.affectAm;
-        comp.affectedProduct = this.state.affectProduct
-        comp.totalAmount = this.state.totalAm;
-        comp.dateComplaint = formattedDateAndHour(this.state.dateRMP);
-        if (this.state.returnApply === 'SI')
-            comp.applyReturn = 1;
-        else
-            comp.applyReturn = 0;
-        comp.porcentComplaint = this.state.porcentPNC;
-        comp.asUser = this.state.userLogin.idUser;
-        comp.state = 'Abierto';
-        SaveComplaintRMP(comp, function (data, status, msg) {
-            switch (status) {
-                case 'OK':
-                    that.showMessage(msg, 'success');
-                    that.setState({ visibleModalRMP: false });
-                    break;
-                case 'ERROR':
-                    that.showMessage(msg, 'error');
-                    break;
-                default:
-                    that.showMessage(msg, 'info');
-                    break;
-            }
-        })
+        comp.idProduct = this.state.dataProduct.idProduct;
+        comp.idProvider = this.state.provider;
+
+        const solicitudCreada = await ReclamoMPService.registrar(comp);
+        this.growl.show({ severity: 'success', detail: 'Producto no conforme regsitrado!' });
+        that.setState({ visibleModalRMP: false });
 
 
     }
@@ -569,9 +563,11 @@ class IngresoMPForm extends Component {
         this.buildDataForm(pp);
     }
 
-    componentDidMount() {
-
-        this.setState({ userLogin: this.props.currentUser });
+    async componentDidMount() {
+        const unidades = await UnidadMedidaService.listarActivos();
+        this.setState({
+            unidadesCatalogo: unidades, userLogin: this.props.currentUser
+        });
     }
 
     render() {
@@ -700,7 +696,8 @@ class IngresoMPForm extends Component {
                                 </div>
                                 <div className="p-col-12 p-md-4">
                                     <label htmlFor="float-input">Unidad</label>
-                                    <Dropdown value={this.state.unit} options={unidadesMedida} autoWidth={false} onChange={this.onUnitChange} placeholder="Seleccione" />
+                                    {/* <Dropdown value={this.state.unit} options={unidadesMedida} autoWidth={false} onChange={this.onUnitChange} placeholder="Seleccione" /> */}
+                                    <Dropdown options={this.state.unidadesCatalogo} value={this.state.unit} autoWidth={false} onChange={(e) => this.setState({ unit: e.value })} placeholder="Selecione" />
                                 </div>
                                 <div className="p-col-12 p-md-4">
                                     <label htmlFor="float-input">Producto Afectado</label>

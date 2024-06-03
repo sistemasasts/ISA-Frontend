@@ -536,7 +536,7 @@ class FormularioSE extends Component {
                                         <DataTable value={this.state.planesAccion} rows={15} >
                                             <Column field="descripcion" header="Descripción" />
                                             <Column field="fechaInicio" header="Fecha Inicio" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
-                                            <Column field="fechaFin" header="Fecha Fin" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
+                                            <Column field="fechaFin" header="Fecha Proyectada" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
                                             <Column header="Cumplido" body={this.actionTemplateCumplido} style={{ textAlign: 'center', width: '8em' }} />
                                         </DataTable>
                                     </div>

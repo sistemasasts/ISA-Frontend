@@ -106,7 +106,7 @@ class ReclamoEnviarCorreo extends Component {
             <div>
                 <Growl ref={(el) => this.growl = el} style={{ marginTop: '75px' }} />
 
-                <Dialog header="Envío Correo Electrónico" visible={this.state.display} style={{ width: '40vw' }} footer={footer} modal={true} onHide={() => this.setState({ visibleModalEmail: false })}>
+                <Dialog header="Envío Correo Electrónico" visible={this.state.display} style={{ width: '40vw' }} footer={footer} modal={true} onHide={() => this.setState({ display: false })}>
                     <Messages ref={(el) => this.messages = el} />
                     <div className="p-grid p-grid-responsive p-fluid">
 
@@ -115,10 +115,10 @@ class ReclamoEnviarCorreo extends Component {
                             {/* <Chips value={this.state.sendTo} onAdd={(e) => this.changeChipsAdd(e.value)} onRemove={(e) => this.changeChipsRemove(e.value)}></Chips> */}
                             <Chips value={this.state.destinos} onChange={(e) => this.setState({ destinos: e.value })}></Chips>
                         </div>
-                        <div className="p-col-12 p-lg-2" style={{ padding: '4px 10px' }}><label htmlFor="year">Asunto</label></div>
+                        {/* <div className="p-col-12 p-lg-2" style={{ padding: '4px 10px' }}><label htmlFor="year">Asunto</label></div>
                         <div className="p-col-12 p-lg-10" style={{ padding: '4px 10px' }}>
                             <InputText onChange={(e) => this.setState({ asunto: e.target.value })} value={this.state.asunto} />
-                        </div>
+                        </div> */}
 
                         <div className="p-col-12 p-lg-2" style={{ padding: '4px 10px' }}><label htmlFor="year">Mensaje</label></div>
                         <div className="p-col-12 p-lg-10" style={{ padding: '4px 10px' }}>

@@ -157,7 +157,7 @@ class VerAjusteMaquinaria extends Component {
                                 <DataTable value={this.state.planesAccion} rows={15} header={header} >
                                     <Column field="descripcion" header="Descripción" />
                                     <Column field="fechaInicio" header="Fecha Inicio" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
-                                    <Column field="fechaFin" header="Fecha Fin" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
+                                    <Column field="fechaFin" header="Fecha Proyectada" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
                                     <Column body={this.actionTemplateCumplido} header='Cumplido' style={{ textAlign: 'center', width: '8em' }} />
                                     <Column body={this.actionTemplate} style={{ textAlign: 'center', width: '8em' }} />
                                 </DataTable>
@@ -166,7 +166,7 @@ class VerAjusteMaquinaria extends Component {
                                 <DataTable value={this.state.planesAccion} rows={15} >
                                     <Column field="descripcion" header="Descripción" />
                                     <Column field="fechaInicio" header="Fecha Inicio" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
-                                    <Column field="fechaFin" header="Fecha Fin" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
+                                    <Column field="fechaFin" header="Fecha Proyectada" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
                                 </DataTable>
                             }
                         </div>

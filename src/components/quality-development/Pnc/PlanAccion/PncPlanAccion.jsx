@@ -76,7 +76,7 @@ class PncPlanAccion extends Component {
                 <DataTable value={this.state.planes} header={header}  >
                     <Column field="orden" header="Orden" style={{ width: '8%', textAlign: 'center' }} />
                     <Column field="fechaInicio" header="Fecha Inicio" style={{ width: '10%', textAlign: 'center' }} />
-                    <Column field="fechaFin" header="Fecha Fin" style={{ width: '10%', textAlign: 'center' }} />
+                    <Column field="fechaFin" header="Fecha Proyectada" style={{ width: '10%', textAlign: 'center' }} />
                     <Column field="responsableNombre" header="Responsable" style={{ width: '12%', textAlign: 'center' }} />
                     <Column body={this.bodyTemplateEstado} header="Estado" style={{ width: '12%', textAlign: 'center' }} />
                     <Column body={this.bodyTemplateInfoAdicional} header="Info. Adicional" style={{ width: '8%', textAlign: 'center' }} />

@@ -226,7 +226,7 @@ class ReclamoPlanesAccion extends Component {
                     <Column field="estado" header="Estado" style={{ width: '15%', textAlign: 'center' }} />
                     <Column field="responsable" header="Responsable" style={{ width: '15%', textAlign: 'center' }} />
                     <Column field="dateStart" header="Fecha Inicio" style={{ width: '10%', textAlign: 'center' }} />
-                    <Column field="dateLimit" header="Fecha Fin" style={{ width: '10%', textAlign: 'center' }} />
+                    <Column field="dateLimit" header="Fecha Proyectada" style={{ width: '10%', textAlign: 'center' }} />
                 </DataTable>
 
 

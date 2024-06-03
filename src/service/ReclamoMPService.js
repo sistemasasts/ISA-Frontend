@@ -36,6 +36,8 @@ const ReclamoMPService = {
 
   procesarPlanAccion: (accion) => http.request.post(`${apiEndpoint}/procesarPlanAccion`, accion),
   validarPlanAccion: (accion) => http.request.post(`${apiEndpoint}/validarPlanAccion`, accion),
+
+  obtenerEstados: () => http.request.get(`${apiEndpoint}/catalogoEstado`),
   
 }
 

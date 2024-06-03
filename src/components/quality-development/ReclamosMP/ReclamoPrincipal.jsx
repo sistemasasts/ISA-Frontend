@@ -13,6 +13,7 @@ import { Calendar } from 'primereact/calendar';
 import { MultiSelect } from 'primereact/multiselect';
 import { AutoComplete } from 'primereact/autocomplete';
 import ProductoService from '../../../service/productoService';
+import ProveedorService from '../../../service/ProveedorService';
 import { determinarColorPNC } from '../SolicitudEnsayo/ClasesUtilidades';
 import ReclamoMPService from '../../../service/ReclamoMPService';
 import * as _ from 'lodash';
@@ -31,7 +32,8 @@ class ReclamoPrincipal extends Component {
             totalRecords: 0,
             currenPage: '',
             codigo: null,
-            lote: null
+            lote: null,
+            estado: []
         };
         this.actionTemplate = this.actionTemplate.bind(this);
         this.consultar = this.consultar.bind(this);
@@ -40,8 +42,8 @@ class ReclamoPrincipal extends Component {
     }
 
     async componentDidMount() {
-        const estado = await PncService.obtenerEstados();
-        this.setState({ estados: estado });
+        const estadosCatalogo = await ReclamoMPService.obtenerEstados();
+        this.setState({ estados: estadosCatalogo });
         this.consultar();
     }
 
@@ -59,11 +61,12 @@ class ReclamoPrincipal extends Component {
     crearObj() {
         return {
             numero: this.state.codigo,
-            /* fechaInicio: this.state.fechaInicio && moment(this.state.fechaInicio).format("YYYY-MM-DD hh:mm:ss.SSS"),
+            fechaInicio: this.state.fechaInicio && moment(this.state.fechaInicio).format("YYYY-MM-DD hh:mm:ss.SSS"),
             fechaFin: this.state.fechaFin && moment(this.state.fechaFin).format("YYYY-MM-DD hh:mm:ss.SSS"),
             productoId: this.state.producto && this.state.producto.idProduct,
+            proveedorId: this.state.proveedor && this.state.proveedor.idProvider,
             //lote: this.state.lote,
-            estados: this.state.estado */
+            estados: this.state.estado
         }
     }
 
@@ -79,10 +82,11 @@ class ReclamoPrincipal extends Component {
             fechaFin: null,
             fechaInicioDeteccion: null,
             fechaFinDeteccion: null,
-            estado: null,
+            estado: [],
             producto: null,
-            codigo: '',
-            lote: '',
+            proveedor: null,
+            codigo: null,
+            lote: null,
             listadoPnc: []
         });
     }
@@ -98,6 +102,11 @@ class ReclamoPrincipal extends Component {
     async buscarProductos(event) {
         const resultados = await ProductoService.listarPorNombreCriterio(event.query);
         this.setState({ productosSugeridos: resultados });
+    }
+
+    async buscarProveedores(event) {
+        const resultados = await ProveedorService.listarPorNombreCriterio(event.query);
+        this.setState({ proveedorSugeridos: resultados });
     }
 
     async generarReportePNC(pnc) {
@@ -158,17 +167,23 @@ class ReclamoPrincipal extends Component {
                                 <InputText value={this.state.lote} onChange={(e) => this.setState({ lote: e.target.value })} />
                             </div>
                             <div className='p-col-12 p-lg-3'>
-                                <label htmlFor="float-input">Fecha Producción Inicio</label>
+                                <label htmlFor="float-input">Fecha Emisión Inicio</label>
                                 <Calendar dateFormat="yy/mm/dd" inputId='fini' value={this.state.fechaInicio} locale={es} onChange={(e) => this.setState({ fechaInicio: e.value })} showIcon={true} />
                             </div>
                             <div className='p-col-12 p-lg-3'>
-                                <label htmlFor="float-input">Fecha Producción Fin</label>
+                                <label htmlFor="float-input">Fecha Emisión Fin</label>
                                 <Calendar dateFormat="yy/mm/dd" inputId='ffin' value={this.state.fechaFin} locale={es} onChange={(e) => this.setState({ fechaFin: e.value })} showIcon={true} />
                             </div>
                             <div className='p-col-6'>
                                 <label htmlFor="float-input">Producto</label>
                                 <AutoComplete field="nameProduct" minLength={3} suggestions={this.state.productosSugeridos}
                                     completeMethod={(e) => this.buscarProductos(e)} value={this.state.producto} onChange={(e) => this.setState({ producto: e.value })}
+                                />
+                            </div>
+                            <div className='p-col-6'>
+                                <label htmlFor="float-input">Proveedor</label>
+                                <AutoComplete field="nameProvider" minLength={3} suggestions={this.state.proveedorSugeridos}
+                                    completeMethod={(e) => this.buscarProveedores(e)} value={this.state.proveedor} onChange={(e) => this.setState({ proveedor: e.value })}
                                 />
                             </div>
                             <div className='p-col-12 p-lg-12'>
@@ -186,7 +201,7 @@ class ReclamoPrincipal extends Component {
                     selectionMode="single" onSelectionChange={(e) => { this.setState({ selectedPNC: e.value }); }}
                 >
                     <Column body={this.actionTemplate} style={{ width: '7em', textAlign: 'center' }} />
-                    <Column field="number" header="PNC.08 #" style={{ width: '10em', textAlign: 'center' }} />
+                    <Column field="number" header="PNC" style={{ width: '10em', textAlign: 'center' }} />
                     <Column body={this.bodyTemplateEstado} header="Estado" style={{ width: '15em', textAlign: 'center' }} />
                     <Column field="nombreProducto" header="Materia Prima" style={{ width: '20em', textAlign: 'center' }} />
                     <Column field="detailNCP" header="Detalle PNC" style={{ width: '30em' }} />
@@ -194,6 +209,7 @@ class ReclamoPrincipal extends Component {
                     <Column field="totalAmount" header="Cantidad Total" style={{ width: '10em', textAlign: 'right' }} />
                     <Column field="affectedAmount" header="Canidad Afectada" style={{ width: '10em', textAlign: 'right' }} />
                     <Column field="porcentComplaint" header="% PNC" style={{ width: '10em', textAlign: 'right' }} />
+                    <Column field="kpiTime" header="I. Tiempo(Días)" style={{ width: '10em', textAlign: 'center' }} />
 
                 </DataTable>
                 <Paginator first={this.state.first} rows={this.state.size} totalRecords={this.state.totalRecords} onPageChange={this.onPageChange}
