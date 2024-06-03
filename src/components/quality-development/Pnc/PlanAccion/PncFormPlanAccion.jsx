@@ -214,7 +214,7 @@ class PncFormPlanAccion extends Component {
                             }
                         </div>
                         <div className='p-col-12 p-lg-12'>
-                            <label htmlFor="float-input">Fecha Fin</label>
+                            <label htmlFor="float-input">Fecha Proyectada</label>
                             <Calendar className={this.determinarEsCampoRequerido('fechaFin') && 'p-error'} appendTo={document.body} dateFormat="yy/mm/dd" value={this.state.fechaFin} locale={es} onChange={(e) => this.setState({ fechaFin: e.value })} showIcon={true} />
                             {this.determinarEsCampoRequerido('fechaFin') &&
                                 <div style={{ marginTop: '8px' }}>

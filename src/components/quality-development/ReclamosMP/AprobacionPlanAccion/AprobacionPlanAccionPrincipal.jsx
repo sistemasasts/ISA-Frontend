@@ -45,7 +45,7 @@ class AprobacionPlanAccionPrincipal extends Component {
         return (
             <div className="card card-w-title">
                 <Growl ref={(el) => this.growl = el} style={{ marginTop: '75px' }} />
-                <h3><strong>DESVIACIÓN REQUISITOS APROBACIÓN</strong></h3>
+                <h3><strong>PROCESAR PLAN ACCIÓN - RECLAMO MP</strong></h3>
 
                 <DataTable value={this.state.solicitudes} paginator={true} header={header} rows={15} responsive={true} scrollable={true}
                     selectionMode="single" onSelectionChange={e => this.setState({ selectedConfiguracion: e.value })}
