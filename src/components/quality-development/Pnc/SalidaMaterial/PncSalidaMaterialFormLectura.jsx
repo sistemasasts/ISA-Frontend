@@ -25,6 +25,10 @@ class PncSalidaMaterialFormLectura extends Component {
             observacion2: null,
             mostrarControles: true,
             verPlanesAccion: false,
+            cliente: null,
+            factura: null,
+            responsableVenta: null,
+            responsableBodega: null,
 
             pnc: null,
             destinoFinalCatalogo: [],
@@ -54,7 +58,12 @@ class PncSalidaMaterialFormLectura extends Component {
                 cantidad: salida.cantidad,
                 destinoFinal: salida.destino,
                 observacion: salida.observacion,
-                verPlanesAccion: salida.verPlanesAccion
+                verPlanesAccion: salida.verPlanesAccion,
+                cliente: salida.salidaConcesion?salida.salidaConcesion.cliente : null,
+                factura: salida.salidaConcesion?salida.salidaConcesion.factura : null,
+                responsableBodega: salida.salidaConcesion?salida.salidaConcesion.responsableBodega : null,
+                responsableVenta: salida.salidaConcesion?salida.salidaConcesion.responsableVenta : null,
+
             });
         }
     }
@@ -92,6 +101,26 @@ class PncSalidaMaterialFormLectura extends Component {
                         <Dropdown disabled options={this.state.destinoFinalCatalogo} autoWidth={false} value={this.state.destinoFinal} onChange={(e) => this.setState({ destinoFinal: e.value })}
                             placeholder="Selecione" />
                     </div>
+                    {this.state.destinoFinal === 'SALIDA_CONCESION' &&
+                        <div className='p-col-12 p-grid'>
+                            <div className='p-col-12 p-lg-4'>
+                                <label htmlFor="float-input">Cliente</label>
+                                <InputText readOnly value={this.state.cliente} onChange={(e) => this.setState({ cliente: e.target.value })} />
+                            </div>
+                           {/*  <div className='p-col-12 p-lg-4'>
+                                <label htmlFor="float-input">Factura</label>
+                                <InputText readOnly value={this.state.factura} onChange={(e) => this.setState({ factura: e.target.value })} />
+                            </div> */}
+                            <div className='p-col-12 p-lg-4'>
+                                <label htmlFor="float-input">Responsable Venta</label>
+                                <InputText readOnly value={this.state.responsableVenta} onChange={(e) => this.setState({ responsableVenta: e.target.value })} />
+                            </div>
+                            <div className='p-col-12 p-lg-4'>
+                                <label htmlFor="float-input">Responsable Bodega</label>
+                                <InputText readOnly value={this.state.responsableBodega} onChange={(e) => this.setState({ responsableBodega: e.target.value })} />
+                            </div>
+                        </div>
+                    }
                     <div className='p-col-12 p-lg-12'>
                         <label htmlFor="float-input">Observación</label>
                         <InputTextarea readOnly value={this.state.observacion} onChange={(e) => this.setState({ observacion: e.target.value })} rows={3} />

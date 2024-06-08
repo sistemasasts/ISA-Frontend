@@ -115,7 +115,7 @@ class ReclamoPrincipal extends Component {
         const a = document.createElement('a');
         document.body.appendChild(a);
         a.href = ap;
-        a.download = `ReclamoMP${pnc.numero}_${pnc.nombreProducto}.pdf`;
+        a.download = `ReclamoMP${pnc.number}_${pnc.nombreProducto}.pdf`;
         a.click();
         this.growl.show({ severity: 'success', detail: 'Reporte generado!' });
     }

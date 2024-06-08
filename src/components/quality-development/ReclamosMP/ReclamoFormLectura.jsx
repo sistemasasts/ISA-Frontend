@@ -157,7 +157,7 @@ class ReclamoFormLectura extends Component {
                     </div>
 
                     <div className='p-col-12 p-lg-4'>
-                        <label htmlFor="float-input">Lote Interno #Pallet</label>
+                        <label htmlFor="float-input">Lote Interno</label>
                         <InputText readOnly={!this.state.editar} value={this.state.palletNumber} onChange={(e) => this.setState({ palletNumber: e.target.value })} />
                     </div>
 
