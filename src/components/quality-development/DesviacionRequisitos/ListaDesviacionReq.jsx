@@ -126,7 +126,7 @@ export const ListaDesviacionReq = () => {
                         onSelectionChange={(e) => actions.onSelectionChange(e.value)}
                     >
                         <Column body={(row) => <ActionButton edit={() => actions.onEdit(row)} rowData={row} view={actions.generarReporte} />} style={{ width: '7em', textAlign: 'center' }} />
-                        <Column field={"secuencial"} header={"RMP"} style={{ width: '7em', textAlign: 'center' }} />
+                        <Column field={"secuencial"} header={"PNC"} style={{ width: '7em', textAlign: 'center' }} />
                         <Column field={"estado"} header={"Estado"} style={{ width: '15em', textAlign: 'center' }} />
                         <Column field={"productTypeText"} header={"Origen"} style={{ width: '15em', textAlign: 'center' }} />
                         <Column field={"fechaCreacionTrans"} header={"Fecha"} style={{ width: '10em', textAlign: 'center' }} />
