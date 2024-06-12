@@ -359,7 +359,7 @@ class ReclamoForm extends Component {
                 }
                 {
                     this.state.id > 0 && this.state.estado === 'APROBADO' &&
-                    <ReclamoPlanesAccion idReclamo={this.state.id} mostrarControles={true} problemas={this.state.planesAccion} proceso={'VALIDAR'}></ReclamoPlanesAccion>
+                    <ReclamoPlanesAccion idReclamo={this.state.id} mostrarControles={true} problemas={this.state.planesAccion} proceso={'VALIDAR'} observacion={this.state.observacion}></ReclamoPlanesAccion>
                 }
                 <div className='p-col-12 p-lg-12 boton-opcion' >
                     {this.state.id === 0 &&

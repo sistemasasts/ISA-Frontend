@@ -25,7 +25,7 @@ const ReclamoMPService = {
 
   crearPlanAccion: (accion) => http.request.post(`${apiEndpoint}/crearPlanAccion`, accion),
   actualizarPlanAccion: (accion) => http.request.put(`${apiEndpoint}/actualizarPlanAccion`, accion),
-  eliminarPlanAccion: (reclamoId, accionId) => http.request.delete(`${apiEndpoint}/eliminarPlanAccion/${reclamoId}/${accionId}`),
+  eliminarPlanAccion: (reclamoId, accionId, dto) => http.request.post(`${apiEndpoint}/eliminarPlanAccion/${reclamoId}/${accionId}`, dto),
 
   listarHistorial: (id) => http.request.get(`${apiEndpoint}/historial/${id}`),
   generarReporte: (id) => httpFiles.request.get(`${apiEndpoint}/reporte/${id}`),

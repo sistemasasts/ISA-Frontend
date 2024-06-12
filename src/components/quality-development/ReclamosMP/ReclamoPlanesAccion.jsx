@@ -76,8 +76,8 @@ class ReclamoPlanesAccion extends Component {
         return <div>
             {rowData.estado === 'CREADA' &&
                 <Button type="button" icon="pi pi-pencil" className="p-button-warning" onClick={() => this.prepararDatosEditar(rowData)}></Button>}
-            {rowData.estado === 'CREADA' &&
-                <Button type="button" icon="pi pi-trash" className="p-button-danger" onClick={() => this.eliminarProblema(rowData.id)}></Button>}
+            {_.includes(['CREADA', 'ASIGNADA'], rowData.estado) && PROCESO === 'VALIDAR' &&
+                <Button type="button" icon="pi pi-trash" className="p-button-danger" onClick={() => this.eliminarProblema(rowData.id, rowData.estado)}></Button>}
             {this.puedeProcesar(rowData) &&
                 <Button type="button" icon="fa fa-external-link-square" className="p-button-danger" onClick={() => this.procesar(rowData)}></Button>}
         </div>
@@ -160,8 +160,14 @@ class ReclamoPlanesAccion extends Component {
     }
 
 
-    async eliminarProblema(problemaId) {
-        const problemas = await ReclamoMPService.eliminarPlanAccion(this.state.idReclamo, problemaId);
+    async eliminarProblema(problemaId, estado) {
+        if (_.includes(['ASIGNADA'], estado) && PROCESO === 'VALIDAR') {
+            if(_.isEmpty(this.props.observacion)){
+                this.growl.show({ severity: 'error', detail: 'Debe ingresar una observación para poder eliminar' });        
+                return false;
+            }
+        }
+        const problemas = await ReclamoMPService.eliminarPlanAccion(this.state.idReclamo, problemaId, {observacion: this.props.observacion});
         this.growl.show({ severity: 'success', detail: 'Registro eliminado!' });
         this.setState({ planesAccion: problemas });
     }
