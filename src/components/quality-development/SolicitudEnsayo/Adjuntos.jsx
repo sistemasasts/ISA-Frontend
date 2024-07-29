@@ -72,7 +72,7 @@ class Adjuntos extends Component {
                 archivosData = await DesviacionRequsitoDocumentoService.listarArchivos(this.props.orden, this.props.solicitud);
             }
             if (this.props.tipo === 'RECLAMO_MP')
-                archivosData = await ReclamoDocumentoService.listarArchivos(this.props.orden, this.props.solicitud);
+                archivosData = await ReclamoDocumentoService.listarArchivosPlanAccion(this.props.orden, this.props.solicitud, this.props.id);
             this.setState({ archivos: archivosData });
         }
     }

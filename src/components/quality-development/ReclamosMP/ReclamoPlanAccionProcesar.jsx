@@ -23,6 +23,7 @@ class ReclamoPlanAccionProcesar extends Component {
             id: 0,
             idReclamo: 0,
             observacion: null,
+            descripcionPlanAccion: null,
             camposObligatorios: []
         }
 
@@ -39,13 +40,17 @@ class ReclamoPlanAccionProcesar extends Component {
 
     fetchData(data) {
         PROCESO = this.props.proceso;
-        if (data.state.planAccionSeleccionado)
+        var descripcion = '';
+        if (data.state.planAccionSeleccionado){
             ESTADO = data.state.planAccionSeleccionado.estado;
+            descripcion = data.state.planAccionSeleccionado.description
+        }
 
         this.setState({
             display: data.state.abrirProcesar,
             idReclamo: data.state.idReclamo,
-            id: data.state.id
+            id: data.state.id,
+            descripcionPlanAccion: descripcion
         });
 
     }
@@ -56,7 +61,6 @@ class ReclamoPlanAccionProcesar extends Component {
     }
 
     cerrarDialogo(planesAtualizado) {
-        debugger
         if(planesAtualizado)
             this.props.origen.setState({ abrirProcesar: false, planesAccion: planesAtualizado })
         else
@@ -67,7 +71,6 @@ class ReclamoPlanAccionProcesar extends Component {
     }
 
     async operar(accion) {
-        debugger;
         var planes= [];
         switch (PROCESO) {
             case 'VALIDAR':
@@ -127,6 +130,9 @@ class ReclamoPlanAccionProcesar extends Component {
                 <Dialog header="Finalizar Tarea" visible={this.state.display} style={{ width: '40vw' }} footer={footer} modal={true} onHide={() => this.setState({ visibleModalEmail: false })}>
                     <Messages ref={(el) => this.messages = el} />
                     <div className="p-grid p-grid-responsive p-fluid">
+                    <div className='p-col-12 p-lg-12' style={{textAlign: 'center'}}>
+                        <i>{this.state.descripcionPlanAccion}</i>
+                    </div>
                         <div className='p-col-12 p-lg-12'>
                             <Adjuntos solicitud={this.props.idReclamo} id={this.props.id} orden={ORDEN} controles={true} estado={ESTADO} tipo={TIPO_SOLICITUD} />
                         </div>

@@ -5,6 +5,9 @@ const apiEndPoint = '/reclamoMPDocumentos';
 
 const ReclamoDocumentoService = {
     listarArchivos: (orden, idDesviacion) => http.request.get(`${apiEndPoint}/${orden}/${idDesviacion}`),
+    
+    listarArchivosPlanAccion: (orden, idDesviacion, idPlanAccion) => http.request.get(`${apiEndPoint}/${orden}/${idDesviacion}/${idPlanAccion}`),
+
     subirArchivo: (criterio) => http.request.post(`${apiEndPoint}/subir`, criterio),    
     ver: (id) => httpFiles.request.get(`${apiEndPoint}/ver/${id}`),
     /* verImagen: (id) => http.request.get(`${apiEndPoint}/solicitudPruebasProceso/ver/imagen/${id}`), */
