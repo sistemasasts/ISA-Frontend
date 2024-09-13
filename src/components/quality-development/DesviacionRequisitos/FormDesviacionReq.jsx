@@ -279,7 +279,7 @@ export const FormDesviacionReq = () => {
                         <div>
                             <h1><strong>Materia Prima y/o Mano  de obra de empleados</strong></h1>
                             <DataTable
-                                header={<Header clickDisplayForm={() => actions.clickFormRecurso(false)} label={"Agregar Recurso"} visble={!isEdit} icon={"pi pi-plus"} />}
+                                header={<Header clickDisplayForm={() => actions.clickFormRecurso(false)} label={"Agregar Recurso"} visible={isEdit} icon={"pi pi-plus"} />}
                                 footer={footerRecurso}
                                 value={listaRecurso}
 

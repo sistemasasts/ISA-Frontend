@@ -34,10 +34,14 @@ class PncSalidaMaterialInfoAdd extends Component {
 
     async componentDidMount() {
         const salida = this.props.salidaMaterial;
+        const lectura = this.props.lectura;
         var editar = false;
-        if (salida.informacionAdicional.length > 0) {
-            editar = salida.informacionAdicional[0].usuario === this.props.currentUser.nickName;
+        if(!lectura){
+            if (salida.informacionAdicional.length > 0) {
+                editar = salida.informacionAdicional[0].usuario === this.props.currentUser.nickName;
+            }
         }
+        
         const unidades = await UnidadMedidaService.listarActivos();
         this.setState({
             idSalida: salida.id, 

@@ -7,6 +7,9 @@ import history from '../../../../history';
 import PncPlanAccionService from '../../../../service/Pnc/PncPlanAccionService';
 import { determinarColorPNC } from '../../SolicitudEnsayo/ClasesUtilidades';
 import PncFormPlanAccion from './PncFormPlanAccion';
+import { Dialog } from 'primereact/dialog';
+import PncSalidaMaterialInfoAdd from './Procesar/PncSalidaMaterialInfoAdd';
+import PncSalidaMaterialService from '../../../../service/Pnc/PncSalidaMaterialService';
 
 class PncPlanAccion extends Component {
 
@@ -14,22 +17,27 @@ class PncPlanAccion extends Component {
         super();
         this.state = {
             idSalidaMaterial: 0,
+            salidaMaterialCompleto: null,
             planes: [],
             mostrarFormPlanAccion: false,
             planSeleccionado: null,
             mostrarControles: false,
+
+            visibleInfoAdicional: false
         }
 
         this.actionTemplate = this.actionTemplate.bind(this);
         this.eliminarPlan = this.eliminarPlan.bind(this);
         this.abrirDialogoPlanAccion = this.abrirDialogoPlanAccion.bind(this);
+        this.bodyTemplateInfoAdicional = this.bodyTemplateInfoAdicional.bind(this);
     }
 
     async componentDidMount() {
         const salidaMaterialId = this.props.idSalidaMaterial;
+        const salidaMaterial = await PncSalidaMaterialService.listarPorIdCompleto(salidaMaterialId);
         const planesAccion = await PncPlanAccionService.listarPorSalidaMaterialId(salidaMaterialId);
         this.setState({
-            idSalidaMaterial: salidaMaterialId, planes: planesAccion, mostrarControles: this.props.mostrarControles
+            idSalidaMaterial: salidaMaterialId, planes: planesAccion,salidaMaterialCompleto: salidaMaterial, mostrarControles: this.props.mostrarControles
         });
     }
 
@@ -59,7 +67,12 @@ class PncPlanAccion extends Component {
     }
 
     bodyTemplateInfoAdicional(rowData) {
-        return <span>{rowData.llenarInfoAdicional? 'SI': ''}</span>;
+        console.log(rowData)
+        if(rowData.estado === 'FINALIZADO' && rowData.llenarInfoAdicional){
+            return <Button icon="pi pi-eye" onClick={() => this.setState({ visibleInfoAdicional: true })} />
+        }            
+        else
+            return <span>{rowData.llenarInfoAdicional? 'SI': ''}</span>;
     }
 
     render() {
@@ -87,6 +100,9 @@ class PncPlanAccion extends Component {
 
                 </DataTable>
                 <PncFormPlanAccion mostrar={this.state.mostrarFormPlanAccion} salidaMaterialId={this.state.idSalidaMaterial} origen={this} />
+                <Dialog header="Info. Adicional" visible={this.state.visibleInfoAdicional} style={{width: '50vw'}} modal={true} onHide={() => this.setState({visibleInfoAdicional: false})}>
+                    <PncSalidaMaterialInfoAdd salidaMaterial={this.state.salidaMaterialCompleto} lectura={true}/>
+                </Dialog>                
             </div>
         )
     }
