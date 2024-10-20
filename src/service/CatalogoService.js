@@ -72,4 +72,9 @@ export class CatalogoService {
             .then(res => res.data.data)
     }
 
+    getTiposDiseño() {
+        return axios.get('assets/catalogos/tipoDiseño.json')
+            .then(res => res.data.data)
+    }
+
 }

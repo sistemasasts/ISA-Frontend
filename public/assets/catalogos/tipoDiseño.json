@@ -1,0 +1,32 @@
+{
+    "data": [
+        {
+            "label": "Diseño de mezcla en frio",
+            "value": "Diseño de mezcla en frio"
+        },
+        {
+            "label": "Diseño de slurry seal",
+            "value": "Diseño de slurry seal"
+        },
+        {
+            "label": "Diseño base estabilizada",
+            "value": "Diseño base estabilizada"
+        },
+        {
+            "label": "Diseño tratamientos superficiales bituminosos doble y triple",
+            "value": "Diseño tratamientos superficiales bituminosos doble y triple"
+        },
+        {
+            "label": "Diseño de mezcla en frio con fresado",
+            "value": "Diseño de mezcla en frio con fresado"
+        },
+        {
+            "label": "Diseño de micropavimento",
+            "value": "Diseño de micropavimento"
+        },
+        {
+            "label": "Otro",
+            "value": "Otro"
+        }
+    ]
+}

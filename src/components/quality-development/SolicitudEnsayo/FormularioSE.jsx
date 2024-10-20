@@ -28,6 +28,7 @@ import SolicitudDocumentoService from '../../../service/SolicitudEnsayo/Solicitu
 import SolicitudPlanAccionService from '../../../service/SolicitudPlanAccion/SolicitudPlanAccionService';
 import UnidadMedidaService from '../../../service/UnidadMedidaService';
 import Confirmacion from '../Shared/Confirmacion';
+import { CatalogoService } from '../../../service/CatalogoService';
 
 const TIPO_SOLICITUD = 'SOLICITUD_ENSAYO';
 class FormularioSE extends Component {
@@ -61,6 +62,7 @@ class FormularioSE extends Component {
             archivos: [],
             adjuntoSeleccionado: null,
             nombreComercial: null,
+            tipoDiseno: null,
 
             unidadesMedida: [],
             planesAccion: [],
@@ -68,6 +70,7 @@ class FormularioSE extends Component {
             mostrarConfirmacion: false,
             contenidoConfirmacion: null,
             identificadorConfirmacion: null,
+            tiposDiseno: [],
 
         };
         this.filterProveedorSingle = this.filterProveedorSingle.bind(this);
@@ -84,6 +87,7 @@ class FormularioSE extends Component {
         this.actionTemplateCumplido = this.actionTemplateCumplido.bind(this);
         this.confirmarEnviarNuevaSolicitud = this.confirmarEnviarNuevaSolicitud.bind(this);
         this.respuestaConfirmacion = this.respuestaConfirmacion.bind(this);
+        this.catalogoService = new CatalogoService();
     }
 
     async componentDidMount() {
@@ -91,6 +95,7 @@ class FormularioSE extends Component {
         const proveedores = await ProveedorService.list();
         const prioridadesNivel = await SolicitudEnsayoService.listarPrioridadNivel();
         const unidades = await UnidadMedidaService.listarActivos();
+        this.catalogoService.getTiposDiseño().then(data => this.setState({ tiposDiseno: data }));
         this.setState({ proveedoresData: proveedores, nivelPrioridadData: prioridadesNivel, unidadesMedida: unidades });
     }
 
@@ -128,7 +133,9 @@ class FormularioSE extends Component {
                     nombreComercial: solicitud.nombreComercial,
                     mostrarControles: _.includes(['NUEVO', 'REGRESADO_NOVEDAD_FORMA'], solicitud.estado),
                     editar: _.includes(['NUEVO', 'REGRESADO_NOVEDAD_FORMA'], solicitud.estado),
-                    planesAccion: planes
+                    planesAccion: planes,
+                    tipoDiseno: solicitud.tipoDiseno,
+                    tipoDisenoOtro: solicitud.tipoDisenoOtro,
                 });
                 this.listarArchivos(idSolicitud);
             }
@@ -210,12 +217,13 @@ class FormularioSE extends Component {
             observacion: this.state.observacion,
             muestraEntrega: moment(this.state.muestraEntrega).format("YYYY-MM-DD"),
             muestraUbicacion: this.state.muestraUbicacion,
-            nombreComercial: this.state.nombreComercial
+            nombreComercial: this.state.nombreComercial,
+            tipoDiseno : this.state.tipoDiseno,
+            tipoDisenoOtro : this.state.tipoDisenoOtro,
         }
     }
 
     formularioValido() {
-        debugger
         if (_.isEmpty(moment(this.state.fechaEntrega).format("YYYY-MM-DD")) || _.isEmpty(this.state.prioridad)
             || _.isEmpty(this.state.proveedorSeleccionado) || _.isEmpty(this.state.objectivos) || _.isEmpty(this.state.tiempoEntrega) || _.isEmpty(this.state.materialEntregado)
             || _.isEmpty(this.state.cantidad) || this.state.unidad === 0 || _.isEmpty(this.state.lineaAplicacion) || _.isEmpty(moment(this.state.muestraEntrega).format("YYYY-MM-DD")) || _.isEmpty(this.state.muestraUbicacion))
@@ -396,7 +404,7 @@ class FormularioSE extends Component {
                         <Dropdown disabled={!this.state.editar} options={this.state.nivelPrioridadData} value={this.state.prioridad} autoWidth={false} onChange={(event => this.onChangeNivelPrioridad(event.value))} placeholder="Selecione" />
                     </div>
                     <div className='p-col-12 p-lg-3'>
-                        <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Proveedor</label>
+                        <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Proveedor / Diseño</label>
                         <AutoComplete disabled={!this.state.editar} field="nameProvider" value={this.state.proveedorSeleccionado} suggestions={this.state.filteredProveedoresSingle} completeMethod={this.filterProveedorSingle}
                             size={30} minLength={1} onChange={(e) => this.setState({ proveedorSeleccionado: e.value })} />
                     </div>
@@ -428,6 +436,22 @@ class FormularioSE extends Component {
                                 <Checkbox disabled={!this.state.editar} inputId="cb6" value="Restricción de Materia Prima" onChange={this.onObjectiveChange} checked={this.state.objectivos.indexOf('Restricción de Materia Prima') !== -1}></Checkbox>
                                 <label htmlFor="cb6" style={{ paddingLeft: '8px' }} className="p-checkbox-label">Restricción de Materia Prima</label>
                             </div>
+                            <div className="p-col-12 p-lg-4">
+                                <Checkbox disabled={!this.state.editar} inputId="cb6" value="Diseño Vial" onChange={this.onObjectiveChange} checked={this.state.objectivos.indexOf('Diseño Vial') !== -1}></Checkbox>
+                                <label htmlFor="cb6" style={{ paddingLeft: '8px' }} className="p-checkbox-label">Diseño Vial</label>
+                            </div>
+                            {this.state.objectivos.indexOf('Diseño Vial') !== -1 &&
+                                <div className="p-col-12 p-lg-4">
+                                    <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Tipo Diseño</label>
+                                    <Dropdown disabled={!this.state.editar} options={this.state.tiposDiseno} value={this.state.tipoDiseno} autoWidth={false} onChange={(e) => this.setState({ tipoDiseno: e.value })} placeholder="Seleccione " />
+                                </div>
+                            }
+                            {this.state.tipoDiseno === 'Otro' &&
+                                <div className="p-col-12 p-lg-4">
+                                    <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Otro Tipo Diseño</label>
+                                    <InputText readOnly={!this.state.editar} value={this.state.tipoDisenoOtro} onChange={(e) => this.setState({ tipoDisenoOtro: e.target.value })} />
+                                </div>
+                            }
                         </div>
 
                     </div>

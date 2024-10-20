@@ -136,7 +136,7 @@ export var placesRMP=[
 
 /* Variable de lineas de aplicacion para Solicitud de Ensayos */
 export var aplicationLine=[
-    { label: 'Desinfectantes', value: 'Desinfectantes' },
+    //{ label: 'Desinfectantes', value: 'Desinfectantes' },
     { label: 'Laminación', value: 'Laminación' },
     { label: 'Metales', value: 'Metales' },
     { label: 'Paneles', value: 'Paneles' },

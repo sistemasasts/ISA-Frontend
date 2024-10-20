@@ -57,7 +57,6 @@ class FormularioSELectura extends Component {
             const solicitud = await SolicitudEnsayoService.listarPorId(idSolicitud);
             if (solicitud) {
                 let objetivosValor = _.split(solicitud.objetivo, ',');
-                debugger
                 if (solicitud.muestraImagenId)
                     this.leerImagenMuestra(solicitud.muestraImagenId);
                 this.setState({
@@ -78,6 +77,8 @@ class FormularioSELectura extends Component {
                     muestraImagenId: solicitud.muestraImagenId,
                     estado: solicitud.estado,
                     nombreComercial: solicitud.nombreComercial,
+                    tipoDiseno: solicitud.tipoDiseno,
+                    tipoDisenoOtro: solicitud.tipoDisenoOtro
                 });
             }
         }
@@ -119,7 +120,7 @@ class FormularioSELectura extends Component {
                         <Dropdown disabled options={this.state.nivelPrioridadData} value={this.state.prioridad} autoWidth={false} onChange={(event => this.setState({ prioridad: event.value }))} placeholder="Selecione" />
                     </div>
                     <div className='p-col-12 p-lg-3'>
-                        <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Proveedor</label>
+                        <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Proveedor / Diseño</label>
                         <InputText readOnly value={this.state.proveedorSeleccionado} />
                     </div>
 
@@ -150,6 +151,22 @@ class FormularioSELectura extends Component {
                                 <Checkbox inputId="cb6" value="Restricción de Materia Prima" checked={this.state.objectivos.indexOf('Restricción de Materia Prima') !== -1}></Checkbox>
                                 <label htmlFor="cb6" style={{ paddingLeft: '8px' }} className="p-checkbox-label">Restricción de Materia Prima</label>
                             </div>
+                            <div className="p-col-12 p-lg-4">
+                                <Checkbox inputId="cb6" value="Diseño Vial" checked={this.state.objectivos.indexOf('Diseño Vial') !== -1}></Checkbox>
+                                <label htmlFor="cb6" style={{ paddingLeft: '8px' }} className="p-checkbox-label">Diseño Vial</label>
+                            </div>
+                            {this.state.objectivos.indexOf('Diseño Vial') !== -1 &&
+                                <div className="p-col-12 p-lg-4">
+                                    <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Tipo Diseño</label>
+                                    <Dropdown disabled options={this.state.tiposDiseno} value={this.state.tipoDiseno} autoWidth={false} onChange={(e) => this.setState({ tipoDiseno: e.value })} placeholder="Seleccione " />
+                                </div>
+                            }
+                            {this.state.tipoDiseno === 'Otro' &&
+                                <div className="p-col-12 p-lg-4">
+                                    <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Otro Tipo Diseño</label>
+                                    <InputText readOnly value={this.state.tipoDisenoOtro} onChange={(e) => this.setState({ tipoDisenoOtro: e.target.value })} />
+                                </div>
+                            }
                         </div>
 
                     </div>
