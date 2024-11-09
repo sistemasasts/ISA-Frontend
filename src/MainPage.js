@@ -110,6 +110,7 @@ import ReclamoAprobacionPrincipal from './components/quality-development/Reclamo
 import ReclamoVerAprobacion from './components/quality-development/ReclamosMP/Aprobacion/ReclamoVerAprobacion';
 import AprobacionPlanAccionPrincipal from './components/quality-development/ReclamosMP/AprobacionPlanAccion/AprobacionPlanAccionPrincipal';
 import ReclamoVerPlanAccion from './components/quality-development/ReclamosMP/AprobacionPlanAccion/ReclamoVerAprobacion';
+import ConsultaDesviacionReq from './components/quality-development/DesviacionRequisitos/Consulta/ConsultaDesviacionReq';
 
 
 class MainPage extends Component {
@@ -706,6 +707,7 @@ class MainPage extends Component {
 						<Route path="/quality-development_pnc_validarTarea_ver/:idPncSalida/:idPlan" component={PncVerPAValidar} />
 						<Route path="/quality-development_pnc_reporteComercial" component={ReporteComercialPrincipal} />
 						<Route path="/quality-development_pnc_desviacion_req" component={ListaDesviacionReq} />
+						<Route path="/quality-development_pnc_consulta_desviacion_req" component={ConsultaDesviacionReq} />
 						<Route path="/quality-development_pnc_desviacion_req_edit/:idDesvReq" component={FormDesviacionReq} />
 						<Route path="/quality-development_pnc_desviacion_req_view/:idDesvReq/:orden" component={FormDesviacionReq} />
 						<Route path="/quality-development_pnc_desviacion_req_nuevo" component={FormDesviacionReq} />

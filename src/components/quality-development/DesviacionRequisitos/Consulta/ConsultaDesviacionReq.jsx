@@ -1,9 +1,7 @@
 import React from "react";
-import { Toolbar } from "primereact/toolbar";
 import { Button } from "primereact/button";
 import { Growl } from "primereact/growl";
 import { DataTable } from "primereact/datatable";
-import { useHookDesviacionReq } from "./hooks/useHookDesviacionReq";
 import { Column } from "primereact/column";
 import { Paginator } from "primereact/paginator";
 import { Accordion, AccordionTab } from "primereact/accordion";
@@ -12,42 +10,19 @@ import { AutoComplete } from "primereact/autocomplete";
 import { Calendar } from "primereact/calendar";
 import { Dropdown } from "primereact/components/dropdown/Dropdown";
 import {MultiSelect} from 'primereact/multiselect';
+import { useHookConsultaDesviacionReq } from "./useHookConsultaDesviacionReq";
 
-export const Header = ({ clickDisplayForm, icon, label, visible }) => {
-    return (
-        <div>
-            {visible &&
-                <Toolbar style={{ border: 'none', padding: '0px' }}>
-                    <div className="p-toolbar-group-left">
-                        <Button label={label} icon={icon} onClick={clickDisplayForm} />
-                    </div>
-                </Toolbar>
-            }
 
-        </div>
-    );
-}
-
-export const ActionFooter = ({ save, cancel }) => {
-    return (
-        <div>
-            <Button icon="pi pi-check" onClick={save} label={"Guardar"} />
-            <Button icon="pi pi-times" onClick={cancel} label={"Cancelar"} className="p-button-secondary" />
-        </div>
-    )
-}
 
 export const ActionButton = ({ edit, view, remove, rowData }) => {
     return (
         <div>
-            <Button type="button" icon="pi pi-pencil" className="p-button-warning" onClick={edit} />
-            {remove && <Button type="button" icon="pi pi-trash" className="p-button-danger" onClick={() => remove(rowData)}></Button>}
             {view && <Button type="button" icon="pi pi-file-pdf" className="p-button-success" onClick={() => view(rowData)} />}
         </div>
     )
 }
 
-export const ListaDesviacionReq = () => {
+export const ConsultaDesviacionReq = () => {
     const {
         growl,
         listaDesviacionReq,
@@ -61,7 +36,7 @@ export const ListaDesviacionReq = () => {
         activeIndexTab,
         pagination,
         actions
-    } = useHookDesviacionReq();
+    } = useHookConsultaDesviacionReq();
 
     return (
         <div className='p-grid'>
@@ -117,7 +92,6 @@ export const ListaDesviacionReq = () => {
                         </AccordionTab>
                     </Accordion>
                     <DataTable
-                        header={<Header label={"Nuevo"} icon={"pi pi-plus"} clickDisplayForm={actions.clickNuevaDesviacionReq} visible={true}/>}
                         value={listaDesviacionReq}
                         autoLayout={true}
                         scrollable={true}
@@ -125,7 +99,7 @@ export const ListaDesviacionReq = () => {
                         selectionMode={"single"}
                         onSelectionChange={(e) => actions.onSelectionChange(e.value)}
                     >
-                        <Column body={(row) => <ActionButton edit={() => actions.onEdit(row)} rowData={row} view={actions.generarReporte} />} style={{ width: '7em', textAlign: 'center' }} />
+                        <Column body={(row) => <ActionButton rowData={row} view={actions.generarReporte} />} style={{ width: '7em', textAlign: 'center' }} />
                         <Column field={"secuencial"} header={"PNC"} style={{ width: '7em', textAlign: 'center' }} />
                         <Column field={"estado"} header={"Estado"} style={{ width: '15em', textAlign: 'center' }} />
                         <Column field={"productTypeText"} header={"Origen"} style={{ width: '15em', textAlign: 'center' }} />
@@ -152,4 +126,4 @@ export const ListaDesviacionReq = () => {
     )
 }
 
-export default ListaDesviacionReq;
+export default ConsultaDesviacionReq;
