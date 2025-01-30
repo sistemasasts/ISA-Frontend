@@ -33,7 +33,8 @@ class VerValidar extends Component {
             estado: null,
             responsable: null,
             usuarios: [],
-            mostrarControles: false
+            mostrarControles: false,
+            extensionFecha: null
         };
         this.validarSolicitud = this.validarSolicitud.bind(this);
         this.rechazarSolicitud = this.rechazarSolicitud.bind(this);
@@ -102,14 +103,26 @@ class VerValidar extends Component {
     }
 
     crearObjSolicitud() {
+        debugger
+        const fechaExtension = this.state.extensionFecha != null ? moment(this.state.extensionFecha).format("YYYY-MM-DD") : null
         return {
             id: this.state.id,
             usuarioGestion: this.state.responsable.idUser,
-            observacion: this.state.observacion
+            observacion: this.state.observacion,
+            extensionFecha: fechaExtension
         }
     }
 
     render() {
+        let es = {
+            firstDayOfWeek: 1,
+            dayNames: ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"],
+            dayNamesShort: ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"],
+            dayNamesMin: ["D", "L", "M", "X", "J", "V", "S"],
+            monthNames: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+            monthNamesShort: ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"]
+        };
+
         return (
 
             <div className="card card-w-title">
@@ -127,6 +140,11 @@ class VerValidar extends Component {
                         <div className='p-col-12 p-lg-6'>
                             <label htmlFor="float-input">RESPONSABLE</label>
                             <Dropdown value={this.state.responsable} optionLabel='employee.completeName' options={this.state.usuarios} onChange={(e) => this.setState({ responsable: e.value })} placeholder="Seleccione" />
+                        </div>
+
+                        <div className='p-col-12 p-lg-6'>
+                            <label style={{color:'red'}} htmlFor="float-input">EXTENSIÓN DE FECHAS POR ENSAYOS PROLONGADOS</label>
+                            <Calendar dateFormat="yy/mm/dd" value={this.state.extensionFecha} locale={es} onChange={(e) => this.setState({ extensionFecha: e.value })} showIcon={true} />
                         </div>
 
                         <div className='p-col-12 p-lg-12'>
