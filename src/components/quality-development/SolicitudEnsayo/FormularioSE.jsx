@@ -77,6 +77,7 @@ class FormularioSE extends Component {
         this.onObjectiveChange = this.onObjectiveChange.bind(this);
         this.guardar = this.guardar.bind(this);
         this.enviarSolicitud = this.enviarSolicitud.bind(this);
+        this.actualizarSolicitud = this.actualizarSolicitud.bind(this);
         this.anularSolicitud = this.anularSolicitud.bind(this);
         this.templateAdjunto = this.templateAdjunto.bind(this);
         this.myUploader = this.myUploader.bind(this);
@@ -240,6 +241,12 @@ class FormularioSE extends Component {
         setTimeout(function () {
             history.push(`/quality-development_solicitudse`);
         }, 2000);
+    }
+
+    async actualizarSolicitud() {
+        await SolicitudEnsayoService.actualizar(this.crearObjSolicitud());
+        this.refrescar(this.state.id);
+        this.growl.show({ severity: 'success', detail: 'Solicitud Actualizada!' });
     }
 
     onChangeNivelPrioridad(value) {
@@ -466,11 +473,11 @@ class FormularioSE extends Component {
                             </div>
                             <div className="p-col-12 p-lg-4">
                                 <RadioButton disabled={!this.state.editar} inputId="rb2" name="deliverTimerb2" value="MEDIO" checked={this.state.tiempoEntrega === 'MEDIO'} />
-                                <label htmlFor="rb2" className="p-radiobutton-label">Medio (Tiempo de desarrollo hasta 20 días)</label>
+                                <label htmlFor="rb2" className="p-radiobutton-label">Medio (Tiempo de desarrollo hasta 30 días)</label>
                             </div>
                             <div className="p-col-12 p-lg-4">
                                 <RadioButton disabled={!this.state.editar} inputId="rb3" name="deliverTimerb3" value="BAJO" checked={this.state.tiempoEntrega === 'BAJO'} />
-                                <label htmlFor="rb3" className="p-radiobutton-label">Bajo (Tiempo de desarrollo hasta 2 meses)</label>
+                                <label htmlFor="rb3" className="p-radiobutton-label">Bajo (Tiempo de desarrollo hasta 30 días)</label>
                             </div>
                         </div>
 
@@ -584,6 +591,7 @@ class FormularioSE extends Component {
                     {this.state.id > 0 && _.includes(['NUEVO', 'REGRESADO_NOVEDAD_FORMA'], this.state.estado) &&
                         < div >
                             <Button className="p-button-danger" label="ENVIAR" onClick={this.enviarSolicitud} />
+                            <Button className="p-button" label="ACTUALIZAR" onClick={this.actualizarSolicitud} />
                             <Button className='p-button-secondary' label="ANULAR" onClick={this.anularSolicitud} />
                         </div>
                     }

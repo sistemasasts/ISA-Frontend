@@ -181,11 +181,11 @@ class FormularioSELectura extends Component {
                             </div>
                             <div className="p-col-12 p-lg-4">
                                 <RadioButton inputId="rb2" name="deliverTimerb2" value="MEDIO" checked={this.state.tiempoEntrega === 'MEDIO'} />
-                                <label htmlFor="rb2" className="p-radiobutton-label">Medio (Tiempo de desarrollo 15 días)</label>
+                                <label htmlFor="rb2" className="p-radiobutton-label">Medio (Tiempo de desarrollo hasta 30 días)</label>
                             </div>
                             <div className="p-col-12 p-lg-4">
                                 <RadioButton inputId="rb3" name="deliverTimerb3" value="BAJO" checked={this.state.tiempoEntrega === 'BAJO'} />
-                                <label htmlFor="rb3" className="p-radiobutton-label">Bajo (Tiempo de desarrollo 2 meses)</label>
+                                <label htmlFor="rb3" className="p-radiobutton-label">Bajo (Tiempo de desarrollo hasta 30 días)</label>
                             </div>
                         </div>
 
