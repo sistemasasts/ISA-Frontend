@@ -34,6 +34,7 @@ class VerResponder extends Component {
         this.anularSolicitud = this.anularSolicitud.bind(this);
         this.confirmarIniciarPruebasProceso = this.confirmarIniciarPruebasProceso.bind(this);
         this.respuestaConfirmacion = this.respuestaConfirmacion.bind(this);
+        this.confirmarSolicitudExtensionPlazo = this.confirmarSolicitudExtensionPlazo.bind(this);
     }
 
     async componentDidMount() {
@@ -79,6 +80,14 @@ class VerResponder extends Component {
         this.setState({ mostrarConfirmacion: true, contenidoConfirmacion: '¿Está seguro de iniciar la prueba en proceso?', identificadorConfirmacion: 'iniciarProceso' });
     }
 
+    confirmarSolicitudExtensionPlazo() {
+        if (_.isEmpty(this.state.observacion)) {
+            this.growl.show({ severity: 'error', detail: 'Observación es obligatoria' });
+            return;
+        }
+        this.setState({ mostrarConfirmacion: true, contenidoConfirmacion: '¿Está seguro de solicitar una extensión de plazo?', identificadorConfirmacion: 'iniciarExtensionPlazo' });
+    }
+
     async respuestaConfirmacion(identificador) {
         switch (identificador) {
             case 'iniciarProceso':
@@ -88,6 +97,15 @@ class VerResponder extends Component {
 
                 setTimeout(function () {
                     history.push(`/quality-development_solicitudpp_edit/${solicitudpp.id}`);
+                }, 1000);
+                break;
+            case 'iniciarExtensionPlazo':
+                this.props.openModal();
+                await SolicitudEnsayoService.solicitudExtensionPlazo(this.crearObjSolicitud());
+                this.growl.show({ severity: 'success', detail: 'Solicitud extensión plazo enviado!' });
+                this.props.closeModal();
+                setTimeout(function () {
+                    history.push(`/quality-development_solicitudse_procesar`);
                 }, 1000);
                 break;
             default:
@@ -126,6 +144,7 @@ class VerResponder extends Component {
                             {this.state.estado !== 'PENDIENTE_PRUEBAS_PROCESO' &&
                                 <div>
                                     <Button className="p-button-danger" label="ENVIAR INFORME" onClick={this.responderSolicitud} />
+                                    <Button className="p-button-warning" label="EXTENSIÓN DE PLAZO" onClick={this.confirmarSolicitudExtensionPlazo} />
                                     <Button className='p-button-secondary' label="ANULAR" onClick={this.anularSolicitud} />
                                 </div>
                             }

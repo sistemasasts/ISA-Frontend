@@ -13,7 +13,7 @@ import SolicitudEnsayoService from '../../../service/SolicitudEnsayo/SolicitudEn
 import UsuarioService from '../../../service/UsuarioService';
 import { closeModal, openModal } from '../../../store/actions/modalWaitAction';
 import "../../site.css";
-import { determinarColor, determinarColorPrioridad, determinarColorTipoAprobacion } from '../SolicitudEnsayo/ClasesUtilidades';
+import { determinarColor, determinarColorActivo, determinarColorPrioridad, determinarColorTipoAprobacion } from '../SolicitudEnsayo/ClasesUtilidades';
 import * as moment from 'moment';
 import { Paginator } from 'primereact/paginator';
 import * as _ from "lodash";
@@ -51,6 +51,7 @@ class ConsultaPrincipal extends Component {
         this.consultar = this.consultar.bind(this);
         this.limpiar = this.limpiar.bind(this);
         this.onPageChange = this.onPageChange.bind(this);
+        this.bodyTemplateTieneExtensionPlazo = this.bodyTemplateTieneExtensionPlazo.bind(this);
     }
 
     async componentDidMount() {
@@ -140,6 +141,12 @@ class ConsultaPrincipal extends Component {
         return <span className={determinarColorPrioridad(rowData.prioridad)}>{rowData.prioridad}</span>;
     }
 
+    bodyTemplateTieneExtensionPlazo(rowData) {
+        console.log(rowData)
+        const tieneExtensioPlazo =  !_.isEmpty(rowData.extensionFecha);
+        return <span className={determinarColorActivo(!tieneExtensioPlazo)}>{tieneExtensioPlazo? 'SI':'NO'}</span>;
+    }
+
     render() {
         let es = {
             firstDayOfWeek: 1,
@@ -207,6 +214,7 @@ class ConsultaPrincipal extends Component {
                     {/* <Column field="tipoSolicitud" header="Tipo" sortable style={{ textAlign: 'center', width: '10em' }} /> */}
                     <Column field="tipoAprobacion" body={this.bodyTemplateTipoAprobacion} header="Aprobación" sortable={true} style={{ textAlign: 'center', width: '12em' }} />
                     <Column field='estado' body={this.bodyTemplateEstado} header="Estado" sortable style={{ textAlign: 'center', width: '12em' }} />
+                    <Column body={this.bodyTemplateTieneExtensionPlazo} header="Extensión Plazo" style={{ textAlign: 'center', width: '8em' }} />
                 </DataTable>
                 <Paginator first={this.state.first} rows={this.state.size} totalRecords={this.state.totalRecords} onPageChange={this.onPageChange}
                     template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport" currentPageReportTemplate={this.state.currenPage}></Paginator>

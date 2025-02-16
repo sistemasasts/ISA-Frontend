@@ -103,7 +103,6 @@ class VerValidar extends Component {
     }
 
     crearObjSolicitud() {
-        debugger
         const fechaExtension = this.state.extensionFecha != null ? moment(this.state.extensionFecha).format("YYYY-MM-DD") : null
         return {
             id: this.state.id,

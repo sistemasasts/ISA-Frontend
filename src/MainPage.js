@@ -111,6 +111,8 @@ import ReclamoVerAprobacion from './components/quality-development/ReclamosMP/Ap
 import AprobacionPlanAccionPrincipal from './components/quality-development/ReclamosMP/AprobacionPlanAccion/AprobacionPlanAccionPrincipal';
 import ReclamoVerPlanAccion from './components/quality-development/ReclamosMP/AprobacionPlanAccion/ReclamoVerAprobacion';
 import ConsultaDesviacionReq from './components/quality-development/DesviacionRequisitos/Consulta/ConsultaDesviacionReq';
+import ExtensionPlazoPrincipal from './components/quality-development/SolicitudEnsayo/SolicitudExtensionPlazo/ExtensionPlazoPrincipal';
+import VerExtensionPlazo from './components/quality-development/SolicitudEnsayo/SolicitudExtensionPlazo/VerExtensionPlazo';
 
 
 class MainPage extends Component {
@@ -687,6 +689,8 @@ class MainPage extends Component {
 						<Route path="/quality-development_solicitud_revisar_plan_accion" component={RevisarPlanAccionPrincipal} />
 						<Route path="/quality-development_solicitud_revisar_plan_accion_ver/:idSolicitud" component={SEPlanesAccionVer} />
 						<Route path="/quality-development_solicitud_revisar_plan_accion_rev/:idSolicitud" component={SEPlanesAccionRev} />
+						<Route path="/quality-development_solicitudse_aprobar_extensionplazo" component={ExtensionPlazoPrincipal} />
+						<Route path="/quality-development_solicitudse_aprobar_extensionplazo_ver/:idSolicitud" component={VerExtensionPlazo} />
 
 						<Route path="/administracion_usuario" component={Usuario} />
 						<Route path="/administracion_usuario_registro/:idUsuario" component={UsuarioFormulario} />

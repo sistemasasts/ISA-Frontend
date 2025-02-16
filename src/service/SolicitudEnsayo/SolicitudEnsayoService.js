@@ -14,6 +14,7 @@ const SolicitudEnsayoService = {
     enviarSolicitud: (solicitud) => http.request.post(`${apiEndpoint}/enviarSolicitud/`, solicitud),
     validarSolicitud: (solicitud) => http.request.post(`${apiEndpoint}/validarSolicitud/`, solicitud),
     responderSolicitud: (solicitud) => http.request.post(`${apiEndpoint}/responderSolicitud/`, solicitud),
+    solicitudExtensionPlazo: (solicitud) => http.request.post(`${apiEndpoint}/solicitudExtensionPlazo/`, solicitud),
     aprobarInforme: (solicitud) => http.request.post(`${apiEndpoint}/aprobarInforme/`, solicitud),
     rechazarInforme: (solicitud) => http.request.post(`${apiEndpoint}/rechazarInforme/`, solicitud),
     aprobarSolicitud: (solicitud) => http.request.post(`${apiEndpoint}/aprobarSolicitud/`, solicitud),
@@ -30,6 +31,8 @@ const SolicitudEnsayoService = {
     confirmarPlanesAccion: (solicitud) => http.request.post(`${apiEndpoint}/confirmarPlanesAccion/`, solicitud),
     finalizarRevisionPlanesAccion: (solicitud) => http.request.post(`${apiEndpoint}/finalizarRevisionPlanesAccion/`, solicitud),
     listarPorRevisarPlanAccion: () => http.request.get(`${apiEndpoint}/pendienteRevisarPlanAccion`),
+    listarPendientesExtensionPlazo: () => http.request.get(`${apiEndpoint}/pendienteExtensionPlazo`),
+    ejecutarAccionExtensionPlazo: (solicitud) => http.request.post(`${apiEndpoint}/ejecutarAccionExtensionPlazo`, solicitud),
 
 }
 
