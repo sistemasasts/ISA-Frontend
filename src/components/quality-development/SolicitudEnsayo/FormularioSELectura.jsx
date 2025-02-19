@@ -14,6 +14,8 @@ import { closeModal, openModal } from '../../../store/actions/modalWaitAction';
 import { connect } from 'react-redux';
 import SolicitudEnsayoService from '../../../service/SolicitudEnsayo/SolicitudEnsayoService';
 import SolicitudDocumentoService from '../../../service/SolicitudEnsayo/SolicitudDocumentoService';
+import { MultiSelect } from 'primereact/multiselect';
+import { CatalogoService } from '../../../service/CatalogoService';
 
 class FormularioSELectura extends Component {
 
@@ -41,14 +43,18 @@ class FormularioSELectura extends Component {
             muestraUbicacion: null,
             muestraImagenId: null,
             nombreComercial: null,
+            tipoDiseno: [],
+            tiposDiseno: [],
         };
 
         this.leerImagenMuestra = this.leerImagenMuestra.bind(this);
+        this.catalogoService = new CatalogoService();
     }
 
     async componentDidMount() {
         this.refrescar(this.props.solicitud);
         const prioridadesNivel = await SolicitudEnsayoService.listarPrioridadNivel();
+        this.catalogoService.getTiposDiseño().then(data => this.setState({ tiposDiseno: data }));
         this.setState({ nivelPrioridadData: prioridadesNivel });
     }
 
@@ -57,6 +63,7 @@ class FormularioSELectura extends Component {
             const solicitud = await SolicitudEnsayoService.listarPorId(idSolicitud);
             if (solicitud) {
                 let objetivosValor = _.split(solicitud.objetivo, ',');
+                let tiposDisenioValor = _.split(solicitud.tipoDiseno, ',');
                 if (solicitud.muestraImagenId)
                     this.leerImagenMuestra(solicitud.muestraImagenId);
                 this.setState({
@@ -77,7 +84,7 @@ class FormularioSELectura extends Component {
                     muestraImagenId: solicitud.muestraImagenId,
                     estado: solicitud.estado,
                     nombreComercial: solicitud.nombreComercial,
-                    tipoDiseno: solicitud.tipoDiseno,
+                    tipoDiseno: tiposDisenioValor,
                     tipoDisenoOtro: solicitud.tipoDisenoOtro
                 });
             }
@@ -156,21 +163,22 @@ class FormularioSELectura extends Component {
                                 <label htmlFor="cb6" style={{ paddingLeft: '8px' }} className="p-checkbox-label">Diseño Vial</label>
                             </div>
                             {this.state.objectivos.indexOf('Diseño Vial') !== -1 &&
-                                <div className="p-col-12 p-lg-4">
+                                <div className="p-col-12 p-lg-12">
                                     <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Tipo Diseño</label>
-                                    <Dropdown disabled options={this.state.tiposDiseno} value={this.state.tipoDiseno} autoWidth={false} onChange={(e) => this.setState({ tipoDiseno: e.value })} placeholder="Seleccione " />
-                                </div>
+                                    <MultiSelect value={this.state.tipoDiseno} maxSelectedLabels={7} options={this.state.tiposDiseno}/>
+                                </div> 
                             }
-                            {this.state.tipoDiseno === 'Otro' &&
-                                <div className="p-col-12 p-lg-4">
-                                    <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Otro Tipo Diseño</label>
-                                    <InputText readOnly value={this.state.tipoDisenoOtro} onChange={(e) => this.setState({ tipoDisenoOtro: e.target.value })} />
-                                </div>
+                            {this.state.objectivos.indexOf('Diseño Vial') !== -1 &&
+                                <div className="p-col-12 p-lg-12">
+                                <label htmlFor="float-input">Otro Tipo Diseño</label>
+                                <InputText readOnly={!this.state.editar} value={this.state.tipoDisenoOtro} onChange={(e) => this.setState({ tipoDisenoOtro: e.target.value })} />
+                            </div>
                             }
                         </div>
 
                     </div>
 
+                    {!_.includes(this.state.objectivos,'Diseño Vial') && 
                     <div className="p-col-12 p-lg-12" >
                         <div className='p-grid'>
 
@@ -190,6 +198,7 @@ class FormularioSELectura extends Component {
                         </div>
 
                     </div>
+                    }
                     <div className="p-col-12 p-lg-12" >
                         <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Nombre Comercial</label>
                         <InputText readOnly value={this.state.nombreComercial} onChange={(e) => this.setState({ nombreComercial: e.target.value })} />

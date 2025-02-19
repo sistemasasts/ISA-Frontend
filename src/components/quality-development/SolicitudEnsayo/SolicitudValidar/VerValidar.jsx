@@ -6,6 +6,7 @@ import { Growl } from 'primereact/growl';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { RadioButton } from 'primereact/radiobutton';
+import {InputSwitch} from 'primereact/inputswitch';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { aplicationLine, unidadesMedida } from '../../../../global/catalogs';
@@ -34,7 +35,10 @@ class VerValidar extends Component {
             responsable: null,
             usuarios: [],
             mostrarControles: false,
-            extensionFecha: null
+            extensionFecha: null,
+            fechaEntregaInforme: null,
+            habilitarExtensionPlazo: false,
+            habilitarFechaEntrega: false
         };
         this.validarSolicitud = this.validarSolicitud.bind(this);
         this.rechazarSolicitud = this.rechazarSolicitud.bind(this);
@@ -52,11 +56,13 @@ class VerValidar extends Component {
     async refrescar(idSolicitud) {
         if (idSolicitud) {
             const solicitud = await SolicitudEnsayoService.listarPorId(idSolicitud);
+            let objetivosValor = _.split(solicitud.objetivo, ',');
             if (solicitud) {
                 this.setState({
                     id: solicitud.id,
                     estado: solicitud.estado,
-                    mostrarControles: solicitud.estado === ESTADO
+                    mostrarControles: solicitud.estado === ESTADO,
+                    habilitarFechaEntrega: _.includes(objetivosValor, 'Diseño Vial')
                 });
             }
         }
@@ -67,6 +73,14 @@ class VerValidar extends Component {
             this.growl.show({ severity: 'error', detail: 'Debe seleccionar el responsable.' });
             return false;
         }
+
+        if (this.state.habilitarFechaEntrega) {
+            if (this.state.fechaEntregaInforme === null) {
+                this.growl.show({ severity: 'error', detail: 'Debe ingresar la fecha de entrega.' });
+                return false;
+            }
+        }
+
         await SolicitudEnsayoService.validarSolicitud(this.crearObjSolicitud());
         this.growl.show({ severity: 'success', detail: 'Solicitud Aprobada!' });
         setTimeout(function () {
@@ -104,11 +118,13 @@ class VerValidar extends Component {
 
     crearObjSolicitud() {
         const fechaExtension = this.state.extensionFecha != null ? moment(this.state.extensionFecha).format("YYYY-MM-DD") : null
+        const fechaEntrega = this.state.fechaEntregaInforme != null ? moment(this.state.fechaEntregaInforme).format("YYYY-MM-DD") : null
         return {
             id: this.state.id,
             usuarioGestion: this.state.responsable.idUser,
             observacion: this.state.observacion,
-            extensionFecha: fechaExtension
+            extensionFecha: fechaExtension,
+            fechaEntregaInforme: fechaEntrega
         }
     }
 
@@ -141,10 +157,26 @@ class VerValidar extends Component {
                             <Dropdown value={this.state.responsable} optionLabel='employee.completeName' options={this.state.usuarios} onChange={(e) => this.setState({ responsable: e.value })} placeholder="Seleccione" />
                         </div>
 
+                        {this.state.habilitarFechaEntrega &&
+                        <div className='p-col-12 p-lg-6'>
+                            <label style={{color:'red'}} htmlFor="float-input">DEFINIR FECHA DE ENTREGA</label>
+                            <Calendar dateFormat="yy/mm/dd" value={this.state.fechaEntregaInforme} locale={es} onChange={(e) => this.setState({ fechaEntregaInforme: e.value })} showIcon={true} />
+                        </div>
+                        }
+
+                        { !this.state.habilitarFechaEntrega &&
+                        <div className='p-col-12 p-lg-12'>
+                            <Checkbox onChange={e => this.setState({habilitarExtensionPlazo: e.checked})} checked={this.state.habilitarExtensionPlazo}></Checkbox>
+                            <label htmlFor="float-input"  style={{ paddingLeft: '8px' }}>Habilitar opción extensión de plazo</label>
+                        </div>
+                        }
+
+                        { this.state.habilitarExtensionPlazo &&
                         <div className='p-col-12 p-lg-6'>
                             <label style={{color:'red'}} htmlFor="float-input">EXTENSIÓN DE FECHAS POR ENSAYOS PROLONGADOS</label>
                             <Calendar dateFormat="yy/mm/dd" value={this.state.extensionFecha} locale={es} onChange={(e) => this.setState({ extensionFecha: e.value })} showIcon={true} />
                         </div>
+                        }
 
                         <div className='p-col-12 p-lg-12'>
                             <label htmlFor="float-input">OBSERVACIÓN</label>

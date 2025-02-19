@@ -50,7 +50,7 @@ class VerExtensionPlazo extends Component {
                     mostrarControles: solicitud.estado === ESTADO,
                     fechaSolicitudExtension: solicitud.fechaSolicitudExtension,
                     motivoSolicitudExtension: this.obtenerMotivo(solicitud),
-                    fechaEntregaInforme: solicitud.fechaEntrega,
+                    fechaEntregaInforme: solicitud.fechaEntregaInforme,
                 });
             }
         }
@@ -69,7 +69,6 @@ class VerExtensionPlazo extends Component {
 
 
     async ejecutarAccion(aprobar) {
-        debugger
         if (!aprobar && _.isEmpty(this.state.observacion)) {
             this.growl.show({ severity: 'error', detail: 'La observación es oblogatoria.' });
             return false;
