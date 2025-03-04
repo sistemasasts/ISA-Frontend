@@ -131,9 +131,8 @@ export const ListaDesviacionReq = () => {
                         <Column field={"productTypeText"} header={"Origen"} style={{ width: '15em', textAlign: 'center' }} />
                         <Column field={"fechaCreacionTrans"} header={"Fecha"} style={{ width: '10em', textAlign: 'center' }} />
                         <Column field={"product.nameProduct"} header={"Material"} style={{ width: '30em', textAlign: 'center' }} />
-                        <Column field={"seguimiento"} header={"Resp. seguimiento"} style={{ width: '30em', textAlign: 'center' }} />
                         <Column field={"afectacionText"} header={"Línea afectada"} style={{ width: '15em', textAlign: 'center' }} />
-                        <Column field={"motivo"} header={"Motivo de la desviación"} style={{ width: '30em', textAlign: 'center' }} />
+                        <Column field={"causa"} header={"Causa de la desviación"} style={{ width: '30em', textAlign: 'center' }} />
                         <Column field={"descripcion"} header={"Descripción de la desviación"} style={{ width: '30em', textAlign: 'center' }} />
                         <Column field={"control"} header={"Controles requeridos"} style={{ width: '20em', textAlign: 'center' }} />
                         <Column field={"alcance"} header={"Alcance y tiempo de la desviación"} style={{ width: '20em', textAlign: 'center' }} />
