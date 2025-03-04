@@ -33,12 +33,15 @@ export function determinarColorTipoAprobacion(tipoAprobacion) {
         case 'SOLICITUD SOLUCIONES TÉCNICAS':
         case 'CREACIÓN DE MATERIAS PRIMAS':
         case 'GESTIONAR E IMPLEMENTAR CAMBIOS':
+        case 'REQUIERE PRUEBA EN PROCESO':
         case 'SOLICITUD PRUEBA PROCESO':
             return 'customer-badge-default';
         case 'REPETIR PRUEBA':
         case 'MATERIAL NO VALIDADO':
         case 'AJUSTE MAQUINARIA':
         case 'NO_APROBADO':
+        case 'NO APROBADO':
+        case 'VALIDACIÓN NO APROBADA':
             return 'customer-badge-danger';
         case 'GESTIÓN COMPRA':
             return 'customer-badge-success';
