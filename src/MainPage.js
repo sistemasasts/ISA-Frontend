@@ -113,6 +113,7 @@ import ReclamoVerPlanAccion from './components/quality-development/ReclamosMP/Ap
 import ConsultaDesviacionReq from './components/quality-development/DesviacionRequisitos/Consulta/ConsultaDesviacionReq';
 import ExtensionPlazoPrincipal from './components/quality-development/SolicitudEnsayo/SolicitudExtensionPlazo/ExtensionPlazoPrincipal';
 import VerExtensionPlazo from './components/quality-development/SolicitudEnsayo/SolicitudExtensionPlazo/VerExtensionPlazo';
+import Perfil from './components/administracion/perfiles/Perfil';
 
 
 class MainPage extends Component {
@@ -385,22 +386,22 @@ class MainPage extends Component {
 	createMenu() {
 
 		var menuPrincipal = [];
-		this.props.currentUser && this.props.currentUser.role.menus.map(function (obj, index) {
+		this.props.currentUser && this.props.currentUser.permisos.map(function (obj, index) {
 			if (obj.itemDescription === 'Inicio')
 				var menuItem = { label: '', icon: '', to: '/home' };
 			else
 				var menuItem = { label: '', icon: '', to: undefined };
-			menuItem.label = obj.itemDescription;
-			menuItem.icon = obj.iconMenu;
-			menuItem.to = obj.ref;
+			menuItem.label = obj.etiqueta;
+			menuItem.icon = obj.icon;
+			menuItem.to = obj.url;
 
-			if (obj.subMenus.length !== 0 || obj.subMenus.length !== undefined) {
+			if (obj.menus.length !== 0 || obj.menus.length !== undefined) {
 				menuItem.items = [];
-				obj.subMenus.map(function (obj2, i) {
+				obj.menus.map(function (obj2, i) {
 					var itemsAux = { label: '', icon: '', to: undefined };
-					itemsAux.label = obj2.desc;
+					itemsAux.label = obj2.etiqueta;
 					itemsAux.icon = obj2.icon;
-					itemsAux.to = obj2.ref;
+					itemsAux.to = obj2.url;
 					menuItem.items.push(itemsAux);
 				})
 
@@ -692,9 +693,11 @@ class MainPage extends Component {
 						<Route path="/quality-development_solicitudse_aprobar_extensionplazo" component={ExtensionPlazoPrincipal} />
 						<Route path="/quality-development_solicitudse_aprobar_extensionplazo_ver/:idSolicitud" component={VerExtensionPlazo} />
 
+						{/* --------- ADMINISTRACION ------------- */}
 						<Route path="/administracion_usuario" component={Usuario} />
 						<Route path="/administracion_usuario_registro/:idUsuario" component={UsuarioFormulario} />
 						<Route path="/quality-development_unidad_medida" component={UnidadMedida} />
+						<Route path="/administracion_perfil" component={Perfil} />
 
 						{/* --------- PNC ------------- */}
 						<Route path="/quality-development_pnc_defecto" component={Defecto} />
