@@ -14,7 +14,7 @@ class PerfilForm extends Component {
         super();
         this.state = {
             roles:[],
-            display: true,
+            display: false,
             perfilSeleccionado: null,
             nombre: null,
             rol: null,

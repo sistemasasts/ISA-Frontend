@@ -59,17 +59,33 @@ class MenuForm extends Component {
     }
 
     async operar() {
-        await MenuService.asignar(this.state.idPerfil, this.state.menuSeleccionados);
+        await MenuService.asignar(this.state.idPerfil, this.preparaOBJMenus());
         this.growl.show({ severity: 'success', detail: 'Registro exitoso!' });
         this.cerrarDialogo();
     }
 
+    preparaOBJMenus(){
+        let menuSeleccionados = [...this.state.menuSeleccionados];
+        let menuIdPadres = [...new Set(menuSeleccionados.filter(x => x.padreId !== null).map(x => x.padreId))];
+        const idsPadresUnicosSet = new Set(menuIdPadres);
+        const menusFiltradosPadres = this.state.menus.filter(menu => idsPadresUnicosSet.has(menu.id));
+        menuSeleccionados.push(...menusFiltradosPadres);
+        return menuSeleccionados;
+    }
+
     onMenuChange(e) {
         let selectedMenu = [...this.state.menuSeleccionados];
-        if(e.checked)
+        if(e.checked) {
             selectedMenu.push(e.value);
-        else
+        } else {
             selectedMenu.splice(selectedMenu.indexOf(e.value), 1);
+            if(!(selectedMenu.find(x => x.padreId === e.value.padreId))) {
+                const indiceAEliminar = selectedMenu.findIndex(menu => menu.id === e.value.padreId);
+                if (indiceAEliminar !== -1) {
+                    selectedMenu.splice(indiceAEliminar, 1);
+                }
+            }
+        }
         this.setState({menuSeleccionados: selectedMenu});
     }
     
