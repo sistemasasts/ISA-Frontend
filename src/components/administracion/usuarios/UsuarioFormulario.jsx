@@ -6,9 +6,11 @@ import { Dropdown } from 'primereact/dropdown';
 import { Checkbox } from 'primereact/checkbox';
 import { Button } from 'primereact/button';
 import UsuarioService from '../../../service/UsuarioService';
-import RoleService from '../../../service/RoleService';
 import * as _ from "lodash";
 import "../../site.css";
+import PerfilService from '../../../service/PerfilService';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
 
 class UsuarioFormulario extends Component {
     constructor() {
@@ -22,50 +24,53 @@ class UsuarioFormulario extends Component {
             email: null,
             area: null,
             kind: null,
-            stateE: true,
-            role: null,
+            stateE: null,
+            perfiles: null,
+            perfil: null,
 
             catalogoArea: [],
             catalogoTipo: [],
-            catalogoRoles: [],
+            catalogoPerfiles: [],
+            catalogoEstados: [],
             actualizar: false,
 
         };
         this.guardar = this.guardar.bind(this);
         this.regresar = this.regresar.bind(this);
+        this.asignarPerfil = this.asignarPerfil.bind(this);
+        this.actionTemplate = this.actionTemplate.bind(this);
+        this.eliminarPerfil = this.eliminarPerfil.bind(this);
     }
 
     componentDidMount() {
         const idParam = this.props.match.params.idUsuario;
-        console.log(idParam);
         this.cargarCatalogos();
         this.refrescar(idParam);
     }
 
     async cargarCatalogos() {
         const areas = await UsuarioService.listarAreas();
-        const tipos = await UsuarioService.listarTipos();
-        const roles = await RoleService.listar();
-        this.setState({ catalogoArea: areas, catalogoTipo: tipos, catalogoRoles: roles });
+        const perfiles_catalogo = await PerfilService.listarActivos();
+        const estado_catalogo = await UsuarioService.listarEstado();
+        this.setState({ catalogoArea: areas, catalogoPerfiles: perfiles_catalogo, catalogoEstados: estado_catalogo });
     }
 
     async refrescar(idUsuario) {
         if (idUsuario !== '0') {
             const usuario = await UsuarioService.listarPorId(idUsuario);
             if (usuario) {
-                console.log(usuario);
+                const perfiles_data = await UsuarioService.listarPerfiles(usuario.id);
                 this.setState({
-                    idUser: usuario.idUser,
-                    ciEmployee: usuario.employee.ciEmployee,
-                    name: usuario.employee.name,
-                    lastName: usuario.employee.lastName,
-                    job: usuario.employee.job,
-                    email: usuario.employee.email,
-                    area: usuario.employee.area,
-                    kind: usuario.employee.kind,
-                    stateE: usuario.employee.state,
-                    role: usuario.role,
+                    idUser: usuario.id,
+                    nombreUsuario: usuario.nombreUsuario,
+                    ciEmployee: usuario.numeroIdentificacion,
+                    name: usuario.nombre,
+                    job: usuario.trabajo,
+                    email: usuario.email,
+                    area: usuario.area,
+                    stateE: {'label': usuario.estado, 'value': usuario.estado, 'adicional': null },
                     actualizar: true,
+                    perfiles: perfiles_data
                 });
             }
         }
@@ -88,31 +93,57 @@ class UsuarioFormulario extends Component {
         }
     }
 
+    async asignarPerfil() {
+        if(!this.state.perfil){
+            this.growl.show({ severity: 'error', detail: 'Debe seleccionar un perfil.' });
+            return ;
+        }
+        await UsuarioService.createUsuarioPerfil(this.crearObjUsuairoPerfil());
+        this.growl.show({ severity: 'success', detail: 'Perfil asignado.' });
+        const perfiles_data = await UsuarioService.listarPerfiles(this.state.idUser);
+        this.setState({ perfiles: perfiles_data });
+    }
+
+    crearObjUsuairoPerfil(){
+        return {
+            usuarioId: this.state.idUser,
+            perfilId: this.state.perfil.id
+        }
+    }
+
+    async eliminarPerfil(perfilId) {
+        await UsuarioService.deleteUsuarioPerfil(this.state.idUser, perfilId);
+        this.growl.show({ severity: 'success', detail: 'Perfil eliminado.' });
+        const perfiles_data = await UsuarioService.listarPerfiles(this.state.idUser);
+        this.setState({ perfiles: perfiles_data });
+    }
+
+
+    actionTemplate(rowData, column) {
+        return <div>
+            <Button type="button" className='p-button-danger' icon="pi pi-trash" onClick={() => this.eliminarPerfil(rowData.id)}></Button>
+        </div>;
+    }
+
     regresar() {
         history.push(`/administracion_usuario`);
     }
 
     crearObj() {
         return {
-            idUser: this.state.idUser,
-            nickName: this.state.idUser,
-            role: this.state.role,
-            employee: {
-                ciEmployee: this.state.ciEmployee,
-                name: this.state.name,
-                lastName: this.state.lastName,
-                state: this.state.stateE,
-                area: this.state.area,
-                kind: this.state.kind,
-                email: this.state.email,
-                job: this.state.job,
-            }
+            id: this.state.idUser,
+            nombreUsuario: this.state.idUser,
+            nombre: this.state.name,
+            numeroIdentificacion: this.state.ciEmployee,
+            email: this.state.email,
+            trabajo: this.state.job,
+            estado: this.state.stateE?.value,
+            area: this.state.area,
         }
     }
 
     validarFormulario() {
-        if (_.isEmpty(this.state.idUser) || _.isEmpty(this.state.ciEmployee) || _.isEmpty(this.state.name) || _.isEmpty(this.state.lastName) || _.isEmpty(this.state.email)
-        || _.isEmpty(this.state.role))
+        if (_.isEmpty(this.state.ciEmployee) || _.isEmpty(this.state.name) || _.isEmpty(this.state.email))
             return false;
         return true;
     }
@@ -125,7 +156,7 @@ class UsuarioFormulario extends Component {
                 <div className='p-grid p-grid-responsive p-fluid'>
                     <div className='p-col-12 p-lg-4'>
                         <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Usuario</label>
-                        <InputText value={this.state.idUser} onChange={(e) => this.setState({ idUser: e.target.value })} />
+                        <InputText value={this.state.nombreUsuario} onChange={(e) => this.setState({ nombreUsuario: e.target.value })} />
                     </div>
                     <div className='p-col-12 p-lg-4'>
                         <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Cargo</label>
@@ -144,30 +175,42 @@ class UsuarioFormulario extends Component {
                         <InputText value={this.state.name} onChange={(e) => this.setState({ name: e.target.value })} />
                     </div>
                     <div className='p-col-12 p-lg-4'>
-                        <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Apellidos</label>
-                        <InputText value={this.state.lastName} onChange={(e) => this.setState({ lastName: e.target.value })} />
-                    </div>
-                    <div className='p-col-12 p-lg-4'>
                         <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Área</label>
                         <Dropdown options={this.state.catalogoArea} optionLabel='nameArea' value={this.state.area} autoWidth={false} onChange={(e) => this.setState({ area: e.value })} placeholder="Seleccione " />
                     </div>
+
                     <div className='p-col-12 p-lg-4'>
-                        <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Tipo</label>
-                        <Dropdown options={this.state.catalogoTipo} optionLabel='desc' value={this.state.kind} autoWidth={false} onChange={(e) => this.setState({ kind: e.value })} placeholder="Seleccione " />
+                        <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Estado</label>
+                        <Dropdown options={this.state.catalogoEstados} optionLabel='label' optionValue='value' value={this.state.stateE} autoWidth={false} onChange={(e) => this.setState({ stateE: e.value })} placeholder="Seleccione " />
                     </div>
-                    <div className="p-col-12 p-lg-4">
-                        <label htmlFor="cb2" className="p-checkbox-label">Activo</label><br />
-                        <Checkbox inputId="cb2" onChange={(e) => this.setState({ stateE: e.checked })} checked={this.state.stateE}></Checkbox>
-                    </div>
-                    <div className='p-col-12 p-lg-4'>
-                        <span style={{ color: '#CB3234' }}>*</span><label htmlFor="float-input">Rol</label>
-                        <Dropdown options={this.state.catalogoRoles} optionLabel='rolDescription' value={this.state.role} autoWidth={false} onChange={(e) => this.setState({ role: e.value })} placeholder="Seleccione " />
-                    </div>
+                    
                 </div>
                 <div className='p-col-12 p-lg-12 boton-opcion' >
                     <Button label="GUARDAR" onClick={this.guardar} />
                     <Button className='p-button-danger' label="REGRESAR" onClick={this.regresar} />
                 </div>
+                <h3><strong>PERFILES</strong></h3>
+                <div className='p-grid p-grid-responsive'>
+                    <div className='p-col-12 p-lg-12'>
+                        <div className="formgroup-inline">
+                            <div className="field">
+                                <label htmlFor="firstname5" className="p-sr-only" style={{marginRight:'5px'}}>Perfil</label>
+                                <Dropdown style={{marginRight:'8px', width:'400px'}} options={this.state.catalogoPerfiles} optionLabel='nombre' autoWidth={true} value={this.state.perfil} onChange={(e) => this.setState({ perfil: e.value })} placeholder="Seleccione " />
+                                <Button type="button" label="Asignar Perfil" onClick={this.asignarPerfil}/>
+                            </div>
+                        </div>
+                        <br />
+                        <DataTable value={this.state.perfiles} paginator={true} rows={15} responsive={true} scrollable={true}
+                            selectionMode="single" selection={this.state.perfilSeleccionado} onSelectionChange={e => this.setState({ perfilSeleccionado: e.value })}
+                            >
+                            <Column field="perfil.nombre" header="Perfil" sortable={true}  style={{ width: '10em' }} />
+                            <Column header="Acciones" body={this.actionTemplate} style={{ textAlign: 'center', width: '7em' }} />
+                        </DataTable>
+                    </div>
+                    
+                </div>
+                
+
             </div>
         )
     }

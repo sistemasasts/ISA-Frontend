@@ -6,7 +6,7 @@ import { Button } from 'primereact/button'
 import { Dialog } from 'primereact/dialog';
 import { Password } from 'primereact/password';
 import UsuarioService from '../../../service/UsuarioService';
-import { determinarColorActivo } from '../../quality-development/SolicitudEnsayo/ClasesUtilidades';
+import { determinarColor, determinarColorActivo } from '../../quality-development/SolicitudEnsayo/ClasesUtilidades';
 import * as _ from "lodash";
 import "../../site.css";
 import { Growl } from 'primereact/growl';
@@ -37,14 +37,13 @@ class Usuario extends Component {
 
     actionTemplate(rowData, column) {
         return <div>
-            <Button type="button" className='p-button-warning' icon="fa fa-pencil" onClick={() => this.redirigirRegistroUsuario(rowData.idUser)}></Button>
-            <Button type="button" className='p-button' icon="pi pi-unlock" onClick={() => this.setState({ display: true })}></Button>
+            <Button type="button" className='p-button-warning' icon="fa fa-pencil" onClick={() => this.redirigirRegistroUsuario(rowData.id)}></Button>
+            {/* <Button type="button" className='p-button' icon="pi pi-unlock" onClick={() => this.setState({ display: true })}></Button> */}
         </div>;
     }
 
     bodyTemplateEstado(rowData) {
-        const estado = rowData.employee.state ? 'SI' : 'NO';
-        return <span className={determinarColorActivo(rowData.employee.state)}>{estado}</span>;
+        return <span className={determinarColor(rowData.estado)}>{rowData.estado}</span>;
     }
 
     async reestablecerContrasena() {
@@ -78,12 +77,12 @@ class Usuario extends Component {
                 <DataTable value={this.state.usuarios} paginator={true} rows={15} header={header} responsive={true} scrollable={true}
                     selectionMode="single" selection={this.state.usuarioSeleccionado} onSelectionChange={e => this.setState({ usuarioSeleccionado: e.value })}
                     onRowSelect={this.onCarSelect} >
-                    <Column field="nickName" header="Usuario" sortable={true} filter={true} filterMatchMode="contains"  style={{ textAlign: 'center', width: '10em' }} />
-                    <Column field="employee.ciEmployee" header="Identificación" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
-                    <Column field="employee.completeName" header="Nombre" sortable={true} style={{ textAlign: 'center', width: '16em' }} />
-                    <Column field="employee.email" header="Correo" style={{ textAlign: 'center', width: '12em' }} />
-                    <Column field="employee.kind.desc" header="Tipo" sortable={true} style={{ textAlign: 'center', width: '12em' }} />
-                    <Column field='employee.state' body={this.bodyTemplateEstado} header="Activo" sortable style={{ textAlign: 'center', width: '8em' }} />
+                    <Column field="nombreUsuario" header="Usuario" sortable={true} filter={true} filterMatchMode="contains"  style={{ textAlign: 'center', width: '10em' }} />
+                    <Column field="numeroIdentificacion" header="Identificación" sortable={true} style={{ textAlign: 'center', width: '10em' }} />
+                    <Column field="nombre" header="Nombre" sortable={true} style={{ textAlign: 'center', width: '16em' }} />
+                    <Column field="email" header="Correo" style={{ textAlign: 'center', width: '12em' }} />
+                    <Column field="area.nameArea" header="Departamento" sortable={true} style={{ textAlign: 'center', width: '12em' }} />
+                    <Column field='estado' body={this.bodyTemplateEstado} header="Activo" sortable style={{ textAlign: 'center', width: '8em' }} />
                     <Column body={this.actionTemplate} style={{ textAlign: 'center', width: '7em' }} />
                 </DataTable>
                 <Dialog header="Reestablecer Contraseña" visible={this.state.display} style={{ width: '30vw' }} onHide={() => this.setState({ display: false })} blockScroll footer={dialogFooter} >
