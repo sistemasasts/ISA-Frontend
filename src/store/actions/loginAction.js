@@ -1,7 +1,7 @@
 import * as  actionType from './actionTypes'
 import { toast } from 'react-toastify'
 import LoginService from '../../service/LoginService'
-import history from '../../history'
+
 import { getDecodedToken } from '../../config/auth/credentialConfiguration'
 import MenuService from '../../service/MenuService'
 
@@ -16,6 +16,11 @@ export const setCurrentUser = (currentUser) => {
 const signOutUser = () => {
     return { type: actionType.LOGOUT_USER }
 }
+
+/* let navigateCallback;
+export const setCallback = (callback) => {
+    navigateCallback = callback;
+}; */
 
 export const login = (credentials) => async (dispatch) => {
     try {
@@ -33,7 +38,9 @@ export const login = (credentials) => async (dispatch) => {
             position: toast.POSITION.BUTTOM_CENTER
         })
 
-        history.push('/home')
+      /*   if (navigateCallback) {
+            navigateCallback('/home');
+        } */
 
 
 
@@ -60,7 +67,9 @@ export const logout = () => (dispatch) => {
     try {
         LoginService.logout()
         dispatch(signOutUser())
-        history.push('/')
+    /*     if (navigateCallback) {
+            navigateCallback('/');
+        } */
     } catch (error) {
         toast.error(error)
     }

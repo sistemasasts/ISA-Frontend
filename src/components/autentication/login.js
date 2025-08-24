@@ -242,7 +242,7 @@ class Login extends Component {
                                     </div>
                                     <div className="form-check">
 
-                                        <button className="btn float-right" style={{ background: "#4DA6DE", color: "#fff", fontWeight: "600" }} onClick={this.validateUser} >Aceptar</button>
+                                        <button className="btn float-right" style={{ background: "#4DA6DE", color: "#fff", fontWeight: "600" }} onClick={this.handleRedirect} >Aceptar</button>
                                     </div>
                                 </div>
                                 {/* <div className="copy-text">Elaborado por T.I ASTS <i className="fa fa-heart" /> by <a href="http://grafreez.com">Grafreez.com</a></div> */}

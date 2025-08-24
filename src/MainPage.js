@@ -14,18 +14,19 @@ import 'font-awesome/css/font-awesome.css';
 import 'primereact/resources/primereact.min.css';
 import './MainPage.css';
 import { connect } from 'react-redux';
-import Product from './components/quality-development/Producto/Product';
+/* import Product from './components/quality-development/Producto/Product';
 import HCC from './components/quality-development/Hcc';
-import ProductoNoConforme from './components/quality-development/Pnc/Pnc';
+import ProductoNoConforme from './components/quality-development/Pnc/Pnc'; */
 import { ResultTest } from './components/quality-development/TestResuts';
-import Complaint from './components/quality-development/ReclamosMP';
+/* import Complaint from './components/quality-development/ReclamosMP';
 import WFlow from './components/quality-development/WorkFlow';
-import { ReportData } from './components/quality-development/Report';
+import { ReportData } from './components/quality-development/Report'; */
 
 /* ==================== ACTIONS =======================  */
 import { getUser } from './store/actions/loginAction';
-import MenuService from './service/MenuService';
 import { Home } from './components/Home';
+/*import MenuService from './service/MenuService';
+
 import Propiedades from './components/quality-development/Propiedades/Propiedades';
 import Proveedor from './components/quality-development/Proveedor/Proveedor';
 import SalidaMaterial from './components/quality-development/ExitMaterialPNC/SalidaMaterial';
@@ -113,7 +114,7 @@ import ReclamoVerPlanAccion from './components/quality-development/ReclamosMP/Ap
 import ConsultaDesviacionReq from './components/quality-development/DesviacionRequisitos/Consulta/ConsultaDesviacionReq';
 import ExtensionPlazoPrincipal from './components/quality-development/SolicitudEnsayo/SolicitudExtensionPlazo/ExtensionPlazoPrincipal';
 import VerExtensionPlazo from './components/quality-development/SolicitudEnsayo/SolicitudExtensionPlazo/VerExtensionPlazo';
-import Perfil from './components/administracion/perfiles/Perfil';
+import Perfil from './components/administracion/perfiles/Perfil'; */
 
 
 class MainPage extends Component {
@@ -615,23 +616,23 @@ class MainPage extends Component {
 					<div className="layout-main">
 
 
-						<Route path="/quality-development_product" component={Product} />
+						{/* <Route path="/quality-development_product" component={Product} />
 						<Route path="/quality-development_product_instructivo/:idProduct" component={ProductoInstructivo} />
 						<Route path="/quality-development_product_new" component={ProductNew} />
 						<Route path="/quality-development_hcc" component={HCC} />
-						<Route path="/quality-development_pnc" component={ProductoNoConforme} />
+						<Route path="/quality-development_pnc" component={ProductoNoConforme} /> */}
 						{/* <Route path="/quality-development_pnc" component={NotFound} /> */}
 						<Route path="/quality-development_resulttest" component={ResultTest} />
 						{/* -------------reclamo de MP-------------------------- */}
-						<Route path="/quality-development_complaint" component={ReclamoPrincipal} />
+						{/* <Route path="/quality-development_complaint" component={ReclamoPrincipal} />
 						<Route path="/quality-development_complaint_registro" component={ReclamoForm} />
 						<Route path="/quality-development_complaint_edit/:idReclamo" component={ReclamoForm} />
 						<Route path="/quality-development_complaint_aprobacion/:estado" component={ReclamoAprobacionPrincipal} />
 						<Route path="/quality-development_complaint_aprobacion_ver/:idReclamo/:orden" component={ReclamoVerAprobacion} />
 						<Route path="/quality-development_complaint_procesar_tarea" component={AprobacionPlanAccionPrincipal} />
-						<Route path="/quality-development_complaint_procesar_tarea_ver/:idReclamo" component={ReclamoVerPlanAccion} />
+						<Route path="/quality-development_complaint_procesar_tarea_ver/:idReclamo" component={ReclamoVerPlanAccion} /> */}
 
-						<Route path="/quality-development_wflow" component={WFlow} />
+						{/* <Route path="/quality-development_wflow" component={WFlow} />
 						<Route path="/quality-development_report" component={ReportData} />
 						<Route path="/quality-development_propertylist" component={Propiedades} />
 						<Route path="/quality-development_providers" component={Proveedor} />
@@ -691,16 +692,16 @@ class MainPage extends Component {
 						<Route path="/quality-development_solicitud_revisar_plan_accion_ver/:idSolicitud" component={SEPlanesAccionVer} />
 						<Route path="/quality-development_solicitud_revisar_plan_accion_rev/:idSolicitud" component={SEPlanesAccionRev} />
 						<Route path="/quality-development_solicitudse_aprobar_extensionplazo" component={ExtensionPlazoPrincipal} />
-						<Route path="/quality-development_solicitudse_aprobar_extensionplazo_ver/:idSolicitud" component={VerExtensionPlazo} />
+						<Route path="/quality-development_solicitudse_aprobar_extensionplazo_ver/:idSolicitud" component={VerExtensionPlazo} /> */}
 
 						{/* --------- ADMINISTRACION ------------- */}
-						<Route path="/administracion_usuario" component={Usuario} />
+						{/* <Route path="/administracion_usuario" component={Usuario} />
 						<Route path="/administracion_usuario_registro/:idUsuario" component={UsuarioFormulario} />
 						<Route path="/quality-development_unidad_medida" component={UnidadMedida} />
 						<Route path="/administracion_perfil" component={Perfil} />
-
+ */}
 						{/* --------- PNC ------------- */}
-						<Route path="/quality-development_pnc_defecto" component={Defecto} />
+						{/* <Route path="/quality-development_pnc_defecto" component={Defecto} />
 						<Route path="/quality-development_pnc_principal" component={PncPrincipal} />
 						<Route path="/quality-development_pnc_nuevo" component={Form} />
 						<Route path="/quality-development_pnc_edit/:idPnc" component={Form} />
@@ -718,15 +719,15 @@ class MainPage extends Component {
 						<Route path="/quality-development_pnc_desviacion_req_edit/:idDesvReq" component={FormDesviacionReq} />
 						<Route path="/quality-development_pnc_desviacion_req_view/:idDesvReq/:orden" component={FormDesviacionReq} />
 						<Route path="/quality-development_pnc_desviacion_req_nuevo" component={FormDesviacionReq} />
-						<Route path="/quality-development_pnc_consulta" component={PncConsulta} />
+						<Route path="/quality-development_pnc_consulta" component={PncConsulta} /> */}
 						{/* --------- PNC ------------- */}
 
 						{/* ----------DESVIACION REQUISITO */}
-						<Route path="/quality-development_desviacion_aprobacion" component={DesviacionAprobacionPrincipal} />
+						{/* <Route path="/quality-development_desviacion_aprobacion" component={DesviacionAprobacionPrincipal} /> */}
 
                         {/* --------- INVENTARIO ------------- */}
-						<Route path="/quality-development_inventario" component={InventarioPrincipal} />
-						<Route path="/quality-development_inventario_detalle/:idInventario" component={MovimientoPrincipal} />
+						{/* <Route path="/quality-development_inventario" component={InventarioPrincipal} />
+						<Route path="/quality-development_inventario_detalle/:idInventario" component={MovimientoPrincipal} /> */}
                         {/* --------- INVENTARIO ------------- */}
 						<Route path="/home" component={Home} />
 

@@ -1,8 +1,12 @@
 import Axios from "axios";
-import history from '../history'
 import { getJwt } from '../config/auth/credentialConfiguration'
 import { toast } from "react-toastify";
 
+/* let navigateCallback;
+export const setNavigateCallback = (callback) => {
+    navigateCallback = callback;
+};
+ */
 /**
  * X-Custom-Header poner en la habilitación de los CORS Backend
  */
@@ -45,7 +49,9 @@ http.interceptors.response.use(undefined, (error) => {
         toast.error('La sesión ha expirado, vuelva a iniciar sesión ! ', {
             position: toast.POSITION.TOP_RIGHT
         })
-        history.push('/')
+        /* if (navigateCallback) {
+            navigateCallback('/');
+        } */
     }
 
     // eslint-disable-next-line no-prototype-builtins

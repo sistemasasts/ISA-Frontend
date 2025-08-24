@@ -1,7 +1,13 @@
 import Axios from "axios";
 import { getJwt } from "../config/auth/credentialConfiguration";
 import { toast } from "react-toastify";
-import history from "../history";
+
+
+/* let navigateCallback;
+export const setNavigateCallback = (callback) => {
+    navigateCallback = callback;
+}; */
+
 
 
 //baseURL PRUEBAS: 'http://192.168.4.18:8069/ISACore',
@@ -41,12 +47,16 @@ httpFiles.interceptors.response.use(undefined, (error) => {
         toast.error('La sesión ha expirado, vuelva a iniciar sesión ! ', {
             position: toast.POSITION.TOP_RIGHT
         })
-         history.push('/')
+        /*  if (navigateCallback) {
+            navigateCallback('/');
+        } */
     }
 
     // eslint-disable-next-line no-prototype-builtins
     if (status === 400 && config.method === 'get' && data.errors.hasOwnProperty('id')) {
-        history.push('/notFound')
+        /* if (navigateCallback) {
+            navigateCallback('/notFound');
+        } */
     }
 
     if (status === 500) {

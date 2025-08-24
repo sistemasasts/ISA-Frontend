@@ -30,17 +30,16 @@ class AppInlineProfile extends Component {
 
     render() {
 
-        let nombres = this.props.currentUser && this.props.currentUser.employee.name.split(' ')
-        let apellidos = this.props.currentUser && this.props.currentUser.employee.lastName.split(' ')
-        let area = this.props.currentUser && this.props.currentUser.employee.area.nameArea
-        let cedula = this.props.currentUser && this.props.currentUser.employee.ciEmployee
+        let nombres = this.props.currentUser && this.props.currentUser.usuario.nombre
+        let area = this.props.currentUser && this.props.currentUser.usuario.nombre
+        let cedula = this.props.currentUser && this.props.currentUser.usuario.numeroIdentifiacion
         let rutaFoto= `assets/layout/images/${cedula}.png`;
 
         return <div>
             <div className={classNames('profile', { 'profile-expanded': this.state.expanded })}>
                 <button className="p-link" onClick={this.onClick}>
                     <img alt="Profile" className="profile-image" src={rutaFoto} />
-                    <span className="profile-name">{nombres && nombres[0]} {apellidos && apellidos[0]}</span>
+                    <span className="profile-name">{nombres}</span>
                     <i className="fa fa-fw fa-caret-down"></i>
                     <span className="profile-role">{area && area}</span>
                 </button>

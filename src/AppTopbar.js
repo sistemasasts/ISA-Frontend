@@ -210,7 +210,7 @@ class AppTopbar extends Component {
                     </li> */}
                     <li className="topbar-item-name" style={{ color: '#fff' }}>
                     
-                        <strong>Usuario: </strong><span>{this.props.currentUser&&this.props.currentUser.employee.lastName + ' ' + this.props.currentUser.employee.name}</span>
+                        <strong>Usuario: </strong><span>{this.props.currentUser&&this.props.currentUser.usuario.nombre}</span>
                     </li>
 
                   {/*   <li className={classNames('search-item', { 'active-top-menu': this.props.activeTopbarItem === 'search' })}
